@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 
 import Product from '../models/Product';
 
-class ToolsController {
+class ProductController {
   async index(req, res) {
     const { userId: user_id } = req;
 
@@ -61,7 +61,7 @@ class ToolsController {
     }
     const productUpdated = await product.update(req.body);
 
-    return res.status(201).json(productUpdated);
+    return res.status(200).json(productUpdated);
   }
 
   async delete(req, res) {
@@ -82,4 +82,4 @@ class ToolsController {
   }
 }
 
-export default new ToolsController();
+export default new ProductController();

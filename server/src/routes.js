@@ -4,6 +4,7 @@ import SessionController from './app/controllers/SessionController';
 
 import authMiddleware from './app/middlewares/auth';
 import ProductController from './app/controllers/ProductController';
+import MealController from './app/controllers/MealController';
 
 const routes = new Router();
 
@@ -19,5 +20,10 @@ routes.get('/products', ProductController.index);
 routes.post('/products', ProductController.store);
 routes.put('/products/:id', ProductController.update);
 routes.delete('/products/:id', ProductController.delete);
+
+routes.get('/meals', MealController.index);
+routes.post('/meals', MealController.store);
+routes.put('/meals/:id', MealController.update);
+routes.delete('/meals/:id', MealController.delete);
 
 export default routes;
