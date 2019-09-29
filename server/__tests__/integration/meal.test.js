@@ -106,7 +106,6 @@ describe('Meals', () => {
 
   it('should be able to delete a meal', async () => {
     const { meal, token } = await createMeals();
-    console.log(meal);
     const response = await request(app)
       .delete(`/meals/${meal.id}`)
       .set('Authorization', `bearer ${token}`);
@@ -116,7 +115,6 @@ describe('Meals', () => {
 
   it('should have valid id to delete a meal', async () => {
     const { meal, token } = await createMeals();
-    console.log(meal);
 
     const response = await request(app)
       .delete(`/meals/${meal.id + 1}`)
