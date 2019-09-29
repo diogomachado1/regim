@@ -5,24 +5,44 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon src/server.js",
-    "build": "sucrase ./src -d ./dist --transforms imports"
+    "build": "sucrase ./src -d ./dist --transforms imports",
+    "pretest": "NODE_ENV=test sequelize db:migrate",
+    "test": "NODE_ENV=test jest --detectOpenHandles",
+    "posttest": "NODE_ENV=test sequelize db:migrate:undo:all",
+    "pretest:watch": "NODE_ENV=test sequelize db:migrate",
+    "test:watch": "NODE_ENV=test jest --watch --detectOpenHandles",
+    "posttest:watch": "NODE_ENV=test sequelize db:migrate:undo:all"
   },
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^7.12.1",
+    "pg-hstore": "^2.3.3",
     "sequelize": "^5.9.4",
-    "youch": "^2.0.10"
+    "youch": "^2.0.10",
+    "yup": "^0.27.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
+    "@types/jest": "^24.0.18",
+    "babel-jest": "^24.9.0",
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.2.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-prettier": "^3.1.0",
+    "factory-girl": "^5.0.4",
+    "faker": "^4.1.0",
+    "jest": "^24.9.0",
     "nodemon": "^1.19.1",
     "prettier": "^1.18.2",
     "sequelize-cli": "^5.5.0",
-    "sucrase": "^3.10.1"
+    "sucrase": "^3.10.1",
+    "supertest": "^4.0.2"
   }
 }
