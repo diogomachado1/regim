@@ -9,7 +9,7 @@ import MealController from './app/controllers/MealController';
 const routes = new Router();
 
 routes.post('/users', UserController.store);
-routes.get('/', (req, res) => res.send('ok Test'));
+routes.get('/', (req, res) => res.send('ok Regim'));
 
 routes.post('/sessions', SessionController.store);
 routes.use(authMiddleware);
