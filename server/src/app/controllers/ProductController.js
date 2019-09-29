@@ -14,7 +14,7 @@ class ProductController {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
       amount: Yup.number().required(),
-      price: Yup.string(),
+      price: Yup.number(),
       measure: Yup.mixed()
         .oneOf(['g', 'ml', 'unity'])
         .required(),
@@ -40,7 +40,7 @@ class ProductController {
     const schema = Yup.object().shape({
       name: Yup.string(),
       amount: Yup.number(),
-      price: Yup.string(),
+      price: Yup.number(),
       measure: Yup.mixed().oneOf(['g', 'ml', 'unity']),
     });
 

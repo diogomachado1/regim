@@ -108,7 +108,8 @@ class MealsController {
     const deleteds = await Meal.destroy({
       where: { user_id, id },
     });
-    if (deleteds) {
+
+    if (deleteds === 0) {
       return res.status(404).json({ error: 'Meal not found' });
     }
 
