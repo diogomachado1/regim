@@ -2,8 +2,9 @@ import styled from 'styled-components';
 
 export const TextareaContainer = styled.label`
   > textarea {
-    background: ${({ error }) => (error ? '#FEEFEE' : '#f5f4f6')};
-    border: ${({ error }) => (error ? '1px solid #f95e5a' : 0)};
+    background: ${({ error }) => (error ? '#FEEFEE' : '#fff')};
+    border: ${({ error }) =>
+      error ? '2px solid #f95e5a' : '2px solid #C4C4C4'};
     border-radius: 5px;
     height: 50px;
     padding: 12px 20px;
