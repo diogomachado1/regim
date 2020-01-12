@@ -1,75 +1,73 @@
-import * as Yup from 'yup';
-
 import Meal from '../models/Meal';
 import Ingredient from '../models/Ingredient';
 import Product from '../models/Product';
 import database from '../../database';
+import MealValidator from '../Validators/MealValidator';
 
 class MealsController {
   async index(req, res) {
     const { userId: user_id } = req;
 
     const meals = await Meal.findAll({
+      attributes: ['id', 'description', 'name'],
       where: { user_id },
       include: [
-        { model: Ingredient, as: 'ingredients', include: { model: Product } },
+        {
+          model: Ingredient,
+          as: 'ingredients',
+          attributes: ['amount', ['product_id', 'productId']],
+          include: {
+            model: Product,
+            as: 'product',
+            attributes: ['name', 'measure', 'amount', 'price'],
+          },
+        },
       ],
     });
     return res.json(meals);
   }
 
   async store(req, res) {
-    const schema = Yup.object().shape({
-      name: Yup.string().required(),
-      description: Yup.string(),
-      ingredients: Yup.array().of(
-        Yup.object().shape({
-          ProductId: Yup.number().required(),
-        })
-      ),
-    });
-
     const { userId: user_id } = req;
 
-    try {
-      await schema.validate(req.body);
-    } catch (error) {
-      return res.status(400).json({ error: error.errors[0] });
+    const ValidatedMeal = await MealValidator.createValidator(req.body);
+
+    if (ValidatedMeal.isError) {
+      return res.status(400).json(ValidatedMeal.error);
     }
 
-    const meal = await database.connection.transaction(async t => {
+    const mealSave = await database.connection.transaction(async t => {
       return Meal.create(
         {
-          ...req.body,
+          ...ValidatedMeal,
           user_id,
         },
-        { include: [{ model: Ingredient, as: 'ingredients' }], transaction: t }
+        {
+          include: [
+            {
+              model: Ingredient,
+              as: 'ingredients',
+            },
+          ],
+          transaction: t,
+        }
       );
     });
 
-    return res.status(201).json(meal);
+    const mealReponse = await MealValidator.format(mealSave.dataValues);
+    return res.status(201).json(mealReponse);
   }
 
   async update(req, res) {
-    const schema = Yup.object().shape({
-      name: Yup.string(),
-      description: Yup.string(),
-      ingredients: Yup.array().of(
-        Yup.object().shape({
-          ProductId: Yup.number().required(),
-        })
-      ),
-    });
-
     const {
       userId: user_id,
       params: { id },
     } = req;
 
-    try {
-      await schema.validate(req.body);
-    } catch (error) {
-      return res.status(400).json({ error: error.errors[0] });
+    const ValidatedMeal = await MealValidator.updateValidator(req.body);
+
+    if (ValidatedMeal.isError) {
+      return res.status(400).json(ValidatedMeal.error);
     }
 
     const meal = await Meal.findByPk(id, {
@@ -88,15 +86,20 @@ class MealsController {
       return Meal.create(
         {
           ...meal,
-          ...req.body,
+          ...ValidatedMeal,
           id: meal.id,
           createdAt: meal.createdAt,
           user_id,
         },
-        { include: [{ model: Ingredient, as: 'ingredients' }], transaction: t }
+        {
+          include: [{ model: Ingredient, as: 'ingredients' }],
+          transaction: t,
+          attributes: ['amount', ['product_id', 'productId']],
+        }
       );
     });
-    return res.status(200).json(mealUpdated);
+    const mealReponse = await MealValidator.format(mealUpdated.dataValues);
+    return res.status(200).json(mealReponse);
   }
 
   async delete(req, res) {

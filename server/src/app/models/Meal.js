@@ -6,7 +6,6 @@ class Meal extends Model {
       {
         name: Sequelize.STRING,
         description: Sequelize.TEXT,
-        createdAt: Sequelize.DATE,
       },
       {
         sequelize,

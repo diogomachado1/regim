@@ -1,31 +1,24 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('products', {
-      id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-      },
-      name: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      measure: {
-        type: Sequelize.ENUM('g', 'ml', 'unity'),
-      },
+    return queryInterface.createTable('event-meals', {
       amount: {
-        type: Sequelize.DECIMAL(10, 2),
+        type: Sequelize.Sequelize.DECIMAL(10, 2),
       },
-      price: {
-        type: Sequelize.DECIMAL(10, 2),
-      },
-      user_id: {
+      event_id: {
         type: Sequelize.INTEGER,
-        references: { model: 'users', key: 'id' },
+        references: { model: 'events', key: 'id' },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
         allowNull: false,
+        primaryKey: true,
+      },
+      meal_id: {
+        type: Sequelize.INTEGER,
+        references: { model: 'meals', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
+        allowNull: false,
+        primaryKey: true,
       },
       created_at: {
         type: Sequelize.DATE,
@@ -39,6 +32,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.dropTable('products');
+    return queryInterface.dropTable('event-meals');
   },
 };

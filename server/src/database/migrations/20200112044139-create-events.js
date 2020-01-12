@@ -1,24 +1,26 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('products', {
+    return queryInterface.createTable('events', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
       },
-      name: {
-        type: Sequelize.STRING,
+      startDate: {
+        type: Sequelize.DATE,
         allowNull: false,
       },
-      measure: {
-        type: Sequelize.ENUM('g', 'ml', 'unity'),
+      endDate: {
+        type: Sequelize.DATE,
+        allowNull: false,
       },
-      amount: {
-        type: Sequelize.DECIMAL(10, 2),
+      duration: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
       },
-      price: {
-        type: Sequelize.DECIMAL(10, 2),
+      repeatable: {
+        type: Sequelize.ENUM('daily', 'weekly'),
       },
       user_id: {
         type: Sequelize.INTEGER,
@@ -39,6 +41,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.dropTable('products');
+    return queryInterface.dropTable('events');
   },
 };

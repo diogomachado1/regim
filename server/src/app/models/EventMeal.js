@@ -1,6 +1,6 @@
 import Sequelize, { Model } from 'sequelize';
 
-class Ingredient extends Model {
+class EventMeal extends Model {
   static init(sequelize) {
     super.init(
       {
@@ -15,12 +15,12 @@ class Ingredient extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.Meal, { foreignKey: 'meal_id' });
-    this.belongsTo(models.Product, {
-      foreignKey: 'product_id',
-      as: 'product',
+    this.belongsTo(models.Event, { foreignKey: 'event_id' });
+    this.belongsTo(models.Meal, {
+      foreignKey: 'meal_id',
+      as: 'meals',
     });
   }
 }
 
-export default Ingredient;
+export default EventMeal;
