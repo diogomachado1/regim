@@ -1,13 +1,13 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('single-events', {
+    return queryInterface.createTable('single_events', {
       id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
       },
-      eventStartDate: {
+      event_start_date: {
         type: Sequelize.DATE,
         allowNull: false,
       },

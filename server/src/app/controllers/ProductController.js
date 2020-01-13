@@ -1,58 +1,44 @@
-import * as Yup from 'yup';
-
 import Product from '../models/Product';
+import ProductValidator from '../Validators/ProductValidator';
 
 class ProductController {
   async index(req, res) {
     const { userId: user_id } = req;
 
-    const products = await Product.findAll({ where: { user_id } });
-    return res.json(products);
+    const seqProducts = await Product.findAll({ where: { user_id } });
+
+    const productsValue = seqProducts.map(product => product.get());
+
+    const formatedProduct = await ProductValidator.formatArray(productsValue);
+    return res.status(200).json(formatedProduct);
   }
 
   async store(req, res) {
-    const schema = Yup.object().shape({
-      name: Yup.string().required(),
-      amount: Yup.number().required(),
-      price: Yup.number(),
-      measure: Yup.mixed()
-        .oneOf(['g', 'ml', 'unity'])
-        .required(),
-    });
-
     const { userId: user_id } = req;
 
-    try {
-      await schema.validate(req.body);
-    } catch (error) {
-      return res.status(400).json({ error: error.errors[0] });
+    const ValidatedProduct = await ProductValidator.createValidator(req.body);
+
+    if (ValidatedProduct.isError) {
+      return res.status(400).json({ error: ValidatedProduct.error });
     }
 
     const product = await Product.create({
-      ...req.body,
+      ...ValidatedProduct,
       user_id,
     });
-
-    return res.status(201).json(product);
+    const formatedProduct = await ProductValidator.format(product.dataValues);
+    return res.status(201).json(formatedProduct);
   }
 
   async update(req, res) {
-    const schema = Yup.object().shape({
-      name: Yup.string(),
-      amount: Yup.number(),
-      price: Yup.number(),
-      measure: Yup.mixed().oneOf(['g', 'ml', 'unity']),
-    });
-
     const {
       userId: user_id,
       params: { id },
     } = req;
+    const ValidatedProduct = await ProductValidator.updateValidator(req.body);
 
-    try {
-      await schema.validate(req.body);
-    } catch (error) {
-      return res.status(400).json({ error: error.errors[0] });
+    if (ValidatedProduct.isError) {
+      return res.status(400).json({ error: ValidatedProduct.error });
     }
 
     const product = await Product.findByPk(id, { where: { user_id } });
@@ -60,8 +46,10 @@ class ProductController {
       return res.status(404).send();
     }
     const productUpdated = await product.update(req.body);
-
-    return res.status(200).json(productUpdated);
+    const formatedProduct = await ProductValidator.format(
+      productUpdated.dataValues
+    );
+    return res.status(200).json(formatedProduct);
   }
 
   async delete(req, res) {

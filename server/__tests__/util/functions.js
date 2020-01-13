@@ -23,4 +23,15 @@ async function createTokenAndUser(user) {
   return { token, user };
 }
 
-export { createUser, createTokenAndUser };
+async function createMeals() {
+  const { token } = await createTokenAndUser();
+  const meal = await factory.attrs('Meal');
+
+  const response = await request(app)
+    .post('/meals')
+    .set('Authorization', `bearer ${token}`)
+    .send(meal);
+  return { meal: response.body, token };
+}
+
+export { createUser, createTokenAndUser, createMeals };

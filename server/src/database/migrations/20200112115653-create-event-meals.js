@@ -1,6 +1,6 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('event-meals', {
+    return queryInterface.createTable('event_meals', {
       amount: {
         type: Sequelize.Sequelize.DECIMAL(10, 2),
       },

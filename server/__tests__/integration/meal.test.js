@@ -4,18 +4,7 @@ import app from '../../src/app';
 
 import factory from '../factories';
 import truncate from '../util/truncate';
-import { createTokenAndUser } from '../util/functions';
-
-async function createMeals() {
-  const { token } = await createTokenAndUser();
-  const meal = await factory.attrs('Meal');
-
-  const response = await request(app)
-    .post('/meals')
-    .set('Authorization', `bearer ${token}`)
-    .send(meal);
-  return { meal: response.body, token };
-}
+import { createTokenAndUser, createMeals } from '../util/functions';
 
 describe('Meals', () => {
   beforeEach(async () => {

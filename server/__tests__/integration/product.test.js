@@ -69,7 +69,6 @@ describe('Products', () => {
       .put(`/products/${product.id}`)
       .set('Authorization', `bearer ${token}`)
       .send(newProduct);
-
     expect(response.body).toMatchObject(newProduct);
   });
 

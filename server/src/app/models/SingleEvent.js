@@ -15,7 +15,7 @@ class SingleEvent extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.Event, { foreignKey: 'event_id' });
+    this.belongsTo(models.Event, { foreignKey: 'event_id', as: 'event' });
   }
 }
 

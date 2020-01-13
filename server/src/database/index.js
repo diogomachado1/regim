@@ -6,8 +6,11 @@ import databaseConfig from '../config/database';
 import Product from '../app/models/Product';
 import Meal from '../app/models/Meal';
 import Ingredient from '../app/models/Ingredient';
+import Event from '../app/models/Event';
+import EventMeal from '../app/models/EventMeal';
+import SingleEvent from '../app/models/SingleEvent';
 
-const models = [User, Product, Ingredient, Meal];
+const models = [User, Product, Ingredient, Meal, Event, EventMeal, SingleEvent];
 
 class Database {
   constructor() {
