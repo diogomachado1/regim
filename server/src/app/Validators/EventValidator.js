@@ -20,7 +20,7 @@ class EventValidator {
         .default(30)
         .min(15)
         .required(),
-      repeatable: Yup.mixed().oneOf(['daily', 'weekly']),
+      repeatable: Yup.mixed().oneOf(['daily', 'weekly', null]),
       eventMeals: Yup.array().of(
         Yup.object()
           .shape({
@@ -59,7 +59,7 @@ class EventValidator {
       duration: Yup.number()
         .default(30)
         .min(15),
-      repeatable: Yup.mixed().oneOf(['daily', 'weekly']),
+      repeatable: Yup.mixed().oneOf(['daily', 'weekly', null]),
       eventMeals: Yup.array().of(
         Yup.object()
           .shape({
@@ -108,8 +108,8 @@ class EventValidator {
         .required(),
       events: Yup.number().required(),
       repeatable: Yup.mixed()
-        .oneOf(['daily', 'weekly'])
-        .transform(repeatable => repeatable || undefined),
+        .oneOf(['daily', 'weekly', null])
+        .transform(repeatable => repeatable || null),
       eventMeals: Yup.array().of(
         Yup.object()
           .shape({

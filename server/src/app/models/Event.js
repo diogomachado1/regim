@@ -1,4 +1,5 @@
-import Sequelize, { Model } from 'sequelize';
+import Sequelize, { Model, Op } from 'sequelize';
+import Meal from './Meal';
 
 class Event extends Model {
   static init(sequelize) {
@@ -34,6 +35,32 @@ class Event extends Model {
       foreignKey: 'event_id',
       as: 'singleEvents',
     });
+  }
+
+  static async verifyEventMeals(user_id, eventMeals) {
+    const eventMealsIds = eventMeals.map(item => item.mealId);
+    const meals = await Meal.findAll({
+      attributes: ['id'],
+      where: {
+        id: {
+          [Op.in]: eventMealsIds,
+        },
+        user_id,
+      },
+    });
+    if (meals.length < eventMeals.length) {
+      const mealsIds = meals.map(item => item.id);
+      const filteredId = eventMealsIds.filter(
+        ingredientId => !mealsIds.find(item => ingredientId === item)
+      );
+      return {
+        isError: true,
+        error: `Meal(s) ${filteredId} not found`,
+      };
+    }
+    return {
+      isError: false,
+    };
   }
 }
 

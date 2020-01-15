@@ -6,6 +6,7 @@ import authMiddleware from './app/middlewares/auth';
 import ProductController from './app/controllers/ProductController';
 import MealController from './app/controllers/MealController';
 import EventController from './app/controllers/EventController';
+import ListController from './app/controllers/ListController';
 
 const routes = new Router();
 
@@ -31,5 +32,7 @@ routes.get('/events', EventController.index);
 routes.post('/events', EventController.store);
 routes.put('/events/:id', EventController.update);
 routes.delete('/events/:id', EventController.delete);
+
+routes.get('/list', ListController.index);
 
 export default routes;

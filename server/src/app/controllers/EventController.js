@@ -1,7 +1,4 @@
-import { addMinutes, isAfter, addDays, isBefore, addWeeks } from 'date-fns';
 import Meal from '../models/Meal';
-import Ingredient from '../models/Ingredient';
-import Product from '../models/Product';
 import database from '../../database';
 import EventValidator from '../Validators/EventValidator';
 import Event from '../models/Event';
@@ -48,6 +45,16 @@ class EventController {
     }
 
     const singleEvents = getSingleEventArray(ValidatedEvent);
+
+    if (ValidatedEvent.eventMeals) {
+      const verifyEventMeals = await Event.verifyEventMeals(
+        user_id,
+        ValidatedEvent.eventMeals
+      );
+      if (verifyEventMeals.isError) {
+        return res.status(400).json({ error: verifyEventMeals.error });
+      }
+    }
 
     let singleEventCount;
 
@@ -107,19 +114,32 @@ class EventController {
       params: { id },
     } = req;
 
-    const ValidatedEvent = await EventValidator.updateValidator(req.body);
-
-    if (ValidatedEvent.isError) {
-      return res.status(400).json({ error: ValidatedEvent.error });
-    }
-
     const event = await Event.findByPk(id, {
       where: { user_id },
       include: [{ model: EventMeal, as: 'eventMeals' }],
     });
 
+    const ValidatedEvent = await EventValidator.updateValidator({
+      ...event.get(),
+      ...req.body,
+    });
+
+    if (ValidatedEvent.isError) {
+      return res.status(400).json({ error: ValidatedEvent.error });
+    }
+
     if (!event) {
       return res.status(404).json({ error: 'Event not found' });
+    }
+
+    if (ValidatedEvent.eventMeals) {
+      const verifyEventMeals = await Event.verifyEventMeals(
+        user_id,
+        ValidatedEvent.eventMeals
+      );
+      if (verifyEventMeals.isError) {
+        return res.status(400).json({ error: verifyEventMeals.error });
+      }
     }
 
     const singleEvents = getSingleEventArray(ValidatedEvent);
@@ -128,11 +148,7 @@ class EventController {
 
     try {
       const eventSave = await database.connection.transaction(async t => {
-        await event.destroy({
-          transaction: t,
-        });
-
-        const seqEvent = await Event.create(
+        const seqEvent = await event.update(
           {
             ...event.get(),
             ...ValidatedEvent,
@@ -149,6 +165,28 @@ class EventController {
             transaction: t,
           }
         );
+
+        if (ValidatedEvent.eventMeals) {
+          await EventMeal.destroy({
+            transaction: t,
+            where: { event_id: event.id },
+          });
+
+          await EventMeal.bulkCreate(
+            ValidatedEvent.eventMeals.map(item => ({
+              ...item,
+              event_id: event.id,
+            })),
+            {
+              transaction: t,
+            }
+          );
+        }
+
+        await SingleEvent.destroy({
+          transaction: t,
+          where: { event_id: event.id },
+        });
 
         const singleEventsSaves = await SingleEvent.bulkCreate(
           singleEvents.map(item => ({ ...item, event_id: seqEvent.id })),
@@ -178,6 +216,7 @@ class EventController {
           )} not found`,
         });
       }
+
       return res.status(400).json({
         error,
       });

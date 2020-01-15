@@ -33,7 +33,17 @@ class MealsController {
     const ValidatedMeal = await MealValidator.createValidator(req.body);
 
     if (ValidatedMeal.isError) {
-      return res.status(400).json(ValidatedMeal.error);
+      return res.status(400).json({ error: ValidatedMeal.error });
+    }
+
+    if (ValidatedMeal.ingredients) {
+      const verifyIngredient = await Meal.verifyIngredients(
+        user_id,
+        ValidatedMeal.ingredients
+      );
+      if (verifyIngredient.isError) {
+        return res.status(400).json({ error: verifyIngredient.error });
+      }
     }
 
     const mealSave = await database.connection.transaction(async t => {
@@ -77,18 +87,41 @@ class MealsController {
     if (!meal) {
       return res.status(404).json({ error: 'Meal not found' });
     }
+
+    if (ValidatedMeal.ingredients) {
+      const verifyIngredient = await Meal.verifyIngredients(
+        user_id,
+        ValidatedMeal.ingredients
+      );
+      if (verifyIngredient.isError) {
+        return res.status(400).json({ error: verifyIngredient.error });
+      }
+    }
+
     const mealUpdated = await database.connection.transaction(async t => {
       // step 1
+      if (ValidatedMeal.ingredients) {
+        await Ingredient.destroy({
+          transaction: t,
+          where: { meal_id: meal.id },
+        });
 
-      await meal.destroy({ transaction: t });
+        await Ingredient.bulkCreate(
+          ValidatedMeal.ingredients.map(item => ({
+            ...item,
+            meal_id: meal.id,
+          })),
+          {
+            transaction: t,
+          }
+        );
+      }
 
       // step 2
-      return Meal.create(
+      return meal.update(
         {
           ...meal,
           ...ValidatedMeal,
-          id: meal.id,
-          createdAt: meal.createdAt,
           user_id,
         },
         {
