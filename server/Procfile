@@ -1,0 +1,3 @@
+build: npm run build
+release: npm run migrations
+web: num run start
