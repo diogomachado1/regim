@@ -1,2 +1,2 @@
-release: npm install && cd server && npm i && npm run build & npm run migrations
-web: npm run start
+release: cd server && npm install && npm i && npm run build & npm run migrations
+web: cd server && npm run start
