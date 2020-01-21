@@ -7,8 +7,8 @@ export const Inputbox = styled(DebounceInput)`
   border-radius: 5px;
   height: 50px;
   padding: 12px 20px;
-  padding-left: ${({ icon }) => (icon ? '40px' : '20px')};
   font-size: 20px;
+  padding-left: ${({ icon }) => (icon ? '40px' : '20px')};
   transition: all 0.3s ease-in-out;
   color: ${({ error }) => (error ? '#f95e5a' : '#170C3A')};
   &::placeholder {
