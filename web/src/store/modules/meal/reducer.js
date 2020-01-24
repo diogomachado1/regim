@@ -2,57 +2,62 @@ import produce from 'immer';
 
 const INITIAL_STATE = {
   loading: false,
-  openForm: false,
-  products: [],
+  editMeal: {},
+  meals: [],
 };
 
 export default function auth(state = INITIAL_STATE, action) {
   return produce(state, draft => {
     switch (action.type) {
-      case '@product/SAVE_IN_RESQUEST': {
+      case '@meal/SAVE_IN_RESQUEST': {
         draft.loading = true;
         break;
       }
-      case '@product/SAVE_IN_SUCCESS': {
+      case '@meal/SAVE_IN_SUCCESS': {
         draft.loading = false;
-        draft.openForm = false;
+        draft.editMeal = {};
         break;
       }
-      case '@product/SAVE_IN_FAILURE': {
+      case '@meal/SAVE_IN_FAILURE': {
         draft.loading = false;
         break;
       }
-      case '@product/GET_IN_RESQUEST': {
+      case '@meal/GET_IN_RESQUEST': {
         draft.loading = true;
         break;
       }
-      case '@product/GET_IN_SUCCESS': {
+      case '@meal/GET_IN_SUCCESS': {
         draft.loading = false;
-        draft.products = action.payload.products;
+        draft.meals = action.payload.meals;
         break;
       }
-      case '@product/GET_IN_FAILURE': {
+      case '@meal/GET_IN_FAILURE': {
         draft.loading = false;
         break;
       }
-      case '@product/DELETE_IN_RESQUEST': {
+      case '@meal/GETONE_IN_RESQUEST': {
         draft.loading = true;
         break;
       }
-      case '@product/DELETE_IN_SUCCESS': {
+      case '@meal/GETONE_IN_SUCCESS': {
+        draft.loading = false;
+        draft.editMeal = action.payload.meal;
+        break;
+      }
+      case '@meal/GETONE_IN_FAILURE': {
         draft.loading = false;
         break;
       }
-      case '@product/DELETE_IN_FAILURE': {
+      case '@meal/DELETE_IN_RESQUEST': {
+        draft.loading = true;
+        break;
+      }
+      case '@meal/DELETE_IN_SUCCESS': {
         draft.loading = false;
         break;
       }
-      case '@product/OPEN_FORM': {
-        draft.openForm = true;
-        break;
-      }
-      case '@product/CLOSE_FORM': {
-        draft.openForm = false;
+      case '@meal/DELETE_IN_FAILURE': {
+        draft.loading = false;
         break;
       }
       default:

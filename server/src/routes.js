@@ -24,6 +24,7 @@ routes.put('/products/:id', ProductController.update);
 routes.delete('/products/:id', ProductController.delete);
 
 routes.get('/meals', MealController.index);
+routes.get('/meals/:id', MealController.show);
 routes.post('/meals', MealController.store);
 routes.put('/meals/:id', MealController.update);
 routes.delete('/meals/:id', MealController.delete);

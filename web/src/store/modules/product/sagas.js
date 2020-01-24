@@ -9,6 +9,8 @@ import {
   getProductRequest,
   getProductInSuccess,
   getProductInFailure,
+  deleteProductInSuccess,
+  deleteProductInFailure,
 } from './actions';
 
 export function* saveProduct({ payload }) {
@@ -22,6 +24,7 @@ export function* saveProduct({ payload }) {
 
     yield put(saveProductInSuccess());
     yield put(getProductRequest());
+    toast.success('Produto Salvo');
   } catch (err) {
     toast.error('Falha ao salvar produto, verifique seus dados!');
     yield put(saveProductInFailure());
@@ -31,7 +34,7 @@ export function* saveProduct({ payload }) {
 export function* getProducts() {
   try {
     const response = yield call(api.get, `/products`);
-    console.log(response);
+
     yield put(getProductInSuccess(response.data));
   } catch (err) {
     toast.error('Falha ao obter produtos!');
@@ -39,26 +42,23 @@ export function* getProducts() {
   }
 }
 
-// export function* signUp({ payload }) {
-//   try {
-//     const { name, email, password } = payload;
+export function* deleteProduct({ payload }) {
+  try {
+    const { product } = payload;
 
-//     yield call(api.post, 'users', {
-//       name,
-//       email,
-//       password,
-//       provider: true,
-//     });
+    yield call(api.delete, `/products/${product.id}`);
 
-//     history.push('/');
-//   } catch (err) {
-//     toast.error('Falha no cadastro, verifique seus dados!');
-
-//     yield put(signFailure());
-//   }
-// }
+    yield put(deleteProductInSuccess());
+    yield put(getProductRequest());
+    toast.success('Produto excluído');
+  } catch (err) {
+    toast.error('Falha ao excluir produto, verifique seus dados!');
+    yield put(deleteProductInFailure());
+  }
+}
 
 export default all([
   takeLatest('@product/SAVE_IN_RESQUEST', saveProduct),
   takeLatest('@product/GET_IN_RESQUEST', getProducts),
+  takeLatest('@product/DELETE_IN_RESQUEST', deleteProduct),
 ]);

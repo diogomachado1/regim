@@ -1,11 +1,12 @@
+import { useParams } from 'react-router-dom';
 import React, { useEffect, useCallback, useState } from 'react';
+import PerfectScrollbar from 'react-perfect-scrollbar';
 import { useDispatch, useSelector } from 'react-redux';
 import InputCustom from '~/components/Input';
 import TextareaCustom from '~/components/Textarea';
 import { ButtonTerciary } from '~/components/Button';
 
 import { StyledForm, Buttons } from './styles';
-import api from '~/services/api';
 import ListIngredients from './ListIngredients';
 import ListProducts from './ListProducts';
 import ProductModalForm from './ProductModalForm';
@@ -14,32 +15,34 @@ import {
   closeProductForm,
   getProductRequest,
 } from '~/store/modules/product/actions';
+import {
+  saveMealRequest,
+  getOneMealRequest,
+} from '~/store/modules/meal/actions';
 
 export default function MealForm({ history }) {
   const dispatch = useDispatch();
+  const { id } = useParams();
 
   const products = useSelector(state => state.product.products);
+  const meal = useSelector(state => state.meal.editMeal);
+
   const showProductModal = useSelector(state => state.product.openForm);
   const [editProduct, setEditProduct] = useState({});
   const [ingredients, setIngredients] = useState([]);
 
   const loadProducts = useCallback(async () => {
     dispatch(getProductRequest());
-  }, [dispatch]);
+    dispatch(getOneMealRequest(id));
+    console.log(id)
+  }, [dispatch, id]);
 
   useEffect(() => {
     loadProducts();
   }, [loadProducts]);
 
-  useEffect(() => {
-    console.log(products);
-  }, [products]);
-
   function addIngredient(product) {
-    setIngredients([
-      ...ingredients,
-      { product, productId: product.id, amount: 0 },
-    ]);
+    setIngredients([...ingredients, { productId: product.id, amount: 0 }]);
   }
 
   function removeIngredient(product) {
@@ -68,18 +71,20 @@ export default function MealForm({ history }) {
   }
 
   function handleSubmit(value) {
-    console.log(value);
+    dispatch(saveMealRequest(value));
   }
   return (
     <>
-      <StyledForm onSubmit={handleSubmit}>
+      <StyledForm onSubmit={handleSubmit} initialData={meal}>
         <div>
-          <InputCustom name="name" placeholder="Nome" />
-          <TextareaCustom name="description" placeholder="Descrição" />
-          <ListIngredients
-            ingredients={ingredients}
-            removeIngredient={addOrRemoveIngredient}
-          />
+          <PerfectScrollbar>
+            <InputCustom name="name" placeholder="Nome" />
+            <TextareaCustom name="description" placeholder="Descrição" />
+            <ListIngredients
+              ingredients={ingredients}
+              removeIngredient={addOrRemoveIngredient}
+            />
+          </PerfectScrollbar>
           <ListProducts
             products={products}
             ingredients={ingredients}

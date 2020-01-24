@@ -27,6 +27,35 @@ class MealsController {
     return res.json(meals);
   }
 
+  async show(req, res) {
+    const {
+      userId: user_id,
+      params: { id },
+    } = req;
+
+    const meal = await Meal.findOne({
+      attributes: ['id', 'description', 'name'],
+      where: { user_id, id },
+      include: [
+        {
+          model: Ingredient,
+          as: 'ingredients',
+          attributes: ['amount', ['product_id', 'productId']],
+          include: {
+            model: Product,
+            as: 'product',
+            attributes: ['name', 'measure', 'amount', 'price'],
+          },
+        },
+      ],
+    });
+
+    if (!meal) {
+      return res.status(404).json({ error: 'Meal not found' });
+    }
+    return res.json(meal);
+  }
+
   async store(req, res) {
     const { userId: user_id } = req;
 

@@ -1,10 +1,17 @@
 import React from 'react';
 
-import { MdAddCircleOutline } from 'react-icons/md';
+import { MdAddCircleOutline, MdClose, MdEdit } from 'react-icons/md';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { Container, AddButtonContainer, DivProducts } from './styles';
+import { useDispatch } from 'react-redux';
+import {
+  Container,
+  AddButtonContainer,
+  DivProducts,
+  CloseButton,
+  EditButton,
+} from './styles';
 import { Button } from '~/components/Button';
-import api from '~/services/api';
+import { deleteProductRequest } from '~/store/modules/product/actions';
 
 export default function ListProducts({
   products,
@@ -12,12 +19,14 @@ export default function ListProducts({
   addOrRemoveIngredient,
   openProductModal,
 }) {
+  const dispatch = useDispatch();
   return (
     <Container>
       <AddButtonContainer>
         <Button
+          type="button"
           onClick={() => {
-            openProductModal({});
+            openProductModal();
           }}
         >
           <MdAddCircleOutline size="24" />
@@ -43,6 +52,20 @@ export default function ListProducts({
                   />
                   <span>{item.name}</span>
                 </button>
+                <CloseButton
+                  onClick={() => {
+                    dispatch(deleteProductRequest(item));
+                  }}
+                >
+                  <MdClose size="14" />
+                </CloseButton>
+                <EditButton
+                  onClick={() => {
+                    openProductModal(item);
+                  }}
+                >
+                  <MdEdit size="14" />
+                </EditButton>
               </li>
             ))}
         </PerfectScrollbar>

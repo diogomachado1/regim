@@ -17,6 +17,7 @@ export default function Routes() {
 
       <Route exact path="/meals" component={Meal} isPrivate />
       <Route path="/meals/create" component={MealForm} isPrivate />
+      <Route path="/meals/:id" component={MealForm} isPrivate />
       <Route path="/profile" component={Profile} isPrivate />
       <Route path="/*" component={() => <Redirect to="/" />} />
     </Switch>

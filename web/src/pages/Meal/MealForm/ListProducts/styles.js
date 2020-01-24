@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { ButtonTerciaryCustom } from '~/components/Button/styles';
 
 export const Container = styled.div`
   height: 100px;
@@ -42,14 +43,16 @@ export const DivProducts = styled.ul`
     height: 100%;
     align-items: center;
     overflow-x: auto;
+    padding: 0 5px;
     > li {
       flex-shrink: 0;
-      margin-right: 10px;
+      margin-right: 15px;
       background-color: #fafafa;
       box-shadow: 0 0px 7px 0px #bbb;
       padding: 0px;
       border-radius: 25px;
-      > button {
+      position: relative;
+      > button:first-child {
         background-color: #fafafa;
         border-radius: 25px;
         border: none;
@@ -65,6 +68,7 @@ export const DivProducts = styled.ul`
           border-radius: 50%;
           background-color: #fafafa;
           border: 1px solid #c4c4c488;
+          transition: background 0.3s;
           &.actived {
             background-color: #53a687;
           }
@@ -75,4 +79,28 @@ export const DivProducts = styled.ul`
       }
     }
   }
+`;
+
+export const CloseButton = styled(ButtonTerciaryCustom).attrs(_ => ({
+  color: 'danger',
+  type: 'button',
+}))`
+  border-radius: 50%;
+  position: absolute;
+  padding: 5px;
+  height: 30px;
+  width: 30px;
+  top: -10px;
+  right: -10px;
+  box-shadow: 0 0px 7px 0px #bbb;
+  &:hover {
+    z-index: 200;
+  }
+`;
+
+export const EditButton = styled(CloseButton).attrs(_ => ({
+  color: 'warning',
+}))`
+  top: auto;
+  bottom: -10px;
 `;

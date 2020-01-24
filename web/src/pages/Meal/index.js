@@ -2,18 +2,23 @@ import React, { useState, useCallback, useEffect } from 'react';
 import { MdAddCircleOutline } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
+import { useDispatch, useSelector } from 'react-redux';
 import { Container, MealsList } from './styles';
 import { Button } from '~/components/Button';
 
-import api from '~/services/api';
+import {
+  getMealRequest,
+  deleteMealRequest,
+} from '~/store/modules/meal/actions';
 
 export default function Meal() {
-  const [meals, setMeals] = useState([]);
+  const dispatch = useDispatch();
+
+  const meals = useSelector(state => state.meal.meals);
 
   const loadMeals = useCallback(async () => {
-    const response = await api.get(`/meals`);
-    setMeals(response.data);
-  }, []);
+    dispatch(getMealRequest());
+  }, [dispatch]);
 
   useEffect(() => {
     loadMeals();
@@ -21,12 +26,7 @@ export default function Meal() {
   }, [loadMeals]);
 
   async function handleRemoveMeal(id) {
-    try {
-      await api.delete(`/meals/${id}`);
-      loadMeals();
-    } catch (error) {
-      console.tron.log(error);
-    }
+    dispatch(deleteMealRequest({ id }));
   }
 
   return (

@@ -54,23 +54,23 @@ export function getProductInFailure() {
   };
 }
 
-export function updateProductRequest(product) {
+export function deleteProductRequest(product) {
   return {
-    type: '@product/UPDATE_IN_RESQUEST',
+    type: '@product/DELETE_IN_RESQUEST',
     payload: { product },
   };
 }
 
-export function updateProductInSuccess() {
+export function deleteProductInSuccess() {
   return {
-    type: '@product/UPDATE_IN_SUCCESS',
-    payload: { },
+    type: '@product/DELETE_IN_SUCCESS',
+    payload: {},
   };
 }
 
-export function updateProductInFailure() {
+export function deleteProductInFailure() {
   return {
-    type: '@product/UPDATE_IN_FAILURE',
+    type: '@product/DELETE_IN_FAILURE',
     payload: {},
   };
 }
