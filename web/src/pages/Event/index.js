@@ -12,23 +12,23 @@ import {
 } from '~/store/modules/meal/actions';
 import Loading from '~/components/Loading';
 
-export default function Meal() {
+export default function Event() {
   const dispatch = useDispatch();
 
-  const meals = useSelector(state => state.meal.meals);
-  const loading = useSelector(state => state.meal.loading);
+  const events = useSelector(state => state.event.events);
+  const loading = useSelector(state => state.event.loading);
 
-  const loadMeals = useCallback(async () => {
-    dispatch(getMealRequest());
+  const loadEvents = useCallback(async () => {
+    dispatch(getEventRequest());
   }, [dispatch]);
 
   useEffect(() => {
-    loadMeals();
+    loadEvents();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loadMeals]);
+  }, [loadEvents]);
 
-  async function handleRemoveMeal(id) {
-    dispatch(deleteMealRequest({ id }));
+  async function handleRemoveEvent(id) {
+    dispatch(deleteEventRequest({ id }));
   }
 
   return (
@@ -40,18 +40,18 @@ export default function Meal() {
             Add
           </Button>
         </Link>
-        <MealsList>
-          {meals.map(meal => (
+        <EventsList>
+          {events.map(meal => (
             <li key={meal.id}>
               <div>
-                <span>{meal.name}</span>
+                <span>{meal.eventStartDate}</span>
                 <Link to={`/meals/${meal.id}`}>
                   <Button color="warning" onClick={() => {}}>
                     Editar
                   </Button>
                 </Link>
                 <Button
-                  onClick={() => handleRemoveMeal(meal.id)}
+                  onClick={() => handleRemoveEvent(meal.id)}
                   color="danger"
                 >
                   remover
@@ -59,7 +59,7 @@ export default function Meal() {
               </div>
             </li>
           ))}
-        </MealsList>
+        </EventsList>
       </Container>
       {loading && <Loading />}
     </>

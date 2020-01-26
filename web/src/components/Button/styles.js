@@ -7,7 +7,7 @@ export const ButtonCustom = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: ${({ color }) => color || `#53A687`};
+  background: var(${({ color }) => `--${color || 'primary'}`}-normal-color);
   color: #fff;
   border: 0;
   text-align: center;
@@ -16,7 +16,7 @@ export const ButtonCustom = styled.button`
   transition: background 0.3s;
 
   &:hover {
-    background: ${({ color }) => darken(0.05, color || `#53A687`)};
+    background: var(${({ color }) => `--${color || 'primary'}`}-dark-color);
   }
 
   > div {

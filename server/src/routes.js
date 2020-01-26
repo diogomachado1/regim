@@ -30,6 +30,7 @@ routes.put('/meals/:id', MealController.update);
 routes.delete('/meals/:id', MealController.delete);
 
 routes.get('/events', EventController.index);
+routes.get('/events/:id', EventController.show);
 routes.post('/events', EventController.store);
 routes.put('/events/:id', EventController.update);
 routes.delete('/events/:id', EventController.delete);

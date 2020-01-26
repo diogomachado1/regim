@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useSelector } from 'react-redux';
 import { MdClose } from 'react-icons/md';
-import { Scope } from '@rocketseat/unform';
+import { Scope, Input } from '@rocketseat/unform';
 import { Container, UlIngredients, CloseButton } from './styles';
 import InputCustom from '~/components/Input';
 
@@ -15,16 +15,18 @@ export default function ListIngredients({ ingredients, removeIngredient }) {
       if (find) {
         return (
           <li key={item.productId}>
-            <Scope path={`ingredients.${i}`}>
+            <Scope key={i} path={`ingredients[${i}]`}>
               <span>{find.name}</span>
-              <InputCustom name="amount" placeholder="Quantidade" />
-              <InputCustom
-                value={item.productId}
-                onChange={() => item.productId}
-                name="productId"
-                type="number"
-                hidden
-              />
+              <div>
+                <InputCustom name="amount" placeholder="Quantidade" />
+                <InputCustom
+                  value={item.productId}
+                  onChange={() => item.productId}
+                  name="productId"
+                  type="number"
+                  hidden
+                />
+              </div>
               <CloseButton
                 onClick={() => removeIngredient({ id: item.productId })}
               >

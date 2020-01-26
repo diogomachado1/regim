@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState, useMemo } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { useDispatch, useSelector } from 'react-redux';
 import InputCustom from '~/components/Input';
@@ -18,7 +18,10 @@ import {
 import {
   saveMealRequest,
   getOneMealRequest,
+  getOneMealInSuccess,
 } from '~/store/modules/meal/actions';
+import Loading from '~/components/Loading';
+import { MealSchema } from '~/validators/mealValidator';
 
 export default function MealForm({ history }) {
   const dispatch = useDispatch();
@@ -26,6 +29,12 @@ export default function MealForm({ history }) {
 
   const products = useSelector(state => state.product.products);
   const meal = useSelector(state => state.meal.editMeal);
+  const loadingMeal = useSelector(state => state.meal.loading);
+  const loadingProduct = useSelector(state => state.product.loading);
+  const loading = useMemo(() => loadingMeal || loadingProduct, [
+    loadingMeal,
+    loadingProduct,
+  ]);
 
   const showProductModal = useSelector(state => state.product.openForm);
   const [editProduct, setEditProduct] = useState({});
@@ -33,9 +42,19 @@ export default function MealForm({ history }) {
 
   const loadProducts = useCallback(async () => {
     dispatch(getProductRequest());
-    dispatch(getOneMealRequest(id));
-    console.log(id)
+    if (id) {
+      dispatch(getOneMealRequest(id));
+    } else {
+      dispatch(getOneMealInSuccess({}));
+    }
+    
   }, [dispatch, id]);
+
+  useEffect(() => {
+    if (id && meal.ingredients) {
+      setIngredients(meal.ingredients);
+    }
+  }, [meal, id]);
 
   useEffect(() => {
     loadProducts();
@@ -71,11 +90,15 @@ export default function MealForm({ history }) {
   }
 
   function handleSubmit(value) {
-    dispatch(saveMealRequest(value));
+    dispatch(saveMealRequest({ id, ...value }));
   }
   return (
     <>
-      <StyledForm onSubmit={handleSubmit} initialData={meal}>
+      <StyledForm
+        onSubmit={handleSubmit}
+        initialData={id ? meal : {}}
+        schema={MealSchema}
+      >
         <div>
           <PerfectScrollbar>
             <InputCustom name="name" placeholder="Nome" />
@@ -113,6 +136,7 @@ export default function MealForm({ history }) {
           closeProductModal={closeProductModal}
         />
       )}
+      {loading && <Loading />}
     </>
   );
 }

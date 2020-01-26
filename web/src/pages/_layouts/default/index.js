@@ -7,7 +7,7 @@ import Header from './Header';
 import Menu from './Menu';
 
 export default function AuthLayout({ children }) {
-  const [showMenu, setMenu] = useState(false);
+  const [showMenu, setMenu] = useState(true);
 
   function handleChangeMenu() {
     setMenu(!showMenu);

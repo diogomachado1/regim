@@ -28,10 +28,11 @@ export const MealsList = styled.ul`
     > div {
       display: flex;
       align-items: center;
-      > a {
+      > span {
         margin-right: auto;
         font-size: 20px;
       }
+
       > button {
         margin-left: 10px;
       }

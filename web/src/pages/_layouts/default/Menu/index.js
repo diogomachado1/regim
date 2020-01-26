@@ -16,7 +16,7 @@ export default function Menu({ showMenu }) {
         <NavLink exact to="/">
           <li>Refeições</li>
         </NavLink>
-        <NavLink exact to="/calendar">
+        <NavLink exact to="/event">
           <li>Agenda</li>
         </NavLink>
         <NavLink exact to="/list">

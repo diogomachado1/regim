@@ -1,3 +1,5 @@
+import { format, parseISO, addMonths } from 'date-fns';
+import { Op } from 'sequelize';
 import Meal from '../models/Meal';
 import database from '../../database';
 import EventValidator from '../Validators/EventValidator';
@@ -9,17 +11,37 @@ import getSingleEventArray from '../Funcs/EventMeal';
 class EventController {
   async index(req, res) {
     const { userId: user_id } = req;
+    const { fromDate, toDate } = req.query;
+    const fromDateQuery = format(
+      fromDate ? parseISO(fromDate) : new Date(),
+      'yyyy-MM-dd HH:mm:ss'
+    );
+    const toDateQuery = format(
+      toDate ? parseISO(toDate) : addMonths(new Date(), 1),
+      'yyyy-MM-dd HH:mm:ss'
+    );
 
     const events = await SingleEvent.findAll({
       attributes: ['eventStartDate'],
       order: [['eventStartDate', 'ASC']],
+      where: {
+        eventStartDate: {
+          [Op.between]: [fromDateQuery, toDateQuery],
+        },
+      },
       include: [
         {
           model: Event,
           as: 'event',
           where: { user_id },
-
-          attributes: ['id', 'startDate', 'endDate', 'duration', 'repeatable'],
+          attributes: [
+            'id',
+            'startDate',
+            'endDate',
+            'duration',
+            'repeatable',
+            'name',
+          ],
           include: {
             model: EventMeal,
             as: 'eventMeals',
@@ -34,6 +56,40 @@ class EventController {
       ],
     });
     return res.json(events);
+  }
+
+  async show(req, res) {
+    const {
+      userId: user_id,
+      params: { id },
+    } = req;
+
+    const event = await Event.findOne({
+      where: { user_id, id },
+      attributes: [
+        'id',
+        'startDate',
+        'endDate',
+        'duration',
+        'repeatable',
+        'name',
+      ],
+      include: {
+        model: EventMeal,
+        as: 'eventMeals',
+        attributes: ['amount', ['meal_id', 'mealId']],
+        include: {
+          model: Meal,
+          as: 'meals',
+          attributes: ['id', 'description', 'name'],
+        },
+      },
+    });
+
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
+    return res.json(event);
   }
 
   async store(req, res) {

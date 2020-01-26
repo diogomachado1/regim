@@ -18,7 +18,7 @@ export default function InputCustom({ name, ...rest }) {
     ...rest,
     ref,
     id: fieldName,
-    defaultValue,
+    defaultValue: rest.value ? undefined : defaultValue,
     name: fieldName,
   };
 

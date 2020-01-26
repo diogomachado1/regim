@@ -19,8 +19,13 @@ import history from '~/services/history';
 export function* saveMeal({ payload }) {
   try {
     const { meal } = payload;
+    
+    if (!meal.ingredients) {
+      meal.ingredients = [];
+    }
+
     if (!meal.id) {
-      yield call(api.post, '/meals/', meal);
+      yield call(api.post, '/meals', meal);
     } else {
       yield call(api.put, `/meals/${meal.id}`, meal);
     }

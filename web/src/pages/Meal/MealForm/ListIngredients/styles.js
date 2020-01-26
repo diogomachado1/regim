@@ -24,10 +24,14 @@ export const UlIngredients = styled.ul`
     > :first-child {
       margin-right: auto;
     }
-    > input {
-      height: 35px;
-      padding: 5px;
-      font-size: 14px;
+    > div {
+      display: flex;
+      flex-direction: column;
+      > input {
+        height: 35px;
+        padding: 5px;
+        font-size: 14px;
+      }
     }
   }
 `;

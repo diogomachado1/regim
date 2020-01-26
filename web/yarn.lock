@@ -8352,6 +8352,13 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
+react-loadingg@^1.7.1:
+  version "1.7.1"
+  resolved "https://registry.yarnpkg.com/react-loadingg/-/react-loadingg-1.7.1.tgz#99a8eb3e276245c3ab133817f34ccf8d8da625ef"
+  integrity sha512-6dPdRwt/HY4PXMY6wEssLf32/JZ4Hw46WD93LLHaejyOdi+0IELy6LA4/tuex6G9bmagtvAZERsLTGCTVBO1nA==
+  dependencies:
+    styled-components "^4.3.2"
+
 react-perfect-scrollbar@^1.5.3:
   version "1.5.3"
   resolved "https://registry.yarnpkg.com/react-perfect-scrollbar/-/react-perfect-scrollbar-1.5.3.tgz#a8a0051a5f737801d4f73d48af5369724c595787"

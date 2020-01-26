@@ -5,6 +5,7 @@ const Yup = require('yup');
 class EventValidator {
   async createValidator(payload) {
     const validator = Yup.object().shape({
+      name: Yup.string().required(),
       startDate: Yup.date().required(),
       endDate: Yup.date()
         .required()
@@ -46,6 +47,7 @@ class EventValidator {
 
   async updateValidator(payload) {
     const validator = Yup.object().shape({
+      name: Yup.string(),
       startDate: Yup.date(),
       endDate: Yup.date()
         .when(
@@ -73,6 +75,7 @@ class EventValidator {
     });
     try {
       const {
+        name,
         startDate,
         endDate,
         duration,
@@ -80,7 +83,7 @@ class EventValidator {
         eventMeals,
       } = await validator.validate(payload);
 
-      return { startDate, endDate, duration, repeatable, eventMeals };
+      return { name, startDate, endDate, duration, repeatable, eventMeals };
     } catch (err) {
       return {
         isError: true,
@@ -91,6 +94,7 @@ class EventValidator {
 
   async format(meal) {
     const validator = Yup.object().shape({
+      name: Yup.string().required(),
       startDate: Yup.date().required(),
       endDate: Yup.date()
         .required()
@@ -127,6 +131,7 @@ class EventValidator {
     try {
       const {
         id,
+        name,
         startDate,
         endDate,
         duration,
@@ -136,6 +141,7 @@ class EventValidator {
       } = await validator.validate(meal);
       return {
         id,
+        name,
         startDate,
         endDate,
         duration,

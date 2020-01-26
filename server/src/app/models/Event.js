@@ -5,6 +5,7 @@ class Event extends Model {
   static init(sequelize) {
     super.init(
       {
+        name: Sequelize.STRING,
         startDate: Sequelize.DATE,
         endDate: Sequelize.DATE,
         duration: Sequelize.INTEGER,
