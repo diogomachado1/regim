@@ -170,22 +170,33 @@ class EventController {
       params: { id },
     } = req;
 
-    const event = await Event.findByPk(id, {
+    const eventDoc = await Event.findByPk(id, {
       where: { user_id },
-      include: [{ model: EventMeal, as: 'eventMeals' }],
+      include: [
+        {
+          model: EventMeal,
+          as: 'eventMeals',
+          attributes: [
+            ['meal_id', 'mealId'],
+            ['event_id', 'eventId'],
+            'amount',
+          ],
+        },
+      ],
     });
 
+    const event = eventDoc.get({ plain: true });
+
+    if (!event) {
+      return res.status(404).json({ error: 'Event not found' });
+    }
     const ValidatedEvent = await EventValidator.updateValidator({
-      ...event.get(),
+      ...event,
       ...req.body,
     });
 
     if (ValidatedEvent.isError) {
       return res.status(400).json({ error: ValidatedEvent.error });
-    }
-
-    if (!event) {
-      return res.status(404).json({ error: 'Event not found' });
     }
 
     if (ValidatedEvent.eventMeals) {
@@ -204,23 +215,10 @@ class EventController {
 
     try {
       const eventSave = await database.connection.transaction(async t => {
-        const seqEvent = await event.update(
-          {
-            ...event.get(),
-            ...ValidatedEvent,
-            user_id,
-          },
-          {
-            include: [
-              {
-                model: EventMeal,
-                as: 'eventMeals',
-              },
-            ],
-            attributes: ['amount', ['meal_id', 'mealId']],
-            transaction: t,
-          }
-        );
+        const seqEvent = await eventDoc.update({
+          ...ValidatedEvent,
+          user_id,
+        });
 
         if (ValidatedEvent.eventMeals) {
           await EventMeal.destroy({
@@ -245,19 +243,22 @@ class EventController {
         });
 
         const singleEventsSaves = await SingleEvent.bulkCreate(
-          singleEvents.map(item => ({ ...item, event_id: seqEvent.id })),
+          singleEvents.map(item => ({ ...item, event_id: event.id })),
           {
             transaction: t,
           }
         );
         singleEventCount = singleEventsSaves.length;
 
-        return seqEvent;
+        return {
+          ...seqEvent.get({ plain: true }),
+          eventMeals: ValidatedEvent.eventMeals,
+        };
       });
 
       return res.status(200).json(
         await EventValidator.format({
-          ...eventSave.dataValues,
+          ...eventSave,
           events: singleEventCount,
         })
       );

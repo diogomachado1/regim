@@ -71,6 +71,7 @@ class EventValidator {
               .min(0),
           })
           .from('mealId', 'MealId', true)
+          .from('eventId', 'EventId', true)
       ),
     });
     try {
