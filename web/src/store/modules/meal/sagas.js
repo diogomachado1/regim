@@ -19,7 +19,7 @@ import history from '~/services/history';
 export function* saveMeal({ payload }) {
   try {
     const { meal } = payload;
-    
+
     if (!meal.ingredients) {
       meal.ingredients = [];
     }

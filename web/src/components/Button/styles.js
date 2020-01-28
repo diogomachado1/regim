@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { darken } from 'polished';
 
 export const ButtonCustom = styled.button`
   height: 40px;
@@ -94,4 +93,14 @@ export const ButtonQuartiaryCustom = styled.button`
       }
     }
   }
+`;
+
+export const PagButton = styled(ButtonTerciaryCustom).attrs(_ => ({
+  type: 'button',
+}))`
+  border-radius: 50%;
+  padding: 5px;
+  height: 30px;
+  width: 30px;
+  box-shadow: 0 0px 4px 0px #ccc;
 `;

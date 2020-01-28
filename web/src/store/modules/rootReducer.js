@@ -4,10 +4,12 @@ import auth from './auth/reducer';
 import user from './user/reducer';
 import product from './product/reducer';
 import meal from './meal/reducer';
+import event from './event/reducer';
 
 export default combineReducers({
   auth,
   user,
   product,
   meal,
+  event,
 });

@@ -13,11 +13,11 @@ export default function Menu({ showMenu }) {
         <Link to="/profile">Meu Perfil</Link>
       </Profile>
       <ul>
-        <NavLink exact to="/">
+        <NavLink exact to="/meals">
           <li>Refeições</li>
         </NavLink>
-        <NavLink exact to="/event">
-          <li>Agenda</li>
+        <NavLink exact to="/events">
+          <li>Eventos</li>
         </NavLink>
         <NavLink exact to="/list">
           <li>Lista</li>
