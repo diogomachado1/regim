@@ -136,13 +136,13 @@ export default function Event() {
                         event.event.duration
                       )})`}
                     </span>
-                    <Link to={`/events/${event.id}`}>
+                    <Link to={`/events/${event.event.id}`}>
                       <Button color="warning" onClick={() => {}}>
                         Editar
                       </Button>
                     </Link>
                     <Button
-                      onClick={() => handleRemoveEvent(event.id)}
+                      onClick={() => handleRemoveEvent(event.event.id)}
                       color="danger"
                     >
                       remover

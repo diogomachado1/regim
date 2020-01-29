@@ -9,6 +9,7 @@ import Profile from '~/pages/Profile';
 import MealForm from '~/pages/Meal/MealForm';
 import Meal from '../pages/Meal';
 import Event from '~/pages/Event';
+import EventForm from '~/pages/Event/EventForm';
 
 export default function Routes() {
   return (
@@ -20,8 +21,8 @@ export default function Routes() {
       <Route path="/meals/create" component={MealForm} isPrivate />
       <Route path="/meals/:id" component={MealForm} isPrivate />
       <Route exact path="/events" component={Event} isPrivate />
-      <Route path="/meals/create" component={Event} isPrivate />
-      <Route path="/meals/:id" component={Event} isPrivate />
+      <Route path="/events/create" component={EventForm} isPrivate />
+      <Route path="/events/:id" component={EventForm} isPrivate />
       <Route path="/profile" component={Profile} isPrivate />
       <Route path="/*" component={() => <Redirect to="/" />} />
     </Switch>
