@@ -1,4 +1,5 @@
 import Sequelize from 'sequelize';
+import mongoose from 'mongoose';
 
 import User from '../app/models/User';
 
@@ -8,13 +9,13 @@ import Meal from '../app/models/Meal';
 import Ingredient from '../app/models/Ingredient';
 import Event from '../app/models/Event';
 import EventMeal from '../app/models/EventMeal';
-import SingleEvent from '../app/models/SingleEvent';
 
-const models = [User, Product, Ingredient, Meal, Event, EventMeal, SingleEvent];
+const models = [User, Product, Ingredient, Meal, Event, EventMeal];
 
 class Database {
   constructor() {
     this.init();
+    this.mongo();
   }
 
   init() {
@@ -23,6 +24,14 @@ class Database {
     models
       .map(model => model.init(this.connection))
       .map(model => model.associate && model.associate(this.connection.models));
+  }
+
+  mongo() {
+    this.mongoConnection = mongoose.connect(process.env.MONGO_URL, {
+      useNewUrlParser: true,
+      useFindAndModify: true,
+      useUnifiedTopology: true,
+    });
   }
 }
 

@@ -32,10 +32,6 @@ class Event extends Model {
       foreignKey: 'event_id',
       as: 'eventMeals',
     });
-    this.hasMany(models.SingleEvent, {
-      foreignKey: 'event_id',
-      as: 'singleEvents',
-    });
   }
 
   static async verifyEventMeals(user_id, eventMeals) {

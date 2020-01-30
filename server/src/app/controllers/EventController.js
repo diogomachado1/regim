@@ -1,60 +1,26 @@
-import { format, parseISO, addMonths } from 'date-fns';
-import { Op } from 'sequelize';
+import { parseISO, addMonths } from 'date-fns';
 import Meal from '../models/Meal';
 import database from '../../database';
 import EventValidator from '../Validators/EventValidator';
 import Event from '../models/Event';
 import EventMeal from '../models/EventMeal';
-import SingleEvent from '../models/SingleEvent';
-import getSingleEventArray from '../Funcs/EventMeal';
+import SingleEventSchema from '../schemas/SingleEvent';
+import EventServices from '../Services/Event';
 
 class EventController {
   async index(req, res) {
-    const { userId: user_id } = req;
+    const { userId } = req;
     const { fromDate, toDate } = req.query;
-    const fromDateQuery = format(
-      fromDate ? parseISO(fromDate) : new Date(),
-      'yyyy-MM-dd HH:mm:ss'
-    );
-    const toDateQuery = format(
-      toDate ? parseISO(toDate) : addMonths(new Date(), 1),
-      'yyyy-MM-dd HH:mm:ss'
+    const fromDateQuery = fromDate ? parseISO(fromDate) : new Date();
+
+    const toDateQuery = toDate ? parseISO(toDate) : addMonths(new Date(), 1);
+
+    const events = await EventServices.getSingleEventByDate(
+      fromDateQuery,
+      toDateQuery,
+      userId
     );
 
-    const events = await SingleEvent.findAll({
-      attributes: ['eventStartDate'],
-      order: [['eventStartDate', 'ASC']],
-      where: {
-        eventStartDate: {
-          [Op.between]: [fromDateQuery, toDateQuery],
-        },
-      },
-      include: [
-        {
-          model: Event,
-          as: 'event',
-          where: { user_id },
-          attributes: [
-            'id',
-            'startDate',
-            'endDate',
-            'duration',
-            'repeatable',
-            'name',
-          ],
-          include: {
-            model: EventMeal,
-            as: 'eventMeals',
-            attributes: ['amount', ['meal_id', 'mealId']],
-            include: {
-              model: Meal,
-              as: 'meals',
-              attributes: ['id', 'description', 'name'],
-            },
-          },
-        },
-      ],
-    });
     return res.json(events);
   }
 
@@ -100,8 +66,6 @@ class EventController {
       return res.status(400).json({ error: ValidatedEvent.error });
     }
 
-    const singleEvents = getSingleEventArray(ValidatedEvent);
-
     if (ValidatedEvent.eventMeals) {
       const verifyEventMeals = await Event.verifyEventMeals(
         user_id,
@@ -112,39 +76,33 @@ class EventController {
       }
     }
 
-    let singleEventCount;
-
     try {
-      const eventSave = await database.connection.transaction(async t => {
-        const event = await Event.create(
-          {
-            ...ValidatedEvent,
-            user_id,
-          },
-          {
-            include: [
-              {
-                model: EventMeal,
-                as: 'eventMeals',
-              },
-            ],
-            attributes: ['amount', ['meal_id', 'mealId']],
-            transaction: t,
-          }
-        );
+      const eventSave = await Event.create(
+        {
+          ...ValidatedEvent,
+          user_id,
+        },
+        {
+          include: [
+            {
+              model: EventMeal,
+              as: 'eventMeals',
+            },
+          ],
+          attributes: ['amount', ['meal_id', 'mealId']],
+        }
+      );
 
-        const singleEventsSaves = await SingleEvent.bulkCreate(
-          singleEvents.map(item => ({ ...item, event_id: event.id })),
-          {
-            transaction: t,
-          }
-        );
-        singleEventCount = singleEventsSaves.length;
-        return event;
-      });
+      const saves = await SingleEventSchema.insertMany(
+        EventServices.getSingleEvent(
+          { ...ValidatedEvent, id: eventSave.id },
+          user_id
+        )
+      );
+
       const event = await EventValidator.format({
         ...eventSave.dataValues,
-        events: singleEventCount,
+        events: saves.length,
       });
       return res.status(201).json(event);
     } catch (error) {
@@ -209,10 +167,6 @@ class EventController {
       }
     }
 
-    const singleEvents = getSingleEventArray(ValidatedEvent);
-
-    let singleEventCount;
-
     try {
       const eventSave = await database.connection.transaction(async t => {
         const seqEvent = await eventDoc.update({
@@ -237,29 +191,25 @@ class EventController {
           );
         }
 
-        await SingleEvent.destroy({
-          transaction: t,
-          where: { event_id: event.id },
-        });
-
-        const singleEventsSaves = await SingleEvent.bulkCreate(
-          singleEvents.map(item => ({ ...item, event_id: event.id })),
-          {
-            transaction: t,
-          }
-        );
-        singleEventCount = singleEventsSaves.length;
-
         return {
           ...seqEvent.get({ plain: true }),
           eventMeals: ValidatedEvent.eventMeals,
         };
       });
 
+      await SingleEventSchema.deleteMany({ eventId: eventSave.id });
+
+      const saves = await SingleEventSchema.insertMany(
+        EventServices.getSingleEvent(
+          { ...ValidatedEvent, id: eventSave.id },
+          user_id
+        )
+      );
+
       return res.status(200).json(
         await EventValidator.format({
           ...eventSave,
-          events: singleEventCount,
+          events: saves.length,
         })
       );
     } catch (error) {
@@ -289,6 +239,8 @@ class EventController {
     const deleteds = await Event.destroy({
       where: { user_id, id },
     });
+
+    await SingleEventSchema.deleteMany({ eventId: id });
 
     if (deleteds === 0) {
       return res.status(404).json({ error: 'Meal not found' });
