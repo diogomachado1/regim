@@ -6,7 +6,7 @@ const INITIAL_STATE = {
   meals: [],
 };
 
-export default function auth(state = INITIAL_STATE, action) {
+export default function meal(state = INITIAL_STATE, action) {
   return produce(state, draft => {
     switch (action.type) {
       case '@meal/SAVE_IN_RESQUEST': {

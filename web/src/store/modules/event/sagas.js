@@ -20,8 +20,8 @@ export function* saveEvent({ payload }) {
   try {
     const { event } = payload;
 
-    if (!event.ingredients) {
-      event.ingredients = [];
+    if (!event.eventMeals) {
+      event.eventMeals = [];
     }
 
     if (!event.id) {

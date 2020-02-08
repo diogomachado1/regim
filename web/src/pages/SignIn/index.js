@@ -1,8 +1,8 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Form } from '@rocketseat/unform';
 import * as Yup from 'yup';
+import { useForm } from 'react-hook-form';
 
 import { signInRequest } from '~/store/modules/auth/actions';
 import InputCustom from '~/components/Input';
@@ -19,27 +19,38 @@ const schema = Yup.object().shape({
 
 export default function Main() {
   const dispatch = useDispatch();
+  const { register, handleSubmit, errors, reset } = useForm({
+    validationSchema: schema,
+  });
   const loading = useSelector(state => state.auth.loading);
 
-  function handleSubmit({ email, password }) {
+  function onSubmit({ email, password }) {
     dispatch(signInRequest(email, password));
   }
   return (
     <>
       <img src={Logo} alt="Regim Logo" />
-      <Form schema={schema} onSubmit={handleSubmit}>
-        <InputCustom name="email" type="email" placeholder="Seu e-mail" />
+      <form schema={schema} onSubmit={handleSubmit(onSubmit)}>
+        <InputCustom
+          name="email"
+          type="email"
+          placeholder="Seu e-mail"
+          register={register}
+          error={errors.email}
+        />
         <InputCustom
           name="password"
           type="password"
-          placeholder="Sua senha secreta"
+          register={register}
+          error={errors.password}
+          placeholder="Password"
         />
 
         <Button type="submit">{loading ? 'Carregando...' : 'Acessar'}</Button>
         <Link to="/register">
           <ButtonQuartiary color="danger">Criar conta gratuita</ButtonQuartiary>
         </Link>
-      </Form>
+      </form>
     </>
   );
 }

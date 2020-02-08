@@ -6,7 +6,7 @@ const INITIAL_STATE = {
   events: [],
 };
 
-export default function auth(state = INITIAL_STATE, action) {
+export default function event(state = INITIAL_STATE, action) {
   return produce(state, draft => {
     switch (action.type) {
       case '@event/SAVE_IN_RESQUEST': {

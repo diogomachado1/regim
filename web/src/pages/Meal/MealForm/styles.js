@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 
-import { Form } from '@rocketseat/unform';
-
-export const StyledForm = styled(Form)`
+export const StyledForm = styled.form`
   min-height: 100%;
   height: 100%;
   max-height: calc(100% - 20px);

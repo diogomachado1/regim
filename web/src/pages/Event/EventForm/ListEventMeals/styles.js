@@ -8,7 +8,7 @@ export const Container = styled.div`
   padding: 5px 10px;
 `;
 
-export const UlIngredients = styled.ul`
+export const UlEventMeals = styled.ul`
   display: flex;
   list-style: none;
   flex-direction: column;

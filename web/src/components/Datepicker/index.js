@@ -1,40 +1,38 @@
-import React, { useRef, useEffect, useState } from 'react';
-import ReactDatePicker from 'react-datepicker';
-
-import { useField } from '@rocketseat/unform';
-
+import React, { useEffect } from 'react';
+import DateFnsUtils from '@date-io/date-fns';
+import { MuiPickersUtilsProvider, DateTimePicker } from '@material-ui/pickers';
 import 'react-datepicker/dist/react-datepicker.css';
-import { parseISO } from 'date-fns';
 
-export default function DatePicker({ name, ...rest }) {
-  const ref = useRef(null);
-  const { fieldName, registerField, defaultValue, error } = useField(name);
-  const [selected, setSelected] = useState(defaultValue);
+export default function DatePicker({
+  name,
+  error,
+  register,
+  defaultValue,
+  watch,
+  setValue,
+  ...rest
+}) {
+  const test = watch(name);
   useEffect(() => {
-    setSelected(defaultValue ? parseISO(defaultValue) : undefined);
-  }, [defaultValue]);
-  useEffect(() => {
-    registerField({
-      name: fieldName,
-      ref: ref.current,
-      path: 'props.selected',
-      clearValue: pickerRef => {
-        pickerRef.clear();
-      },
-    });
-  }, [ref.current, fieldName]); // eslint-disable-line
+    register({ name });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [test]);
 
+  const handleDateChange = date => {
+    setValue(name, date, false);
+  };
   return (
-    <>
-      <ReactDatePicker
-        {...rest}
-        name={fieldName}
-        dateFormat="dd/MM/yyyy"
-        selected={selected}
-        onChange={date => setSelected(date)}
-        ref={ref}
+    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <DateTimePicker
+        inputVariant="outlined"
+        margin="normal"
+        helperText={error ? error.message : undefined}
+        label={rest.placeholder}
+        clearable
+        value={test || null}
+        error={!!error}
+        onChange={handleDateChange}
       />
-      {error && <span>{error}</span>}
-    </>
+    </MuiPickersUtilsProvider>
   );
 }

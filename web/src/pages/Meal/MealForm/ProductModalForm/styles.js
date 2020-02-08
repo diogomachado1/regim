@@ -1,7 +1,6 @@
 import styled from 'styled-components';
-import { Form } from '@rocketseat/unform';
 
-export const Container = styled(Form)`
+export const Container = styled.form`
   max-height: 400px;
   width: 300px;
   background-color: #fff;
@@ -12,7 +11,7 @@ export const Container = styled(Form)`
   padding: 15px;
   border-radius: 5px;
   > * {
-    margin-bottom: 10px;
+    margin: 5px 0 !important;
     &:last-child {
       margin-bottom: 0px;
     }

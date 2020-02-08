@@ -2,10 +2,10 @@ import { useParams } from 'react-router-dom';
 import React, { useEffect, useCallback, useState, useMemo } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { useDispatch, useSelector } from 'react-redux';
-import InputCustom from '~/components/Input';
-import TextareaCustom from '~/components/Textarea';
-import { ButtonTerciary } from '~/components/Button';
+import { useForm } from 'react-hook-form';
 
+import InputCustom from '~/components/Input';
+import { ButtonTerciary } from '~/components/Button';
 import { StyledForm, Buttons } from './styles';
 import ListIngredients from './ListIngredients';
 import ListProducts from './ListProducts';
@@ -26,6 +26,9 @@ import { MealSchema } from '~/validators/mealValidator';
 export default function MealForm({ history }) {
   const dispatch = useDispatch();
   const { id } = useParams();
+  const { register, handleSubmit, errors, reset } = useForm({
+    validationSchema: MealSchema,
+  });
 
   const products = useSelector(state => state.product.products);
   const meal = useSelector(state => state.meal.editMeal);
@@ -42,23 +45,32 @@ export default function MealForm({ history }) {
 
   const loadProducts = useCallback(async () => {
     dispatch(getProductRequest());
+  }, [dispatch]);
+
+  const loadMeal = useCallback(() => {
     if (id) {
       dispatch(getOneMealRequest(id));
     } else {
       dispatch(getOneMealInSuccess({}));
     }
-    
   }, [dispatch, id]);
 
   useEffect(() => {
     if (id && meal.ingredients) {
       setIngredients(meal.ingredients);
     }
+    reset(meal);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [meal, id]);
 
   useEffect(() => {
     loadProducts();
   }, [loadProducts]);
+
+  useEffect(() => {
+    loadMeal();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function addIngredient(product) {
     setIngredients([...ingredients, { productId: product.id, amount: 0 }]);
@@ -89,23 +101,37 @@ export default function MealForm({ history }) {
     }
   }
 
-  function handleSubmit(value) {
+  function onSumit(value) {
     dispatch(saveMealRequest({ id, ...value }));
   }
   return (
     <>
       <StyledForm
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSumit)}
         initialData={id ? meal : {}}
         schema={MealSchema}
       >
         <div>
           <PerfectScrollbar>
-            <InputCustom name="name" placeholder="Nome" />
-            <TextareaCustom name="description" placeholder="Descrição" />
+            <InputCustom
+              name="name"
+              placeholder="Nome"
+              register={register}
+              error={errors.name}
+            />
+            <InputCustom
+              name="description"
+              placeholder="Descrição"
+              multiline
+              rowsMax="4"
+              register={register}
+              error={errors.description}
+            />
             <ListIngredients
               ingredients={ingredients}
               removeIngredient={addOrRemoveIngredient}
+              register={register}
+              errors={errors}
             />
           </PerfectScrollbar>
           <ListProducts
@@ -130,6 +156,7 @@ export default function MealForm({ history }) {
           </ButtonTerciary>
         </Buttons>
       </StyledForm>
+
       {showProductModal && (
         <ProductModalForm
           product={editProduct}

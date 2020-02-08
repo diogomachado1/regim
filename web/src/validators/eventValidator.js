@@ -20,7 +20,9 @@ export const EventSchema = Yup.object().shape({
     .default(30)
     .min(15)
     .required(),
-  repeatable: Yup.mixed().oneOf(['daily', 'weekly', null]),
+  repeatable: Yup.mixed()
+    .oneOf(['daily', 'weekly', ' '])
+    .required(),
   eventMeals: Yup.array().of(
     Yup.object()
       .shape({

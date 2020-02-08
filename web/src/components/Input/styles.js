@@ -1,5 +1,11 @@
 import styled from 'styled-components';
 import { DebounceInput } from 'react-debounce-input';
+import TextField from '@material-ui/core/TextField';
+
+export const InputboxUnform = styled(TextField)`
+  margin-top: 5px !important;
+  display: ${({ hidden }) => (hidden ? 'none' : 'flex')} !important;
+`;
 
 export const Inputbox = styled(DebounceInput)`
   background: ${({ error }) => (error ? '#FEEFEE' : '#fff')};
@@ -11,22 +17,6 @@ export const Inputbox = styled(DebounceInput)`
   padding-left: ${({ icon }) => (icon ? '40px' : '20px')};
   transition: all 0.3s ease-in-out;
   color: ${({ error }) => (error ? '#f95e5a' : '#170C3A')};
-  &::placeholder {
-    color: ${({ error }) => (error ? '#f95e5a' : '#b1adb9')};
-  }
-`;
-
-export const InputboxUnform = styled.input`
-  background: ${({ error }) => (error ? '#FEEFEE' : '#fff')};
-  border: ${({ error }) => (error ? '2px solid #f95e5a' : '2px solid #C4C4C4')};
-  border-radius: 5px;
-  height: 50px;
-  padding: 12px 20px;
-  padding-left: ${({ icon }) => (icon ? '40px' : '20px')};
-  font-size: 20px;
-  transition: all 0.3s ease-in-out;
-  color: ${({ error }) => (error ? '#f95e5a' : '#170C3A')};
-
   &::placeholder {
     color: ${({ error }) => (error ? '#f95e5a' : '#b1adb9')};
   }

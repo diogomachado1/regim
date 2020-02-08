@@ -2,11 +2,15 @@ import React from 'react';
 
 import { useSelector } from 'react-redux';
 import { MdClose } from 'react-icons/md';
-import { Scope, Input } from '@rocketseat/unform';
-import { Container, UlIngredients, CloseButton } from './styles';
+import { Container, UlEventMeals, CloseButton } from './styles';
 import InputCustom from '~/components/Input';
 
-export default function ListIngredients({ eventMeals, removeEventMeal }) {
+export default function ListEventMeals({
+  eventMeals,
+  removeEventMeal,
+  register,
+  errors,
+}) {
   const meals = useSelector(state => state.meal.meals);
 
   const list = () => {
@@ -15,31 +19,45 @@ export default function ListIngredients({ eventMeals, removeEventMeal }) {
       if (find) {
         return (
           <li key={item.mealId}>
-            <Scope key={i} path={`eventMeals[${i}]`}>
-              <span>{find.name}</span>
-              <div>
-                <InputCustom name="amount" placeholder="Quantidade" />
-                <InputCustom
-                  value={item.mealId}
-                  onChange={() => item.mealId}
-                  name="mealId"
-                  type="number"
-                  hidden
-                />
-              </div>
-              <CloseButton onClick={() => removeEventMeal({ id: item.mealId })}>
-                <MdClose size="20" />
-              </CloseButton>
-            </Scope>
+            <span>{find.name}</span>
+            <div>
+              <InputCustom
+                name={`eventMeals[${i}].amount`}
+                placeholder="Quantidade"
+                register={register}
+                error={
+                  errors.eventMeals &&
+                  errors.eventMeals[i] &&
+                  errors.eventMeals[i].amount
+                }
+              />
+              <InputCustom
+                value={item.mealId}
+                onChange={() => item.mealId}
+                name={`eventMeals[${i}].mealId`}
+                type="number"
+                hidden
+                register={register}
+                error={
+                  errors.eventMeals &&
+                  errors.eventMeals[i] &&
+                  errors.eventMeals[i].mealId
+                }
+              />
+            </div>
+            <CloseButton onClick={() => removeEventMeal({ id: item.mealId })}>
+              <MdClose size="20" />
+            </CloseButton>
           </li>
         );
       }
       removeEventMeal({ id: item.mealId });
+      return undefined;
     });
   };
   return (
     <Container>
-      <UlIngredients>{eventMeals && list()}</UlIngredients>
+      <UlEventMeals>{eventMeals && list()}</UlEventMeals>
     </Container>
   );
 }

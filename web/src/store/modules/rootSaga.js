@@ -5,7 +5,8 @@ import user from './user/sagas';
 import product from './product/sagas';
 import meal from './meal/sagas';
 import event from './event/sagas';
+import list from './list/sagas';
 
 export default function* rootSaga() {
-  return yield all([auth, user, product, meal, event]);
+  return yield all([auth, user, product, meal, event, list]);
 }
