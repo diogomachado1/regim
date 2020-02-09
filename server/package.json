@@ -6,12 +6,12 @@
   "scripts": {
     "dev": "nodemon src/server.js",
     "build": "sucrase ./src -d ./dist --transforms imports",
-    "postbuild": "sequelize db:migrate",
+    "heroku-postbuild": "sucrase ./src -d ./dist --transforms imports",
+    "posteroku-postbuild": "sequelize db:migrate",
     "migrations": "sequelize db:migrate",
+    "prestart": "sequelize db:migrate",
     "start": "NODE_ENV=production node dist/server.js",
-    "pretest": "NODE_ENV=test sequelize db:migrate",
     "test": "NODE_ENV=test jest --detectOpenHandles",
-    "posttest": "NODE_ENV=test sequelize db:migrate:undo:all",
     "pretest:watch": "NODE_ENV=test sequelize db:migrate",
     "test:watch": "NODE_ENV=test jest --watch --detectOpenHandles",
     "posttest:watch": "NODE_ENV=test sequelize db:migrate:undo:all"
