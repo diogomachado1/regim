@@ -9,7 +9,7 @@ class ProductServices {
   }
 
   async getUserProductsByIds(ids, userId) {
-    return ProductQuery.getUserProductByIds(ids, userId);
+    return ProductQuery.getUserProductsByIds(ids, userId);
   }
 
   async verifyAndGetProduct(id, userId) {
