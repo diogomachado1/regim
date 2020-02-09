@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "nodemon src/server.js",
     "build": "sucrase ./src -d ./dist --transforms imports",
-    "heroku-postbuild": "sucrase ./src -d ./dist --transforms imports",
-    "posteroku-postbuild": "sequelize db:migrate",
+    "heroku-postbuild": "sucrase ./src -d ./dist --transforms imports && sequelize db:migrate",
     "migrations": "sequelize db:migrate",
     "prestart": "sequelize db:migrate",
     "start": "NODE_ENV=production node dist/server.js",

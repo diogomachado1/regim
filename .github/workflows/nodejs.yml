@@ -20,6 +20,8 @@ jobs:
     #- run: 
     - run: cd server && npm install
     - run: cd server && npm run build --if-present
-    #- run: npm test
+    - run: cd server && npm test
       env:
         CI: true
+        NODE_ENV: test
+        APP_SECRET: test
