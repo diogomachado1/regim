@@ -1,10 +1,10 @@
 import faker from 'faker';
 import { factory } from 'factory-girl';
-
-import addYears from 'date-fns/addYears';
+import { addDays } from 'date-fns';
 import User from '../src/app/models/User';
 import Product from '../src/app/models/Product';
 import Meal from '../src/app/models/Meal';
+import Ingredient from '../src/app/models/Ingredient';
 import Event from '../src/app/models/Event';
 import EventMeal from '../src/app/models/EventMeal';
 
@@ -26,11 +26,20 @@ factory.define('Meal', Meal, {
   description: faker.lorem.paragraph(),
 });
 
+factory.define('Ingredient', Ingredient, {
+  productId: faker.random.number({ min: 0, max: 1000 }),
+  amount: faker.random.number({ min: 0, max: 1000 }),
+});
+
 factory.define('Event', Event, {
-  startDate: faker.date.future(0, new Date()).toISOString(),
-  endDate: faker.date.future(0, addYears(new Date(), 1)).toISOString(),
+  name: faker.name.findName(),
+  startDate: new Date().toISOString(),
+  endDate: addDays(
+    new Date(),
+    faker.random.number({ min: 0, max: 300 })
+  ).toISOString(),
   duration: parseInt(faker.random.number({ min: 15, max: 300 }), 10),
-  repeatable: faker.random.arrayElement(['daily', 'weekly', undefined]),
+  repeatable: faker.random.arrayElement(['daily', 'weekly', 'not']),
 });
 
 factory.define('EventMeal', EventMeal, {

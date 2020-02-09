@@ -1,0 +1,16 @@
+version: '3.7'
+services:
+  # db:
+  #   image: postgres
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: docker
+  #     POSTGRES_DB: regim
+  #   volumes:
+  #     - pg_data_regim:/var/lib/postgresql/data
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+volumes:
+  pg_data_regim:

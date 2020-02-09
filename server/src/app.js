@@ -9,7 +9,7 @@ import routes from './routes';
 
 // Uncomment this line to enable database access
 // --------
-import './database';
+import db from './database';
 
 class App {
   constructor() {
@@ -31,7 +31,16 @@ class App {
 
   exceptionHandler() {
     this.server.use(async (err, req, res, next) => {
-      if (process.env.NODE_ENV === 'development') {
+      if (err.name === 'RegimValidationError') {
+        const { type, message } = err;
+        const error = {
+          status: 'error',
+          message,
+        };
+        return res.status(type === 'notFound' ? 404 : 400).json(error);
+      }
+      console.log(err);
+      if (process.env.NODE_ENV !== 'development') {
         const errors = await new Youch(err, req).toJSON();
 
         return res.status(500).json(errors);
@@ -40,6 +49,10 @@ class App {
       return res.status(500).json({ error: 'Internal server error' });
     });
   }
+
+  close() {
+    db.close();
+  }
 }
 
-export default new App().server;
+export default new App();

@@ -1,32 +1,22 @@
-import Product from '../models/Product';
 import ProductValidator from '../Validators/ProductValidator';
+import ProductService from '../Services/ProductService';
 
 class ProductController {
   async index(req, res) {
-    const { userId: user_id } = req;
+    const { userId } = req;
 
-    const seqProducts = await Product.findAll({ where: { user_id } });
+    const products = await ProductService.getUserProducts(userId);
 
-    const productsValue = seqProducts.map(product => product.get());
-
-    const formatedProduct = await ProductValidator.formatArray(productsValue);
+    const formatedProduct = await ProductValidator.formatArray(products);
     return res.status(200).json(formatedProduct);
   }
 
   async store(req, res) {
-    const { userId: user_id } = req;
+    const { userId } = req;
 
-    const ValidatedProduct = await ProductValidator.createValidator(req.body);
+    const product = await ProductService.create(req.body, userId);
 
-    if (ValidatedProduct.isError) {
-      return res.status(400).json({ error: ValidatedProduct.error });
-    }
-
-    const product = await Product.create({
-      ...ValidatedProduct,
-      user_id,
-    });
-    const formatedProduct = await ProductValidator.format(product.dataValues);
+    const formatedProduct = await ProductValidator.format(product);
     return res.status(201).json(formatedProduct);
   }
 
@@ -35,36 +25,20 @@ class ProductController {
       userId: user_id,
       params: { id },
     } = req;
-    const ValidatedProduct = await ProductValidator.updateValidator(req.body);
 
-    if (ValidatedProduct.isError) {
-      return res.status(400).json({ error: ValidatedProduct.error });
-    }
+    const product = await ProductService.update(req.body, id, user_id);
 
-    const product = await Product.findByPk(id, { where: { user_id } });
-    if (!product) {
-      return res.status(404).send();
-    }
-    const productUpdated = await product.update(req.body);
-    const formatedProduct = await ProductValidator.format(
-      productUpdated.dataValues
-    );
+    const formatedProduct = await ProductValidator.format(product);
     return res.status(200).json(formatedProduct);
   }
 
   async delete(req, res) {
     const {
-      userId: user_id,
+      userId,
       params: { id },
     } = req;
 
-    const deleteds = await Product.destroy({
-      where: { user_id, id },
-    });
-
-    if (deleteds === 0) {
-      return res.status(404).json({ error: 'Product not found' });
-    }
+    await ProductService.delete(id, userId);
 
     return res.status(204).json();
   }

@@ -1,12 +1,21 @@
 import addYears from 'date-fns/addYears';
-
-const Yup = require('yup');
+import * as Yup from 'yup';
+import ValidationError from '../Error/ValidationError';
+import { badRequest } from '../Error/TypeErrors';
 
 class EventValidator {
   async createValidator(payload) {
     const validator = Yup.object().shape({
-      name: Yup.string().required(),
+      name: Yup.string()
+        .required()
+        .trim(),
+      duration: Yup.number()
+        .default(30)
+        .min(0),
       startDate: Yup.date().required(),
+      repeatable: Yup.mixed()
+        .oneOf(['daily', 'weekly', 'not'])
+        .default('not'),
       endDate: Yup.date()
         .required()
         .when(
@@ -15,17 +24,20 @@ class EventValidator {
         )
         .when(
           'startDate',
-          (startDate, schema) => startDate && schema.max(addYears(startDate, 2))
-        ),
-      duration: Yup.number()
-        .default(30)
-        .min(15)
-        .required(),
-      repeatable: Yup.mixed().oneOf(['daily', 'weekly', null]),
+          (startDate, schema) =>
+            startDate && schema.max(addYears(startDate, 1)).required()
+        )
+        .when('repeatable', (repeatable, schema) => {
+          if (repeatable !== 'not') return schema.required();
+          return schema;
+        }),
       eventMeals: Yup.array().of(
         Yup.object()
           .shape({
-            mealId: Yup.number().required(),
+            mealId: Yup.number()
+              .min(0)
+              .integer()
+              .required(),
             amount: Yup.number()
               .default(0)
               .min(0),
@@ -38,17 +50,16 @@ class EventValidator {
       const response = await validator.validate(payload);
       return response;
     } catch (err) {
-      return {
-        isError: true,
-        error: err.errors[0],
-      };
+      throw new ValidationError(badRequest(err.errors[0]));
     }
   }
 
   async updateValidator(payload) {
     const validator = Yup.object().shape({
-      name: Yup.string(),
+      name: Yup.string().trim(),
+      duration: Yup.number().min(0),
       startDate: Yup.date(),
+      repeatable: Yup.mixed().oneOf(['daily', 'weekly', 'not']),
       endDate: Yup.date()
         .when(
           'startDate',
@@ -56,16 +67,19 @@ class EventValidator {
         )
         .when(
           'startDate',
-          (startDate, schema) => startDate && schema.max(addYears(startDate, 2))
-        ),
-      duration: Yup.number()
-        .default(30)
-        .min(15),
-      repeatable: Yup.mixed().oneOf(['daily', 'weekly', null]),
+          (startDate, schema) => startDate && schema.max(addYears(startDate, 1))
+        )
+        .when('repeatable', (repeatable, schema) => {
+          if (repeatable !== 'not') return schema.required();
+          return schema;
+        }),
       eventMeals: Yup.array().of(
         Yup.object()
           .shape({
-            mealId: Yup.number().required(),
+            mealId: Yup.number()
+              .min(0)
+              .integer()
+              .required(),
             amount: Yup.number()
               .default(0)
               .min(0),
@@ -86,10 +100,7 @@ class EventValidator {
 
       return { name, startDate, endDate, duration, repeatable, eventMeals };
     } catch (err) {
-      return {
-        isError: true,
-        error: err.errors[0],
-      };
+      throw new ValidationError(badRequest(err.errors[0]));
     }
   }
 
@@ -105,16 +116,14 @@ class EventValidator {
         )
         .when(
           'startDate',
-          (startDate, schema) => startDate && schema.max(addYears(startDate, 2))
+          (startDate, schema) => startDate && schema.max(addYears(startDate, 1))
         ),
       duration: Yup.number()
         .default(30)
         .min(15)
         .required(),
       events: Yup.number().required(),
-      repeatable: Yup.mixed()
-        .oneOf(['daily', 'weekly', null])
-        .transform(repeatable => repeatable || null),
+      repeatable: Yup.mixed().oneOf(['daily', 'weekly', 'not']),
       eventMeals: Yup.array().of(
         Yup.object()
           .shape({
@@ -159,4 +168,4 @@ class EventValidator {
   }
 }
 
-module.exports = new EventValidator();
+export default new EventValidator();

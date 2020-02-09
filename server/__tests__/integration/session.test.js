@@ -10,57 +10,17 @@ describe('Session Create', () => {
     await truncate();
   });
   afterAll(async () => {
-    await new Promise(resolve => setTimeout(() => resolve(), 500)); // avoid jest open handle error
+    app.close();
   });
 
   it('should be able to create session', async () => {
     const { email, password } = await createUser();
 
-    const response = await request(app)
+    const response = await request(app.server)
       .post('/sessions')
       .send({ email, password });
 
     expect(response.body).toHaveProperty('token');
-  });
-
-  it('should have email to create session', async () => {
-    const { password } = await createUser();
-
-    const response = await request(app)
-      .post('/sessions')
-      .send({ password });
-
-    expect(response.status).toBe(400);
-  });
-
-  it('should have password to create session', async () => {
-    const { email } = await createUser();
-
-    const response = await request(app)
-      .post('/sessions')
-      .send({ email });
-
-    expect(response.status).toBe(400);
-  });
-
-  it('should have register email to create session', async () => {
-    const { email, password } = await createUser();
-
-    const response = await request(app)
-      .post('/sessions')
-      .send({ email: `${email}test`, password });
-
-    expect(response.status).toBe(401);
-  });
-
-  it('should have password match to create session', async () => {
-    const { email, password } = await createUser();
-
-    const response = await request(app)
-      .post('/sessions')
-      .send({ email, password: `${password}test` });
-
-    expect(response.status).toBe(401);
   });
 
   it('should return a valid token to use API', async () => {
@@ -68,11 +28,11 @@ describe('Session Create', () => {
 
     const {
       body: { token },
-    } = await request(app)
+    } = await request(app.server)
       .post('/sessions')
       .send({ email, password });
 
-    const response = await request(app)
+    const response = await request(app.server)
       .get('/testAuth')
       .set('Authorization', `bearer ${token}`);
 
@@ -80,14 +40,14 @@ describe('Session Create', () => {
   });
 
   it('should have a valid token to use API', async () => {
-    const response = await request(app)
+    const response = await request(app.server)
       .get('/testAuth')
       .set('Authorization', `bearer testwoken`);
     expect(response.status).toBe(401);
   });
 
   it('should have a token to use API', async () => {
-    const response = await request(app).get('/testAuth');
+    const response = await request(app.server).get('/testAuth');
 
     expect(response.status).toBe(401);
   });

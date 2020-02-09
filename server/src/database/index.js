@@ -33,6 +33,11 @@ class Database {
       useUnifiedTopology: true,
     });
   }
+
+  close() {
+    this.connection.close();
+    mongoose.disconnect();
+  }
 }
 
 export default new Database();
