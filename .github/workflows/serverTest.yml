@@ -38,7 +38,7 @@ jobs:
         NODE_ENV: test
         APP_SECRET: test
         DB_DIALECT: postgres
-        DB_HOST: localhost
+        DB_HOST: localhost:${{ job.services.postgres.ports[5432] }}
         DB_USER: postgres
         DB_PASS: postgres
         DB_NAME: postgres
