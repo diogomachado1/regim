@@ -9,6 +9,10 @@ class MealServices {
     return MealQuery.getUserMeals(userId);
   }
 
+  async getUserMealsByIds(ids, userId) {
+    return MealQuery.getUserMealsByIds(ids, userId);
+  }
+
   async verifyAndGetMeal(id, userId) {
     const meal = await MealQuery.getMealById(id, userId);
     if (!meal) throw new ValidationError(notFound('Meal'));

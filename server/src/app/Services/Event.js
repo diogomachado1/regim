@@ -2,11 +2,22 @@ import { addMinutes, isBefore, addDays, addWeeks } from 'date-fns';
 import Event from '../models/Event';
 import EventMeal from '../models/EventMeal';
 import Meal from '../models/Meal';
-import SingleEventSchema from '../schemas/SingleEvent';
 import Ingredient from '../models/Ingredient';
 import Product from '../models/Product';
+import SingleEventQuery from '../Queries/SingleEventQuery';
+import EventQuery from '../Queries/EventQuery';
+import ValidationError from '../Error/ValidationError';
+import { notFound } from '../Error/TypeErrors';
+import EventValidator from '../Validators/EventValidator';
+import MealService from './MealService';
 
 class EventServices {
+  async verifyAndGetEvent(id, userId) {
+    const event = await EventQuery.getEventById(id, userId);
+    if (!event) throw new ValidationError(notFound('Event'));
+    return event;
+  }
+
   getSingleEvent(event, userId) {
     const singleEvents = [];
     const { startDate, endDate, duration, repeatable, id } = event;
@@ -42,25 +53,10 @@ class EventServices {
     return singleEvents;
   }
 
+  // to listService
   async getList(fromDate, toDate, userId) {
     const [singleEvents, events] = await Promise.all([
-      SingleEventSchema.aggregate([
-        {
-          $match: {
-            userId,
-            eventStartDate: {
-              $gte: fromDate,
-              $lt: toDate,
-            },
-          },
-        },
-        {
-          $group: {
-            _id: '$eventId',
-            count: { $sum: 1 },
-          },
-        },
-      ]),
+      SingleEventQuery.getSingleEventGroupByEventId(fromDate, toDate, userId),
       this.getAllEventsByUserWithAll(userId),
     ]);
     const values = singleEvents.map(({ _id: id, count }) => ({
@@ -83,11 +79,6 @@ class EventServices {
           }
         });
       });
-      // return {
-      //   eventId: id,
-      //   count,
-      //   event: events.find(event => event.id === id),
-      // };
     });
 
     return Object.values(ingredients).map(item => ({
@@ -96,18 +87,10 @@ class EventServices {
     }));
   }
 
-  async getSingleEventByDate(fromDate, toDate, userId) {
+  async getSingleEventsByDate(fromDate, toDate, userId) {
     const [singleEvents, events] = await Promise.all([
-      SingleEventSchema.find({
-        eventStartDate: {
-          $gte: fromDate,
-          $lt: toDate,
-        },
-        userId,
-      })
-        .sort('eventStartDate')
-        .lean(),
-      this.getAllEventsByUser(userId),
+      SingleEventQuery.getSingleEventByDate(fromDate, toDate, userId),
+      EventQuery.getUserEvents(userId),
     ]);
 
     return singleEvents.map(item => ({
@@ -116,20 +99,8 @@ class EventServices {
     }));
   }
 
-  async getAllEventsByUser(userId) {
-    const events = await Event.findAll({
-      where: { user_id: userId },
-      attributes: [
-        'id',
-        'startDate',
-        'endDate',
-        'duration',
-        'repeatable',
-        'name',
-      ],
-    });
-
-    return events.map(item => item.get({ plain: true }));
+  async getUserEvents(userId) {
+    return EventQuery.getUserEvents(userId);
   }
 
   async getAllEventsByUserWithAll(userId) {
@@ -166,6 +137,71 @@ class EventServices {
     });
 
     return events.map(item => item.get({ plain: true }));
+  }
+
+  async create(data, userId) {
+    const ValidatedEvent = await EventValidator.createValidator(data);
+
+    if (ValidatedEvent.eventMeals) {
+      await this.verifyEventMeals(userId, ValidatedEvent.eventMeals);
+    }
+
+    const event = await EventQuery.createEvent(ValidatedEvent, userId);
+    const singleEvents = this.getSingleEvent(
+      { ...ValidatedEvent, id: event.id },
+      userId
+    );
+    const saves = await SingleEventQuery.createMany(singleEvents);
+
+    return { ...event, events: saves.length };
+  }
+
+  async update(data, id, userId) {
+    const event = await this.verifyAndGetEvent(id, userId);
+
+    const ValidatedEvent = await EventValidator.updateValidator({
+      repeatable: event.repeatable,
+      startDate: event.startDate,
+      ...data,
+    });
+
+    if (data.eventMeals) {
+      await this.verifyEventMeals(userId, ValidatedEvent.eventMeals);
+    }
+
+    const eventSaved = await EventQuery.updateEventById(
+      ValidatedEvent,
+      id,
+      userId
+    );
+
+    const singleEvents = this.getSingleEvent(
+      { ...ValidatedEvent, id: eventSaved.id },
+      userId
+    );
+    const saves = await SingleEventQuery.updateMany(singleEvents);
+
+    return { ...eventSaved, events: saves.length };
+  }
+
+  async delete(id, userId) {
+    const deleteds = await EventQuery.deleteEventById(id, userId);
+    if (!deleteds === 0) throw new ValidationError(notFound('Event'));
+    await SingleEventQuery.deleteMany(id);
+    return true;
+  }
+
+  async verifyEventMeals(user_id, eventMeals) {
+    const eventMealsIds = eventMeals.map(item => item.mealId);
+    const meals = await MealService.getUserMealsByIds(eventMeals, user_id);
+    if (meals.length < eventMeals.length) {
+      const mealsIds = meals.map(item => item.id);
+      const filteredId = eventMealsIds.filter(
+        ingredientId => !mealsIds.find(item => ingredientId === item)
+      );
+      throw new ValidationError(notFound(`Meal(s) :${filteredId}`));
+    }
+    return true;
   }
 }
 

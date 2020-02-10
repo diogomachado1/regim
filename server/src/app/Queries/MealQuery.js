@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import Meal from '../models/Meal';
 import Ingredient from '../models/Ingredient';
 import Product from '../models/Product';
@@ -20,6 +21,20 @@ class MealQuery {
           },
         },
       ],
+    });
+
+    return DocMeals.map(meal => meal.get());
+  }
+
+  async getUserMealsByIds(ids, user_id) {
+    const DocMeals = Meal.findAll({
+      attributes: ['id'],
+      where: {
+        id: {
+          [Op.in]: ids,
+        },
+        user_id,
+      },
     });
 
     return DocMeals.map(meal => meal.get());
