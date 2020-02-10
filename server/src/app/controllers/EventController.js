@@ -33,7 +33,7 @@ class EventController {
   async store(req, res) {
     const { userId } = req;
 
-    const event = EventServices.create(req.body, userId);
+    const event = await EventServices.create(req.body, userId);
 
     const eventFomated = await EventValidator.format(event);
 
@@ -46,7 +46,7 @@ class EventController {
       params: { id },
     } = req;
 
-    const event = EventServices.update(req.body, id, userId);
+    const event = await EventServices.update(req.body, id, userId);
 
     return res.status(200).json(await EventValidator.format(event));
   }

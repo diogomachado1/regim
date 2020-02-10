@@ -160,10 +160,7 @@ class EventValidator {
         eventMeals,
       };
     } catch (err) {
-      return {
-        isError: true,
-        error: err.errors[0],
-      };
+      throw new ValidationError(badRequest(err.errors[0]));
     }
   }
 }
