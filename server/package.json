@@ -10,6 +10,7 @@
     "migrations": "sequelize db:migrate",
     "prestart": "sequelize db:migrate",
     "start": "NODE_ENV=production node dist/server.js",
+    "pretest": "NODE_ENV=test sequelize db:migrate",
     "test": "NODE_ENV=test jest --detectOpenHandles",
     "pretest:watch": "NODE_ENV=test sequelize db:migrate",
     "test:watch": "NODE_ENV=test jest --watch --detectOpenHandles",
