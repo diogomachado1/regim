@@ -62,54 +62,81 @@ class MealQuery {
   }
 
   async createMeal(data, user_id) {
-    const DocMeal = await Meal.create(
-      {
-        ...data,
-        user_id,
-      },
-      {
-        include: [
-          {
-            model: Ingredient,
-            as: 'ingredients',
-          },
-        ],
-      }
-    );
-
-    return DocMeal && DocMeal.get();
-  }
-
-  async updateMealById(data, id, user_id) {
-    const [, [DocMeal]] = await database.connection.transaction(async t => {
-      // step 1
-      if (data.ingredients) {
-        await Ingredient.destroy({
+    const meal = await database.connection.transaction(async t => {
+      const { id, name, description } = await Meal.create(
+        {
+          ...data,
+          user_id,
+        },
+        {
           transaction: t,
-          where: { meal_id: id },
-        });
+        }
+      );
 
-        await Ingredient.bulkCreate(
+      let ingredients = [];
+      if (data.ingredients) {
+        ingredients = await Ingredient.bulkCreate(
           data.ingredients.map(item => ({
             ...item,
-            meal_id: id,
+            mealId: id,
           })),
           {
             transaction: t,
           }
         );
       }
+      ingredients = ingredients.map(item => item.get({ plain: true }));
+      ingredients = ingredients.map(({ productId, amount }) => ({
+        productId,
+        amount,
+      }));
 
-      // step 2
-      return Meal.update(data, {
+      return {
+        name,
+        id,
+        description,
+        ingredients,
+      };
+    });
+
+    return meal;
+  }
+
+  async updateMealById(data, id, user_id) {
+    const meal = await database.connection.transaction(async t => {
+      // step 1
+      let ingredients = [];
+      if (data.ingredients) {
+        await Ingredient.destroy({
+          transaction: t,
+          where: { meal_id: id },
+        });
+        ingredients = await Ingredient.bulkCreate(
+          data.ingredients.map(item => ({
+            ...item,
+            mealId: id,
+          })),
+          {
+            transaction: t,
+          }
+        );
+      }
+      const [, [{ name, description }]] = await Meal.update(data, {
         where: { user_id, id },
         returning: true,
         include: [{ model: Ingredient, as: 'ingredients' }],
         transaction: t,
         attributes: ['amount', ['product_id', 'productId']],
       });
+
+      return {
+        name,
+        id,
+        description,
+        ingredients,
+      };
     });
-    return DocMeal && DocMeal.get();
+    return meal;
   }
 
   async deleteMealById(id, user_id) {

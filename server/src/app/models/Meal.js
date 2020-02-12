@@ -21,7 +21,8 @@ class Meal extends Model {
       through: {
         model: models.Ingredient,
       },
-      foreignKey: 'meal_id',
+      foreignKey: { field: 'product_id', name: 'productId' },
+      as: 'product',
       constraints: false,
     });
     this.hasMany(models.Ingredient, {
