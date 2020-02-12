@@ -1,4 +1,3 @@
-import MealValidator from '../Validators/MealValidator';
 import MealService from '../Services/MealService';
 
 class MealsController {
@@ -26,8 +25,7 @@ class MealsController {
 
     const meal = await MealService.create(req.body, userId);
 
-    const mealReponse = await MealValidator.format(meal);
-    return res.status(201).json(mealReponse);
+    return res.status(201).json(meal);
   }
 
   async update(req, res) {
@@ -38,8 +36,7 @@ class MealsController {
 
     const meal = await MealService.update(req.body, id, userId);
 
-    const mealReponse = await MealValidator.format(meal);
-    return res.status(200).json(mealReponse);
+    return res.status(200).json(meal);
   }
 
   async delete(req, res) {

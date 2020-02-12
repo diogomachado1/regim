@@ -28,7 +28,7 @@ factory.define('Meal', Meal, {
 
 factory.define('Ingredient', Ingredient, {
   productId: faker.random.number({ min: 0, max: 1000 }),
-  amount: faker.random.number({ min: 0, max: 1000 }),
+  amount: faker.random.number({ min: 0, max: 1000 }).toFixed(2),
 });
 
 factory.define('Event', Event, {
@@ -44,7 +44,7 @@ factory.define('Event', Event, {
 
 factory.define('EventMeal', EventMeal, {
   mealId: faker.random.number({ min: 0, max: 1000 }),
-  amount: faker.random.number({ min: 0, max: 1000 }),
+  amount: faker.random.number({ min: 0, max: 1000 }).toFixed(2),
 });
 
 export default factory;

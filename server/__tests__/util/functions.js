@@ -23,6 +23,17 @@ async function createTokenAndUser(user) {
   return { token, user };
 }
 
+async function createProducts() {
+  const { token } = await createTokenAndUser();
+  const product = await factory.attrs('Product');
+
+  const response = await request(app.server)
+    .post('/products')
+    .set('Authorization', `bearer ${token}`)
+    .send(product);
+  return { product: response.body, token };
+}
+
 async function createMeals() {
   const { token } = await createTokenAndUser();
   const meal = await factory.attrs('Meal');
@@ -44,4 +55,10 @@ async function createEvent() {
   return { event: response.body, token };
 }
 
-export { createUser, createTokenAndUser, createMeals, createEvent };
+export {
+  createUser,
+  createTokenAndUser,
+  createMeals,
+  createProducts,
+  createEvent,
+};
