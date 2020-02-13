@@ -16,8 +16,8 @@ factory.define('User', User, {
 
 factory.define('Product', Product, {
   name: faker.name.findName(),
-  amount: faker.random.number({ min: 10, max: 1000 }),
-  price: faker.random.number({ min: 0, max: 50 }),
+  amount: faker.random.number({ min: 10, max: 1000 }).toFixed(2),
+  price: faker.random.number({ min: 0, max: 50 }).toFixed(2),
   measure: faker.random.arrayElement(['g', 'ml', 'unity']),
 });
 

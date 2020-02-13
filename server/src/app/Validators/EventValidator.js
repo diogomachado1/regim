@@ -103,66 +103,6 @@ class EventValidator {
       throw new ValidationError(badRequest(err.errors[0]));
     }
   }
-
-  async format(meal) {
-    const validator = Yup.object().shape({
-      name: Yup.string().required(),
-      startDate: Yup.date().required(),
-      endDate: Yup.date()
-        .required()
-        .when(
-          'startDate',
-          (startDate, schema) => startDate && schema.min(startDate)
-        )
-        .when(
-          'startDate',
-          (startDate, schema) => startDate && schema.max(addYears(startDate, 1))
-        ),
-      duration: Yup.number()
-        .default(30)
-        .min(15)
-        .required(),
-      events: Yup.number().required(),
-      repeatable: Yup.mixed().oneOf(['daily', 'weekly', 'not']),
-      eventMeals: Yup.array().of(
-        Yup.object()
-          .shape({
-            mealId: Yup.number().required(),
-            amount: Yup.number()
-              .default(0)
-              .min(0),
-          })
-          .transform(({ amount, MealId }) => ({
-            amount: parseFloat(amount),
-            mealId: MealId,
-          }))
-      ),
-    });
-    try {
-      const {
-        id,
-        name,
-        startDate,
-        endDate,
-        duration,
-        repeatable,
-        events,
-        eventMeals,
-      } = await validator.validate(meal);
-      return {
-        id,
-        name,
-        startDate,
-        endDate,
-        duration,
-        repeatable,
-        events,
-        eventMeals,
-      };
-    } catch (err) {
-      throw new ValidationError(badRequest(err.errors[0]));
-    }
-  }
 }
 
 export default new EventValidator();

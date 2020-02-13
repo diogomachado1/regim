@@ -36,17 +36,15 @@ class MealValidator {
       name: Yup.string().trim(),
       description: Yup.string().trim(),
       ingredients: Yup.array().of(
-        Yup.object()
-          .shape({
-            productId: Yup.number()
-              .min(0)
-              .integer()
-              .required(),
-            amount: Yup.number()
-              .min(0)
-              .default(0),
-          })
-          .from('productId', 'ProductId', true)
+        Yup.object().shape({
+          productId: Yup.number()
+            .min(0)
+            .integer()
+            .required(),
+          amount: Yup.number()
+            .min(0)
+            .default(0),
+        })
       ),
     });
 
