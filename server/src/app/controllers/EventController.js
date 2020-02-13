@@ -1,5 +1,4 @@
 import { parseISO, addMonths } from 'date-fns';
-import EventValidator from '../Validators/EventValidator';
 import EventServices from '../Services/Event';
 
 class EventController {
@@ -35,9 +34,7 @@ class EventController {
 
     const event = await EventServices.create(req.body, userId);
 
-    const eventFomated = await EventValidator.format(event);
-
-    return res.status(201).json(eventFomated);
+    return res.status(201).json(event);
   }
 
   async update(req, res) {
@@ -48,7 +45,7 @@ class EventController {
 
     const event = await EventServices.update(req.body, id, userId);
 
-    return res.status(200).json(await EventValidator.format(event));
+    return res.status(200).json(event);
   }
 
   async delete(req, res) {

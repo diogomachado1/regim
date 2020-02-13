@@ -1,4 +1,3 @@
-import ProductValidator from '../Validators/ProductValidator';
 import ProductService from '../Services/ProductService';
 
 class ProductController {
@@ -7,8 +6,7 @@ class ProductController {
 
     const products = await ProductService.getUserProducts(userId);
 
-    const formatedProduct = await ProductValidator.formatArray(products);
-    return res.status(200).json(formatedProduct);
+    return res.status(200).json(products);
   }
 
   async store(req, res) {
@@ -16,8 +14,7 @@ class ProductController {
 
     const product = await ProductService.create(req.body, userId);
 
-    const formatedProduct = await ProductValidator.format(product);
-    return res.status(201).json(formatedProduct);
+    return res.status(201).json(product);
   }
 
   async update(req, res) {
@@ -28,8 +25,7 @@ class ProductController {
 
     const product = await ProductService.update(req.body, id, user_id);
 
-    const formatedProduct = await ProductValidator.format(product);
-    return res.status(200).json(formatedProduct);
+    return res.status(200).json(product);
   }
 
   async delete(req, res) {
