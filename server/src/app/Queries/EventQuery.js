@@ -63,7 +63,10 @@ class EventQuery {
       }
     );
 
-    return DocEvent && DocEvent.get({ plain: true });
+    const { id, name, repeatable, endDate, startDate, duration } =
+      DocEvent && DocEvent.get({ plain: true });
+
+    return { id, name, repeatable, endDate, startDate, duration };
   }
 
   async updateEventById(data, id, user_id) {
