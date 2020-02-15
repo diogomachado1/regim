@@ -67,7 +67,7 @@ describe('ProductsValidator', () => {
     );
   });
 
-  it('measure should be number when create a product', async () => {
+  it('measure should be required when create a product', async () => {
     const product = await factory.attrs('Product', {
       measure: undefined,
     });
@@ -76,7 +76,7 @@ describe('ProductsValidator', () => {
     );
   });
 
-  it('measure should be positive when create a product', async () => {
+  it('measure should be one of the following values: g, ml, unity when create a product', async () => {
     const product = await factory.attrs('Product', {
       measure: 'test',
     });

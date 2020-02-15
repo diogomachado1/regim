@@ -39,7 +39,6 @@ class App {
         };
         return res.status(type === 'notFound' ? 404 : 400).json(error);
       }
-      console.log(err);
       if (process.env.NODE_ENV !== 'development') {
         const errors = await new Youch(err, req).toJSON();
 
