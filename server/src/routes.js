@@ -7,11 +7,13 @@ import ProductController from './app/controllers/ProductController';
 import MealController from './app/controllers/MealController';
 import EventController from './app/controllers/EventController';
 import ListController from './app/controllers/ListController';
+import ConfirmEmailController from './app/controllers/ConfirmEmailController';
 
 const routes = new Router();
 
 routes.post('/users', UserController.store);
 routes.get('/', (req, res) => res.send('ok Regim'));
+routes.put('/confirmEmail/:hash', ConfirmEmailController.update);
 
 routes.post('/sessions', SessionController.store);
 routes.use(authMiddleware);

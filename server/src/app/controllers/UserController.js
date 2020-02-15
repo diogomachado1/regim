@@ -1,5 +1,7 @@
 import * as Yup from 'yup';
 import User from '../models/User';
+import HashService from '../Services/HashService';
+import Mail from '../../lib/Mail';
 
 class UserController {
   async store(req, res) {
@@ -25,8 +27,22 @@ class UserController {
       return res.status(400).json({ error: 'User already exists.' });
     }
 
-    const { id, name, email } = await User.create(req.body);
+    const { id, name, email } = await User.create({
+      ...req.body,
+      active: false,
+    });
 
+    const hash = await HashService.create(id);
+
+    await Mail.sendMail({
+      to: `${name} <${email}`,
+      subject: 'Email de confirmação',
+      template: 'confirmEmail',
+      context: {
+        userName: name,
+        link: `http://localhost:3000/${hash.hash}`,
+      },
+    });
     return res.status(201).json({
       id,
       name,

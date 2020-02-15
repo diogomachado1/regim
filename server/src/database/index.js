@@ -9,8 +9,9 @@ import Meal from '../app/models/Meal';
 import Ingredient from '../app/models/Ingredient';
 import Event from '../app/models/Event';
 import EventMeal from '../app/models/EventMeal';
+import Hash from '../app/models/Hash';
 
-const models = [User, Product, Ingredient, Meal, Event, EventMeal];
+const models = [User, Product, Ingredient, Meal, Event, EventMeal, Hash];
 
 class Database {
   constructor() {
