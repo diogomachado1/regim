@@ -31,18 +31,19 @@ class UserController {
       ...req.body,
       active: false,
     });
+    if (process.env.NODE_ENV !== 'test') {
+      const hash = await HashService.create(id);
 
-    const hash = await HashService.create(id);
-
-    await Mail.sendMail({
-      to: `${name} <${email}`,
-      subject: 'Email de confirmação',
-      template: 'confirmEmail',
-      context: {
-        userName: name,
-        link: `http://localhost:3000/${hash.hash}`,
-      },
-    });
+      await Mail.sendMail({
+        to: `${name} <${email}`,
+        subject: 'Email de confirmação',
+        template: 'confirmEmail',
+        context: {
+          userName: name,
+          link: `http://localhost:3000/${hash.hash}`,
+        },
+      });
+    }
     return res.status(201).json({
       id,
       name,
