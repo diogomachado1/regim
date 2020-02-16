@@ -1,27 +1,19 @@
 version: '3.7'
 services:
   backend:
-    # or image: diogo8machado/regim
     build: .
     ports:
       - 3333:3333
     environment:
+      APP_URL: http://172.17.0.1:3333
       NODE_ENV: production
-      APP_SECRET: test
-      DB_HOST: db
+      REDIS_HOST: 172.17.0.1
+      REDIS_PORT: 6379
+      DB_DIALECT: postgres
+      DB_HOST: 172.17.0.1
       DB_USER: postgres
       DB_PASS: docker
       DB_NAME: regim
-
-    depends_on:
-      - db
-  db:
-    image: postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: docker
-      POSTGRES_DB: regim
-    volumes:
-      - pg_data_regim:/var/lib/postgresql/data
+      MONGO_URL: mongodb://172.17.0.1:27017/regim
 volumes:
   pg_data_regim:

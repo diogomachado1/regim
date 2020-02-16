@@ -9,4 +9,4 @@ WORKDIR /regim
 
 RUN yarn && yarn build
 
-CMD yarn start
+CMD yarn migrations && yarn start
