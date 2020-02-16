@@ -11,7 +11,7 @@
     "migrations": "sequelize db:migrate",
     "start": "NODE_ENV=production pm2 start ecosystem.config.js",
     "pretest": "NODE_ENV=test sequelize db:migrate",
-    "test": "NODE_ENV=test jest --detectOpenHandles",
+    "test": "NODE_ENV=test jest --detectOpenHandles --forceExit --maxWorkers=10",
     "pretest:watch": "NODE_ENV=test sequelize db:migrate",
     "test:watch": "NODE_ENV=test jest --watch --detectOpenHandles",
     "posttest:watch": "NODE_ENV=test sequelize db:migrate:undo:all"
