@@ -1,7 +1,8 @@
 import * as Yup from 'yup';
 import User from '../models/User';
 import HashService from '../Services/HashService';
-import Mail from '../../lib/Mail';
+import Queue from '../../lib/Queue';
+import ConfirmEmail from '../jobs/ConfirmEmail';
 
 class UserController {
   async store(req, res) {
@@ -32,17 +33,9 @@ class UserController {
       active: false,
     });
     if (process.env.NODE_ENV !== 'test') {
-      const hash = await HashService.create(id);
+      const { hash } = await HashService.create(id);
 
-      await Mail.sendMail({
-        to: `${name} <${email}`,
-        subject: 'Email de confirmação',
-        template: 'confirmEmail',
-        context: {
-          userName: name,
-          link: `http://localhost:3000/${hash.hash}`,
-        },
-      });
+      await Queue.add(ConfirmEmail.key, { name, email, hash });
     }
     return res.status(201).json({
       id,
