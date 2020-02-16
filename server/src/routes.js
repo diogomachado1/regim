@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { UI } from 'bull-board';
 import UserController from './app/controllers/UserController';
 import SessionController from './app/controllers/SessionController';
 
@@ -11,6 +12,7 @@ import ConfirmEmailController from './app/controllers/ConfirmEmailController';
 
 const routes = new Router();
 
+routes.use('/admin/queues', UI);
 routes.post('/users', UserController.store);
 routes.get('/', (req, res) => res.send('ok Regim'));
 routes.put('/confirmEmail/:hash', ConfirmEmailController.update);
