@@ -45,10 +45,6 @@ jobs:
     needs: tests
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [12.x]
-
     steps:
       - uses: actions/checkout@v2
       - name: Publish to Registry
@@ -58,9 +54,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           workdir: server
-      #- run: 
-      - run: cd server && npm install
-      - run: cd server && npm run build --if-present
         env:
           CI: true
           NODE_ENV: test
