@@ -53,6 +53,11 @@ jobs:
       - uses: actions/checkout@v2
       - name: Publish to Registry
         uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: diogo8machado/regim
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          workdir: server
       #- run: 
       - run: cd server && npm install
       - run: cd server && npm run build --if-present
@@ -60,7 +65,3 @@ jobs:
           CI: true
           NODE_ENV: test
           APP_SECRET: test
-          name: diogo8machado/regim
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          workdir: server
