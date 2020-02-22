@@ -54,7 +54,3 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           workdir: server
-        env:
-          CI: true
-          NODE_ENV: test
-          APP_SECRET: test

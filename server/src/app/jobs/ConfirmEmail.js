@@ -14,7 +14,7 @@ class ConfirmEmail {
       template: 'confirmEmail',
       context: {
         userName: name,
-        link: `http://localhost:3000/${hash}`,
+        link: `${process.env.CONFIRM_EMAIL_LINK}/${hash}`,
       },
     });
   }
