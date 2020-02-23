@@ -30,6 +30,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.dropTable('single-events');
+    return queryInterface.dropTable('single_events');
   },
 };

@@ -1,20 +1,25 @@
 import User from '../models/User';
 
 class UserQuery {
-  // async getUserByUser(hash) {
-  //   const DocUser = await User.findOne({ where: { hash });
+  async getUserById(id) {
+    const DocUser = await User.findOne({ where: { id } });
 
-  //   return DocUser && DocUser.get();
-  // }
+    return DocUser && DocUser.get();
+  }
 
-  // async createUser(data, user_id) {
-  //   const DocUser = await User.create({
-  //     ...data,
-  //     user_id,
-  //   });
+  async getUserByEmail(email) {
+    const DocUser = await User.findOne({ where: { email } });
 
-  //   return DocUser && DocUser.get();
-  // }
+    return DocUser && DocUser.get();
+  }
+
+  async create(data) {
+    const DocUser = await User.create({
+      ...data,
+      active: false,
+    });
+    return DocUser && DocUser.get();
+  }
 
   async update(data, id) {
     const [, [DocProduct]] = await User.update(data, {

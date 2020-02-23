@@ -1,7 +1,6 @@
 import addYears from 'date-fns/addYears';
 import * as Yup from 'yup';
-import ValidationError from '../Error/ValidationError';
-import { badRequest } from '../Error/TypeErrors';
+import validateSchema from '.';
 
 class EventValidator {
   async createValidator(payload) {
@@ -32,26 +31,19 @@ class EventValidator {
           return schema;
         }),
       eventMeals: Yup.array().of(
-        Yup.object()
-          .shape({
-            mealId: Yup.number()
-              .min(0)
-              .integer()
-              .required(),
-            amount: Yup.number()
-              .default(0)
-              .min(0),
-          })
-          .from('mealId', 'MealId', true)
+        Yup.object().shape({
+          mealId: Yup.number()
+            .min(0)
+            .integer()
+            .required(),
+          amount: Yup.number()
+            .default(0)
+            .min(0),
+        })
       ),
     });
 
-    try {
-      const response = await validator.validate(payload);
-      return response;
-    } catch (err) {
-      throw new ValidationError(badRequest(err.errors[0]));
-    }
+    return validateSchema(validator, payload);
   }
 
   async updateValidator(payload) {
@@ -74,34 +66,18 @@ class EventValidator {
           return schema;
         }),
       eventMeals: Yup.array().of(
-        Yup.object()
-          .shape({
-            mealId: Yup.number()
-              .min(0)
-              .integer()
-              .required(),
-            amount: Yup.number()
-              .default(0)
-              .min(0),
-          })
-          .from('mealId', 'MealId', true)
-          .from('eventId', 'EventId', true)
+        Yup.object().shape({
+          mealId: Yup.number()
+            .min(0)
+            .integer()
+            .required(),
+          amount: Yup.number()
+            .default(0)
+            .min(0),
+        })
       ),
     });
-    try {
-      const {
-        name,
-        startDate,
-        endDate,
-        duration,
-        repeatable,
-        eventMeals,
-      } = await validator.validate(payload);
-
-      return { name, startDate, endDate, duration, repeatable, eventMeals };
-    } catch (err) {
-      throw new ValidationError(badRequest(err.errors[0]));
-    }
+    return validateSchema(validator, payload);
   }
 }
 

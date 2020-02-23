@@ -13,14 +13,10 @@ async function createUser() {
 }
 
 async function createTokenAndUser(user) {
-  user = user || (await createUser());
-
-  const {
-    body: { token },
-  } = await request(app.server)
+  const { body } = await request(app.server)
     .post('/sessions')
-    .send({ email: user.email, password: user.password });
-  return { token, user };
+    .send({ email: 'admin@regim.com', password: '123456' });
+  return { token: body.token, user };
 }
 
 async function createProducts() {

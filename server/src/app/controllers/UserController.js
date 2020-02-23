@@ -1,42 +1,8 @@
-import * as Yup from 'yup';
-import User from '../models/User';
-import HashService from '../Services/HashService';
-import Queue from '../../lib/Queue';
-import ConfirmEmail from '../jobs/ConfirmEmail';
+import UserServices from '../Services/UserServices';
 
 class UserController {
   async store(req, res) {
-    const schema = Yup.object().shape({
-      name: Yup.string().required(),
-      email: Yup.string()
-        .email()
-        .required(),
-      password: Yup.string()
-        .required()
-        .min(6),
-    });
-
-    try {
-      await schema.validate(req.body);
-    } catch (error) {
-      return res.status(400).json({ error: error.errors[0] });
-    }
-
-    const userExists = await User.findOne({ where: { email: req.body.email } });
-
-    if (userExists) {
-      return res.status(400).json({ error: 'User already exists.' });
-    }
-
-    const { id, name, email } = await User.create({
-      ...req.body,
-      active: false,
-    });
-    if (process.env.NODE_ENV !== 'test') {
-      const { hash } = await HashService.create(id);
-
-      await Queue.add(ConfirmEmail.key, { name, email, hash });
-    }
+    const { id, name, email } = await UserServices.create(req.body);
     return res.status(201).json({
       id,
       name,
@@ -45,48 +11,11 @@ class UserController {
   }
 
   async update(req, res) {
-    const schema = Yup.object().shape({
-      name: Yup.string(),
-      email: Yup.string().email(),
-      oldPassword: Yup.string()
-        .min(6)
-        .when('password', (password, field) =>
-          password ? field.required() : field
-        ),
-      password: Yup.string().min(6),
-      confirmPassword: Yup.string().when('password', (password, field) =>
-        password ? field.required().oneOf([Yup.ref('password')]) : field
-      ),
-    });
-
-    try {
-      await schema.validate(req.body);
-    } catch (error) {
-      return res.status(400).json({ error: error.errors[0] });
-    }
-
-    const { email, oldPassword } = req.body;
-
-    const user = await User.findByPk(req.userId);
-
-    if (email && email !== user.email) {
-      const userExists = await User.findOne({ where: { email } });
-
-      if (userExists) {
-        return res.status(400).json({ error: 'User already exists.' });
-      }
-    }
-
-    if (oldPassword && !(await user.checkPassword(oldPassword))) {
-      return res.status(401).json({ error: 'Password does not match' });
-    }
-
-    const { id, name, email: userEmail } = await user.update(req.body);
-
+    const { id, name, email } = await UserServices.update(req.body, req.userId);
     return res.json({
       id,
       name,
-      email: userEmail,
+      email,
     });
   }
 }
