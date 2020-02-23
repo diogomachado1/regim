@@ -5,7 +5,7 @@ import express from 'express';
 import 'express-async-errors';
 import cors from 'cors';
 
-import routes from './routes';
+import routesV1 from './app/routes';
 
 // Uncomment this line to enable database access
 // --------
@@ -26,7 +26,7 @@ class App {
   }
 
   routes() {
-    this.server.use(routes);
+    this.server.use(routesV1);
   }
 
   exceptionHandler() {

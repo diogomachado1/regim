@@ -27,10 +27,10 @@ describe('Meals', () => {
       ],
     });
     const response = await request(app.server)
-      .post('/meals')
+      .post('/v1/pvt/meals')
       .set('Authorization', `bearer ${token}`)
       .send(meal);
-
+    expect(response.status).toBe(201);
     expect(response.body).toMatchObject(meal);
   });
 
@@ -38,9 +38,9 @@ describe('Meals', () => {
     const { meal, token } = await createMeals();
 
     const response = await request(app.server)
-      .get('/meals')
+      .get('/v1/pvt/meals')
       .set('Authorization', `bearer ${token}`);
-
+    expect(response.status).toBe(200);
     expect(response.body).toMatchObject([{ ...meal }]);
   });
 
@@ -54,17 +54,17 @@ describe('Meals', () => {
       ],
     });
     const response = await request(app.server)
-      .put(`/meals/${meal.id}`)
+      .put(`/v1/pvt/meals/${meal.id}`)
       .set('Authorization', `bearer ${token}`)
       .send(newMeal);
-
+    expect(response.status).toBe(200);
     expect(response.body).toMatchObject(newMeal);
   });
 
   it('should be able to delete a meal', async () => {
     const { meal, token } = await createMeals();
     const response = await request(app.server)
-      .delete(`/meals/${meal.id}`)
+      .delete(`/v1/pvt/meals/${meal.id}`)
       .set('Authorization', `bearer ${token}`);
 
     expect(response.status).toBe(204);

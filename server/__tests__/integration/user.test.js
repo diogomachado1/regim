@@ -26,9 +26,10 @@ describe('User Create', () => {
     Queue.add.mockResolvedValue();
 
     const response = await request(app.server)
-      .post('/users')
+      .post('/v1/pub/users')
       .send(user);
 
+    expect(response.status).toBe(201);
     expect(response.body).toHaveProperty('id');
   });
 
@@ -36,9 +37,11 @@ describe('User Create', () => {
     const { token } = await createTokenAndUser();
 
     const response = await request(app.server)
-      .put('/users')
+      .put('/v1/pvt/users')
       .set('Authorization', `bearer ${token}`)
       .send({ name: 'Test Name' });
+
+    expect(response.status).toBe(200);
     expect(response.body).toMatchObject({ name: 'Test Name' });
   });
   // it('should encrypt user password when new user created', async () => {

@@ -11,7 +11,7 @@ async function createProducts() {
   const product = await factory.attrs('Product');
 
   const response = await request(app.server)
-    .post('/products')
+    .post('/v1/pvt/products')
     .set('Authorization', `bearer ${token}`)
     .send(product);
   return { product: response.body, token };
@@ -30,7 +30,7 @@ describe('Products', () => {
     const product = await factory.attrs('Product');
 
     const response = await request(app.server)
-      .post('/products')
+      .post('/v1/pvt/products')
       .set('Authorization', `bearer ${token}`)
       .send(product);
 
@@ -41,7 +41,7 @@ describe('Products', () => {
     const { product, token } = await createProducts();
 
     const response = await request(app.server)
-      .get('/products')
+      .get('/v1/pvt/products')
       .set('Authorization', `bearer ${token}`);
 
     expect(response.body).toMatchObject([{ ...product }]);
@@ -52,7 +52,7 @@ describe('Products', () => {
 
     const newProduct = await factory.attrs('Product');
     const response = await request(app.server)
-      .put(`/products/${product.id}`)
+      .put(`/v1/pvt/products/${product.id}`)
       .set('Authorization', `bearer ${token}`)
       .send(newProduct);
     expect(response.body).toMatchObject(newProduct);
@@ -62,7 +62,7 @@ describe('Products', () => {
     const { product, token } = await createProducts();
 
     const response = await request(app.server)
-      .delete(`/products/${product.id}`)
+      .delete(`/v1/pvt/products/${product.id}`)
       .set('Authorization', `bearer ${token}`);
 
     expect(response.status).toBe(204);
