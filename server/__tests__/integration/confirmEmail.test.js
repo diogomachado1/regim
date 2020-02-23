@@ -25,7 +25,7 @@ describe('confirmEmail', () => {
     Queue.add.mockResolvedValue();
 
     const response = await request(app.server)
-      .post('/confirmEmail')
+      .post('/v1/pub/confirmEmail')
       .send({ email: 'admin@regim.com' });
     expect(Queue.add).toHaveBeenCalledTimes(1);
 
@@ -36,7 +36,7 @@ describe('confirmEmail', () => {
     Queue.add.mockResolvedValue();
 
     const response = await request(app.server)
-      .post('/confirmEmail')
+      .post('/v1/pub/confirmEmail')
       .send({ email: 'admin@regim.com' });
 
     expect(response.status).toBe(400);
@@ -47,7 +47,7 @@ describe('confirmEmail', () => {
     Queue.add.mockResolvedValue();
 
     const response = await request(app.server)
-      .post('/confirmEmail')
+      .post('/v1/pub/confirmEmail')
       .send({ email: 'admin1@regim.com' });
 
     expect(response.status).toBe(404);

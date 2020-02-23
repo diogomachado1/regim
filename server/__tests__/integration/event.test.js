@@ -23,7 +23,7 @@ describe('Events Create', () => {
     const event = await factory.attrs('Event');
 
     const response = await request(app.server)
-      .post('/events')
+      .post('/v1/pvt/events')
       .set('Authorization', `bearer ${token}`)
       .send(event);
 
@@ -36,6 +36,7 @@ describe('Events Create', () => {
       1
     ).length;
 
+    expect(response.status).toBe(201);
     expect(response.body).toMatchObject(event, { events });
   });
 
@@ -43,11 +44,12 @@ describe('Events Create', () => {
     const { event, token } = await createEvent();
 
     const response = await request(app.server)
-      .get(`/events/${event.id}`)
+      .get(`/v1/pvt/events/${event.id}`)
       .set('Authorization', `bearer ${token}`);
 
     delete event.events;
 
+    expect(response.status).toBe(200);
     expect(response.body).toMatchObject(event);
   });
 
@@ -56,9 +58,11 @@ describe('Events Create', () => {
 
     const newEvent = await factory.attrs('Event');
     const response = await request(app.server)
-      .put(`/events/${event.id}`)
+      .put(`/v1/pvt/events/${event.id}`)
       .set('Authorization', `bearer ${token}`)
       .send(newEvent);
+
+    expect(response.status).toBe(200);
     expect(response.body).toMatchObject(newEvent);
   });
 
@@ -66,7 +70,7 @@ describe('Events Create', () => {
     const { event, token } = await createEvent();
 
     const response = await request(app.server)
-      .delete(`/events/${event.id}`)
+      .delete(`/v1/pvt/events/${event.id}`)
       .set('Authorization', `bearer ${token}`);
 
     expect(response.status).toBe(204);

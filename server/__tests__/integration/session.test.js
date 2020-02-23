@@ -14,7 +14,7 @@ describe('Session Create', () => {
 
   it('should be able to create session', async () => {
     const response = await request(app.server)
-      .post('/sessions')
+      .post('/v1/pub/sessions')
       .send({ email: 'admin@regim.com', password: '123456' });
 
     expect(response.body).toHaveProperty('token');
@@ -24,11 +24,11 @@ describe('Session Create', () => {
     const {
       body: { token },
     } = await request(app.server)
-      .post('/sessions')
+      .post('/v1/pub/sessions')
       .send({ email: 'admin@regim.com', password: '123456' });
 
     const response = await request(app.server)
-      .get('/testAuth')
+      .get('/v1/pvt/testAuth')
       .set('Authorization', `bearer ${token}`);
 
     expect(response.status).toBe(200);
@@ -36,13 +36,13 @@ describe('Session Create', () => {
 
   it('should have a valid token to use API', async () => {
     const response = await request(app.server)
-      .get('/testAuth')
+      .get('/v1/pvt/testAuth')
       .set('Authorization', `bearer testwoken`);
     expect(response.status).toBe(401);
   });
 
   it('should have a token to use API', async () => {
-    const response = await request(app.server).get('/testAuth');
+    const response = await request(app.server).get('/v1/pvt/testAuth');
 
     expect(response.status).toBe(401);
   });
