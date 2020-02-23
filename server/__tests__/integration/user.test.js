@@ -4,18 +4,27 @@ import app from '../../src/app';
 
 import truncate from '../util/truncate';
 import factory from '../factories';
+import Queue from '../../src/lib/Queue';
+
 import { createTokenAndUser } from '../util/functions';
+
+jest.mock('../../src/lib/Queue', () => ({
+  add: jest.fn(),
+}));
 
 describe('User Create', () => {
   beforeEach(async () => {
     await truncate();
   });
+
   afterAll(async () => {
     app.close();
   });
 
   it('should be able to register', async () => {
     const user = await factory.attrs('User');
+    Queue.add.mockResolvedValue();
+
     const response = await request(app.server)
       .post('/users')
       .send(user);
@@ -32,7 +41,6 @@ describe('User Create', () => {
       .send({ name: 'Test Name' });
     expect(response.body).toMatchObject({ name: 'Test Name' });
   });
-
   // it('should encrypt user password when new user created', async () => {
   //   const user = await factory.create('User', {
   //     password: '123456',

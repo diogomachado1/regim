@@ -3,7 +3,6 @@ import request from 'supertest';
 import app from '../../src/app';
 
 import truncate from '../util/truncate';
-import { createUser } from '../util/functions';
 
 describe('Session Create', () => {
   beforeEach(async () => {
@@ -14,23 +13,19 @@ describe('Session Create', () => {
   });
 
   it('should be able to create session', async () => {
-    const { email, password } = await createUser();
-
     const response = await request(app.server)
       .post('/sessions')
-      .send({ email, password });
+      .send({ email: 'admin@regim.com', password: '123456' });
 
     expect(response.body).toHaveProperty('token');
   });
 
   it('should return a valid token to use API', async () => {
-    const { email, password } = await createUser();
-
     const {
       body: { token },
     } = await request(app.server)
       .post('/sessions')
-      .send({ email, password });
+      .send({ email: 'admin@regim.com', password: '123456' });
 
     const response = await request(app.server)
       .get('/testAuth')

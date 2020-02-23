@@ -32,6 +32,6 @@ module.exports = {
   },
 
   down: queryInterface => {
-    return queryInterface.dropTable('event-meals');
+    return queryInterface.dropTable('event_meals');
   },
 };

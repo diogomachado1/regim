@@ -1,10 +1,9 @@
 import * as Yup from 'yup';
-import ValidationError from '../Error/ValidationError';
-import { badRequest } from '../Error/TypeErrors';
+import validateSchema from '.';
 
 class MealValidator {
-  async createValidator(meal) {
-    const schema = Yup.object().shape({
+  async createValidator(payload) {
+    const validator = Yup.object().shape({
       name: Yup.string()
         .required()
         .trim(),
@@ -22,17 +21,11 @@ class MealValidator {
       ),
     });
 
-    try {
-      const response = await schema.validate(meal);
-
-      return response;
-    } catch (err) {
-      throw new ValidationError(badRequest(err.errors[0]));
-    }
+    return validateSchema(validator, payload);
   }
 
-  async updateValidator(meal) {
-    const schema = Yup.object().shape({
+  async updateValidator(payload) {
+    const validator = Yup.object().shape({
       name: Yup.string().trim(),
       description: Yup.string().trim(),
       ingredients: Yup.array().of(
@@ -48,13 +41,7 @@ class MealValidator {
       ),
     });
 
-    try {
-      const response = await schema.validate(meal);
-
-      return response;
-    } catch (err) {
-      throw new ValidationError(badRequest(err.errors[0]));
-    }
+    return validateSchema(validator, payload);
   }
 }
 

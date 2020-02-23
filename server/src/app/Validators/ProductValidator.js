@@ -1,6 +1,5 @@
 import * as Yup from 'yup';
-import ValidationError from '../Error/ValidationError';
-import { badRequest } from '../Error/TypeErrors';
+import validateSchema from '.';
 
 class ProductValidator {
   async createValidator(payload) {
@@ -17,28 +16,18 @@ class ProductValidator {
         .required(),
     });
 
-    try {
-      const response = await validator.validate(payload);
-      return response;
-    } catch (err) {
-      throw new ValidationError(badRequest(err.errors[0]));
-    }
+    return validateSchema(validator, payload);
   }
 
   async updateValidator(payload) {
-    const schema = Yup.object().shape({
+    const validator = Yup.object().shape({
       name: Yup.string().trim(),
       amount: Yup.number().min(0),
       price: Yup.number().min(0),
       measure: Yup.mixed().oneOf(['g', 'ml', 'unity']),
     });
 
-    try {
-      const response = await schema.validate(payload);
-      return response;
-    } catch (err) {
-      throw new ValidationError(badRequest(err.errors[0]));
-    }
+    return validateSchema(validator, payload);
   }
 }
 

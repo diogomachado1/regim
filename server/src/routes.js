@@ -15,6 +15,8 @@ const routes = new Router();
 routes.use('/admin/queues', UI);
 routes.post('/users', UserController.store);
 routes.get('/', (req, res) => res.send('ok Regim'));
+
+routes.post('/confirmEmail', ConfirmEmailController.store);
 routes.put('/confirmEmail/:hash', ConfirmEmailController.update);
 
 routes.post('/sessions', SessionController.store);
