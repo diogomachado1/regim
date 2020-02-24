@@ -34,6 +34,7 @@ jobs:
     #- run: 
     - run: cd server && npm install
     - run: cd server && npm test
+    - run: cd server && npm build
       env:
         CI: true
         NODE_ENV: test
@@ -48,7 +49,7 @@ jobs:
       uses: actions/upload-artifact@v1
       with:
         name: build
-        path: ~/server/dist
+        path: server/dist
   build:
     needs: tests
     runs-on: ubuntu-latest
