@@ -32,6 +32,19 @@ class UserValidator {
 
     return validateSchema(validator, payload);
   }
+
+  async updatePassword(payload) {
+    const validator = Yup.object().shape({
+      password: Yup.string()
+        .min(6)
+        .required(),
+      confirmPassword: Yup.string().when('password', (password, field) =>
+        password ? field.required().oneOf([Yup.ref('password')]) : field
+      ),
+    });
+
+    return validateSchema(validator, payload);
+  }
 }
 
 export default new UserValidator();

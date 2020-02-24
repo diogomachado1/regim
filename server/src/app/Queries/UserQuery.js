@@ -22,12 +22,11 @@ class UserQuery {
   }
 
   async update(data, id) {
-    const [, [DocProduct]] = await User.update(data, {
-      where: { id },
-      returning: true,
-    });
+    const DocUser = await User.findOne({ where: { id } });
+    DocUser.set(data);
+    const user = await DocUser.save(data);
 
-    return DocProduct && DocProduct.get();
+    return user && user.get();
   }
 
   // async deleteUserById(id, user_id) {

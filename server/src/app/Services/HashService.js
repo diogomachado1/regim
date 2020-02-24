@@ -13,11 +13,11 @@ class HashServices {
     return hashDb;
   }
 
-  async create(userId) {
+  async create(userId, type = 'CONFIRM_EMAIL') {
     // const ValidatedHash = await HashValidator.createValidator(data);
 
     const payload = {
-      type: 'CONFIRM_EMAIL',
+      type,
       hash: crypto.randomBytes(40).toString('hex'),
     };
 
