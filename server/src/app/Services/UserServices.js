@@ -5,11 +5,20 @@ import { notFound, badRequest } from '../Error/TypeErrors';
 import ValidationError from '../Error/ValidationError';
 import Queue from '../../lib/Queue';
 import ConfirmEmail from '../jobs/ConfirmEmail';
+import ForgetPassword from '../jobs/ForgetPassword';
 
 class UserServices {
   async confirmEmail(hash) {
     const hashDb = await HashService.verifyAndGetHash(hash);
     await UserQuery.update({ active: true }, hashDb.user_id);
+    await HashService.delete(hashDb.id);
+  }
+
+  async forgetPassword(hash, data) {
+    const { password } = await UserValidator.updatePassword(data);
+    const hashDb = await HashService.verifyAndGetHash(hash);
+
+    await UserQuery.update({ password }, hashDb.user_id);
     await HashService.delete(hashDb.id);
   }
 
@@ -29,6 +38,15 @@ class UserServices {
     const user = await UserQuery.getUserByEmail(email);
     if (user) throw new ValidationError(badRequest('User already exists'));
     return user;
+  }
+
+  async createForgetPasswordHash(email) {
+    if (!email) throw new ValidationError(badRequest('Email is required'));
+    const { id, name, active } = await this.verifyAndGetUserByEmail(email);
+    if (!active) throw new ValidationError(badRequest('Email need confirmed'));
+
+    const { hash } = await HashService.create(id, 'CHANGE_PASSWORD');
+    await Queue.add(ForgetPassword.key, { name, email, hash });
   }
 
   async createConfirmEmailHash(email, user) {

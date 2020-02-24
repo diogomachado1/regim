@@ -51,6 +51,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Publish to Registry
+      - run: cd server && npm install
+      - run: cd server && npm run build
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
           name: diogo8machado/regim
