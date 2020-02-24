@@ -34,7 +34,6 @@ jobs:
     #- run: 
     - run: cd server && npm install
     - run: cd server && npm test
-    - run: cd server && npm build
       env:
         CI: true
         NODE_ENV: test
@@ -45,6 +44,7 @@ jobs:
         DB_USER: postgres
         DB_PASS: postgres
         DB_NAME: postgres
+    - run: cd server && npm build
     - name: Cache
       uses: actions/upload-artifact@v1
       with:
