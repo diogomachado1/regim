@@ -33,7 +33,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
     #- run: 
     - run: cd server && npm install
-    - run: cd server && npm test
       env:
         CI: true
         NODE_ENV: test
@@ -50,6 +49,7 @@ jobs:
       with:
         name: build
         path: server/dist
+    - run: ls
   build:
     needs: tests
     runs-on: ubuntu-latest
