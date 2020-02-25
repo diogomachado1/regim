@@ -1,9 +1,18 @@
 import { Op } from 'sequelize';
 import Product from '../models/Product';
+import File from '../models/File';
 
 class ProductQuery {
   async getUserProducts(user_id) {
-    const DocProducts = await Product.findAll({ where: { user_id } });
+    const DocProducts = await Product.findAll({
+      where: { user_id },
+      include: [
+        {
+          model: File,
+          as: 'file',
+        },
+      ],
+    });
 
     return DocProducts.map(product => product.get());
   }
@@ -21,7 +30,15 @@ class ProductQuery {
   }
 
   async getProductById(id, user_id) {
-    const DocProduct = await Product.findByPk(id, { where: { user_id } });
+    const DocProduct = await Product.findByPk(id, {
+      where: { user_id },
+      include: [
+        {
+          model: File,
+          as: 'file',
+        },
+      ],
+    });
 
     return DocProduct && DocProduct.get();
   }
