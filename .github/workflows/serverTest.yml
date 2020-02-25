@@ -67,4 +67,4 @@ jobs:
           name: diogo8machado/regim
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          workdir: server/dist
+          workdir: server
