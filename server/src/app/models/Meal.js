@@ -29,6 +29,10 @@ class Meal extends Model {
       foreignKey: 'meal_id',
       as: 'ingredients',
     });
+    this.belongsTo(models.File, {
+      foreignKey: { field: 'image_id', name: 'imageId' },
+      as: 'image',
+    });
   }
 }
 

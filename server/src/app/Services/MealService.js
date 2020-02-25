@@ -3,6 +3,7 @@ import ValidationError from '../Error/ValidationError';
 import { notFound } from '../Error/TypeErrors';
 import MealValidator from '../Validators/MealValidator';
 import ProductService from './ProductService';
+import FileService from './FileService';
 
 class MealServices {
   async getUserMeals(userId) {
@@ -22,6 +23,8 @@ class MealServices {
   async create(data, userId) {
     const ValidatedMeal = await MealValidator.createValidator(data);
 
+    if (ValidatedMeal.imageId)
+      await FileService.verifyAndGetFile(ValidatedMeal.imageId, userId);
     if (ValidatedMeal.ingredients) {
       await this.verifyIngredients(userId, ValidatedMeal.ingredients);
     }
@@ -35,6 +38,8 @@ class MealServices {
 
     await this.verifyAndGetMeal(id, userId);
 
+    if (ValidatedMeal.imageId)
+      await FileService.verifyAndGetFile(ValidatedMeal.imageId, userId);
     if (ValidatedMeal.ingredients) {
       await this.verifyIngredients(userId, ValidatedMeal.ingredients);
     }

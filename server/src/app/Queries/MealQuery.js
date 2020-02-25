@@ -3,6 +3,7 @@ import Meal from '../models/Meal';
 import Ingredient from '../models/Ingredient';
 import Product from '../models/Product';
 import database from '../../database';
+import File from '../models/File';
 
 class MealQuery {
   async getUserMeals(user_id) {
@@ -19,6 +20,11 @@ class MealQuery {
             as: 'product',
             attributes: ['name', 'measure', 'amount', 'price'],
           },
+        },
+        {
+          model: File,
+          as: 'image',
+          attributes: ['path', 'url'],
         },
       ],
     });
@@ -54,6 +60,11 @@ class MealQuery {
             as: 'product',
             attributes: ['name', 'measure', 'amount', 'price'],
           },
+        },
+        {
+          model: File,
+          as: 'image',
+          attributes: ['path', 'url'],
         },
       ],
     });

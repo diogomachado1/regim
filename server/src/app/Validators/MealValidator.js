@@ -7,6 +7,9 @@ class MealValidator {
       name: Yup.string()
         .required()
         .trim(),
+      imageId: Yup.number()
+        .integer()
+        .min(1),
       description: Yup.string().trim(),
       ingredients: Yup.array().of(
         Yup.object().shape({
@@ -27,6 +30,9 @@ class MealValidator {
   async updateValidator(payload) {
     const validator = Yup.object().shape({
       name: Yup.string().trim(),
+      imageId: Yup.number()
+        .integer()
+        .min(1),
       description: Yup.string().trim(),
       ingredients: Yup.array().of(
         Yup.object().shape({
