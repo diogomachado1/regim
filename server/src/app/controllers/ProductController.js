@@ -9,6 +9,17 @@ class ProductController {
     return res.status(200).json(products);
   }
 
+  async show(req, res) {
+    const {
+      userId,
+      params: { id },
+    } = req;
+
+    const products = await ProductService.verifyAndGetProduct(id, userId);
+
+    return res.status(200).json(products);
+  }
+
   async store(req, res) {
     const { userId } = req;
 

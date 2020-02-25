@@ -2,6 +2,7 @@ import ProductQuery from '../Queries/ProductQuery';
 import ValidationError from '../Error/ValidationError';
 import { notFound } from '../Error/TypeErrors';
 import ProductValidator from '../Validators/ProductValidator';
+import FileService from './FileService';
 
 class ProductServices {
   async getUserProducts(userId) {
@@ -20,13 +21,16 @@ class ProductServices {
 
   async create(data, userId) {
     const ValidatedProduct = await ProductValidator.createValidator(data);
+    if (ValidatedProduct.imageId)
+      await FileService.verifyAndGetFile(ValidatedProduct.imageId, userId);
     const product = await ProductQuery.createProduct(ValidatedProduct, userId);
     return product;
   }
 
   async update(data, id, userId) {
     const ValidatedProduct = await ProductValidator.updateValidator(data);
-
+    if (ValidatedProduct.imageId)
+      await FileService.verifyAndGetFile(ValidatedProduct.imageId, userId);
     await this.verifyAndGetProduct(id, userId);
     return ProductQuery.updateProductById(ValidatedProduct, id, userId);
   }
