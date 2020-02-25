@@ -9,7 +9,7 @@ class ProductQuery {
       include: [
         {
           model: File,
-          as: 'file',
+          as: 'image',
         },
       ],
     });
@@ -30,12 +30,12 @@ class ProductQuery {
   }
 
   async getProductById(id, user_id) {
-    const DocProduct = await Product.findByPk(id, {
-      where: { user_id },
+    const DocProduct = await Product.findOne({
+      where: { user_id, id },
       include: [
         {
           model: File,
-          as: 'file',
+          as: 'image',
         },
       ],
     });

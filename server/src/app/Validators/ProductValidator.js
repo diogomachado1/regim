@@ -7,7 +7,7 @@ class ProductValidator {
       name: Yup.string()
         .required()
         .trim(),
-      fileId: Yup.number()
+      imageId: Yup.number()
         .integer()
         .min(1),
       amount: Yup.number()
@@ -25,7 +25,7 @@ class ProductValidator {
   async updateValidator(payload) {
     const validator = Yup.object().shape({
       name: Yup.string().trim(),
-      fileId: Yup.number()
+      imageId: Yup.number()
         .integer()
         .min(1),
       amount: Yup.number().min(0),

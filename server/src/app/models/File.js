@@ -20,6 +20,13 @@ class File extends Model {
 
     return this;
   }
+
+  static associate(models) {
+    this.belongsTo(models.User, {
+      foreignKey: { field: 'user_id', name: 'userId' },
+      as: 'user',
+    });
+  }
 }
 
 export default File;
