@@ -19,6 +19,9 @@ class UserValidator {
   async updateValidator(payload) {
     const validator = Yup.object().shape({
       name: Yup.string(),
+      imageId: Yup.number()
+        .integer()
+        .min(1),
       oldPassword: Yup.string()
         .min(6)
         .when('password', (password, field) =>
