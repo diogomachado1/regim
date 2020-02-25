@@ -6,6 +6,7 @@ import ValidationError from '../Error/ValidationError';
 import Queue from '../../lib/Queue';
 import ConfirmEmail from '../jobs/ConfirmEmail';
 import ForgetPassword from '../jobs/ForgetPassword';
+import FileService from './FileService';
 
 class UserServices {
   async confirmEmail(hash) {
@@ -77,6 +78,8 @@ class UserServices {
     const { oldPassword } = ValidatedUser;
 
     const user = await this.verifyAndGetUserById(userId);
+    if (ValidatedUser.imageId)
+      await FileService.verifyAndGetFile(ValidatedUser.imageId, userId);
 
     if (oldPassword && !(await user.checkPassword(oldPassword))) {
       throw new ValidationError(badRequest('Password does not match'));
