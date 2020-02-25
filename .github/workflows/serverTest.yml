@@ -33,7 +33,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
     #- run: 
     - run: cd server && npm install
-    - run: cd server && ls
       env:
         CI: true
         NODE_ENV: test
@@ -44,7 +43,8 @@ jobs:
         DB_USER: postgres
         DB_PASS: postgres
         DB_NAME: postgres
-    - run: cd server && npm build
+    - run: cd server && npm run build
+    - run: cd server && ls
     - name: Cache
       uses: actions/upload-artifact@v1
       with:
