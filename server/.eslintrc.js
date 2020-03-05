@@ -4,8 +4,15 @@ module.exports = {
     node: true,
     jest: true
   },
-  extends: ['airbnb-base', 'prettier'],
-  plugins: ['prettier'],
+  extends: [
+    "airbnb-base",
+    'prettier',
+    'eslint:recommended',
+    'plugin:@typescript-eslint/eslint-recommended',
+    'plugin:@typescript-eslint/recommended',
+  ],
+  plugins: ['prettier', '@typescript-eslint'],
+  parser: "@typescript-eslint/parser",
   globals: {
     Atomics: 'readonly',
     SharedArrayBuffer: 'readonly',

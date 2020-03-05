@@ -2,7 +2,7 @@ import './bootstrap';
 
 import Youch from 'youch';
 import path from 'path';
-import express from 'express';
+import express, { Express, NextFunction, Request, Response } from 'express';
 import 'express-async-errors';
 import cors from 'cors';
 
@@ -13,6 +13,8 @@ import routesV1 from './app/routes';
 import db from './database';
 
 class App {
+  server: Express;
+
   constructor() {
     this.server = express();
 
@@ -21,7 +23,7 @@ class App {
     this.exceptionHandler();
   }
 
-  middlewares() {
+  middlewares(): void {
     this.server.use(cors());
     this.server.use(express.json());
     this.server.use(
@@ -30,34 +32,41 @@ class App {
     );
   }
 
-  routes() {
+  routes(): void {
     this.server.use(routesV1);
   }
 
-  exceptionHandler() {
-    this.server.use(async (err, req, res, next) => {
-      const { type, message } = err;
-      const error = {
-        status: 'error',
-        message,
-      };
-      if (err.name === 'RegimValidationError') {
-        return res.status(type === 'notFound' ? 404 : 400).json(error);
-      }
-      if (err.name === 'MulterError') {
-        return res.status(400).json(error);
-      }
-      if (process.env.NODE_ENV === 'development') {
-        const errors = await new Youch(err, req).toJSON();
+  exceptionHandler(): void {
+    this.server.use(
+      async (
+        err: RegimError,
+        req: Request,
+        res: Response,
+        _next: NextFunction
+      ) => {
+        const { type, message } = err;
+        const error = {
+          status: 'error',
+          message,
+        };
+        if (err.name === 'RegimValidationError') {
+          return res.status(type === 'notFound' ? 404 : 400).json(error);
+        }
+        if (err.name === 'MulterError') {
+          return res.status(400).json(error);
+        }
+        if (process.env.NODE_ENV === 'development') {
+          const errors = await new Youch(err, req).toJSON();
 
-        return res.status(500).json(errors);
-      }
+          return res.status(500).json(errors);
+        }
 
-      return res.status(500).json({ error: 'Internal server error' });
-    });
+        return res.status(500).json({ error: 'Internal server error' });
+      }
+    );
   }
 
-  close() {
+  close(): void {
     db.close();
   }
 }
