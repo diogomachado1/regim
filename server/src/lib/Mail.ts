@@ -1,3 +1,4 @@
+import Mail from 'nodemailer/lib/mailer';
 import nodemailer from 'nodemailer';
 import exphbs from 'express-handlebars';
 import nodemailerhbs from 'nodemailer-express-handlebars';
@@ -5,7 +6,8 @@ import { resolve } from 'path';
 import SES from 'aws-sdk/clients/ses';
 import mailConfig from '../config/mail';
 
-class Mail {
+class SenderMail {
+  transporter: Mail;
   constructor() {
     this.transporter = nodemailer.createTransport({
       SES: new SES({
@@ -17,7 +19,7 @@ class Mail {
     this.configureTemplates();
   }
 
-  configureTemplates() {
+  configureTemplates(): void {
     const viewPath = resolve(__dirname, '..', 'app', 'views', 'emails');
 
     this.transporter.use(
@@ -35,7 +37,8 @@ class Mail {
     );
   }
 
-  sendMail(message) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  sendMail(message): Promise<any> {
     return this.transporter.sendMail({
       ...mailConfig.default,
       ...message,
@@ -43,4 +46,4 @@ class Mail {
   }
 }
 
-export default new Mail();
+export default new SenderMail();

@@ -22,10 +22,19 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
+    'allowSyntheticDefaultImports': 0,
+    'esModuleInterop': 0,
     "prettier/prettier": "error",
     "class-methods-use-this": "off",
     "no-param-reassign": "off",
     camelcase: "off",
-    "no-unused-vars": ["error", { "argsIgnorePattern": "next" }]
+    "no-unused-vars": ["error", { "argsIgnorePattern": "next" }],
   },
+  settings: {
+    'import/resolver': {
+      node: {
+        extensions: ['.js','.ts']
+      }
+    },
+  }
 };

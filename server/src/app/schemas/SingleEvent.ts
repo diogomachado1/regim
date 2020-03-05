@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+import { Schema, model } from 'mongoose';
 
-const SingleEventSchema = new mongoose.Schema({
+const SingleEventSchema = new Schema({
   eventStartDate: {
     type: Date,
     required: true,
@@ -15,4 +15,4 @@ const SingleEventSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model('SingleEvent', SingleEventSchema);
+export default model('SingleEvent', SingleEventSchema);

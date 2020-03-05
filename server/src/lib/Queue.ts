@@ -7,6 +7,7 @@ import ForgetPassword from '../app/jobs/ForgetPassword';
 const jobs = [ConfirmEmailJob, ForgetPassword];
 
 class Queue {
+  queues: any;
   constructor() {
     this.queues = {};
 

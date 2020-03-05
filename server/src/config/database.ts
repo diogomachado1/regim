@@ -1,6 +1,6 @@
-require('../bootstrap');
+import '../bootstrap';
 
-module.exports = {
+export default {
   dialect: process.env.DB_DIALECT || 'postgres',
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,

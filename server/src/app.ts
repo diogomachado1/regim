@@ -10,6 +10,7 @@ import routesV1 from './app/routes';
 
 // Uncomment this line to enable database access
 // --------
+import RegimError from './app/Error/RegimError';
 import db from './database';
 
 class App {

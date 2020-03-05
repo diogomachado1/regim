@@ -1164,6 +1164,21 @@
     "@types/connect" "*"
     "@types/node" "*"
 
+"@types/bull-board@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@types/bull-board/-/bull-board-0.6.0.tgz#a0b6225ec338d464e6a3f399a62474f4815aa17b"
+  integrity sha512-AUV4qsfL+BSKpp6yw1EaG0RiMU+xj9Ah7PnaRrCUBuvspzzuaCVnkZY3JUKu2jzE8Pev89O0h+wqcet9MAPvbw==
+  dependencies:
+    "@types/bull" "*"
+    "@types/express" "*"
+
+"@types/bull@*", "@types/bull@^3.12.1":
+  version "3.12.1"
+  resolved "https://registry.yarnpkg.com/@types/bull/-/bull-3.12.1.tgz#dcf1ac40c4314a3dfa1a4a12662ce7201b2e4efa"
+  integrity sha512-mn1xmqKBNxllUGuOSBDOvsRpLHPDTSOsGQiHTv6t1gvGtIc/L1IFsN3YTmwf3AZenKzUcBQDGFLrCKt+abhrvQ==
+  dependencies:
+    "@types/ioredis" "*"
+
 "@types/connect@*":
   version "3.4.33"
   resolved "https://registry.yarnpkg.com/@types/connect/-/connect-3.4.33.tgz#31610c901eca573b8713c3330abc6e6b9f588546"
@@ -1171,10 +1186,22 @@
   dependencies:
     "@types/node" "*"
 
+"@types/cors@^2.8.6":
+  version "2.8.6"
+  resolved "https://registry.yarnpkg.com/@types/cors/-/cors-2.8.6.tgz#cfaab33c49c15b1ded32f235111ce9123009bd02"
+  integrity sha512-invOmosX0DqbpA+cE2yoHGUlF/blyf7nB0OGYBBiH27crcVm5NmFaZkLP4Ta1hGaesckCi5lVLlydNJCxkTOSg==
+  dependencies:
+    "@types/express" "*"
+
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#1ee30d79544ca84d68d4b3cdb0af4f205663dd2d"
   integrity sha512-OCutwjDZ4aFS6PB1UZ988C4YgwlBHJd6wCeQqaLdmadZ/7e+w79+hbMUFC1QXDNCmdyoRfAFdm0RypzwR+Qpag==
+
+"@types/express-handlebars@^3.1.0":
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/@types/express-handlebars/-/express-handlebars-3.1.0.tgz#b931e6b51fef4efb25ee120394a42c03cb7a0d23"
+  integrity sha512-Bn6j/tfhAnZEAbMtcNUFk6ESu1I6PE2pYLbUn1PR1MyNonUuQErlQ71n9DPppHK7uAuMCfgcF0oT28Lh0ej4SQ==
 
 "@types/express-serve-static-core@*":
   version "4.17.2"
@@ -1183,6 +1210,15 @@
   dependencies:
     "@types/node" "*"
     "@types/range-parser" "*"
+
+"@types/express@*", "@types/express@^4.17.3":
+  version "4.17.3"
+  resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.3.tgz#38e4458ce2067873b09a73908df488870c303bd9"
+  integrity sha512-I8cGRJj3pyOLs/HndoP+25vOqhqWkAZsWMEmq1qXy/b/M3ppufecUwaK2/TVDVxcV61/iSdhykUjQQ2DLSrTdg==
+  dependencies:
+    "@types/body-parser" "*"
+    "@types/express-serve-static-core" "*"
+    "@types/serve-static" "*"
 
 "@types/express@^4.16.0":
   version "4.17.2"
@@ -1193,14 +1229,12 @@
     "@types/express-serve-static-core" "*"
     "@types/serve-static" "*"
 
-"@types/express@^4.17.3":
-  version "4.17.3"
-  resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.3.tgz#38e4458ce2067873b09a73908df488870c303bd9"
-  integrity sha512-I8cGRJj3pyOLs/HndoP+25vOqhqWkAZsWMEmq1qXy/b/M3ppufecUwaK2/TVDVxcV61/iSdhykUjQQ2DLSrTdg==
+"@types/ioredis@*":
+  version "4.14.8"
+  resolved "https://registry.yarnpkg.com/@types/ioredis/-/ioredis-4.14.8.tgz#6dea9b8ed72f33847a97569582e737d93a1eee4e"
+  integrity sha512-ww38Psb0jj/8h9UYjRuT9RYF46E5O3j+03XSEBx6OQvCIkgPV52kF8DshVLh8DMSZs3fEjeoEzmyM3KP9n53tQ==
   dependencies:
-    "@types/body-parser" "*"
-    "@types/express-serve-static-core" "*"
-    "@types/serve-static" "*"
+    "@types/node" "*"
 
 "@types/istanbul-lib-coverage@*", "@types/istanbul-lib-coverage@^2.0.0":
   version "2.0.1"
@@ -1253,6 +1287,13 @@
   version "8.10.59"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.59.tgz#9e34261f30183f9777017a13d185dfac6b899e04"
   integrity sha512-8RkBivJrDCyPpBXhVZcjh7cQxVBSmRk9QM7hOketZzp6Tg79c0N8kkpAIito9bnJ3HCVCHVYz+KHTEbfQNfeVQ==
+
+"@types/nodemailer@^6.4.0":
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/@types/nodemailer/-/nodemailer-6.4.0.tgz#d8c039be3ed685c4719a026455555be82c124b74"
+  integrity sha512-KY7bFWB0MahRZvVW4CuW83qcCDny59pJJ0MQ5ifvfcjNwPlIT0vW4uARO4u1gtkYnWdhSvURegecY/tzcukJcA==
+  dependencies:
+    "@types/node" "*"
 
 "@types/range-parser@*":
   version "1.2.3"
