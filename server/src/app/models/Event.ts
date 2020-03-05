@@ -1,7 +1,7 @@
 import Sequelize, { Model } from 'sequelize';
 
 class Event extends Model {
-  static init(sequelize) {
+  static init(sequelize): void {
     super.init(
       {
         name: Sequelize.STRING,
@@ -18,7 +18,7 @@ class Event extends Model {
     return this;
   }
 
-  static associate(models) {
+  static associate(models): void {
     this.belongsTo(models.User, { foreignKey: 'user_id' });
     this.belongsToMany(models.Meal, {
       through: {
