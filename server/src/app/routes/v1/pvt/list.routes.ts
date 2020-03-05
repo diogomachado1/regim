@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import ListController from '../../../controllers/ListController';
 
-const routes = new Router();
+const routes = Router();
 
 routes.get('/list', ListController.index);
 

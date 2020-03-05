@@ -8,7 +8,7 @@ import eventRoutes from './event.routes';
 import listRoutes from './list.routes';
 import files from './files.routes';
 
-const routes = new Router();
+const routes = Router();
 
 routes.use(testpvt);
 routes.use(userRoutes);
