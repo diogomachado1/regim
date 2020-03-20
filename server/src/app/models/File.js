@@ -27,6 +27,21 @@ class File extends Model {
       as: 'user',
     });
   }
+
+  static async getFileById(id, userId) {
+    const DocFile = await this.findOne({ where: { id, userId } });
+
+    return DocFile && DocFile.get();
+  }
+
+  static async create(data, userId) {
+    const DocFile = await super.create({
+      ...data,
+      userId,
+    });
+
+    return DocFile && DocFile.get();
+  }
 }
 
 export default File;

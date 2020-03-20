@@ -4,8 +4,7 @@ import S3 from 'aws-sdk/clients/s3';
 import aws from 'aws-sdk';
 import multerS3 from 'multer-s3';
 import { extname, resolve } from 'path';
-import ValidationError from '../app/Error/ValidationError';
-import { badRequest } from '../app/Error/TypeErrors';
+import BadRequestError from '../app/Error/BadRequestError';
 
 aws.config.update({
   region: process.env.AWS_S3_REGION,
@@ -43,7 +42,7 @@ export default {
     const isAccepted = ['image/png', 'image/jpg', 'image/jpeg'].find(
       format => format === file.mimetype
     );
-    if (!isAccepted) cb(new ValidationError(badRequest('Format invalid')));
+    if (!isAccepted) cb(new BadRequestError('Format invalid'));
 
     return cb(null, true);
   },

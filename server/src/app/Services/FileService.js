@@ -1,19 +1,22 @@
-import FileQuery from '../Queries/FileQuery';
-import { badRequest } from '../Error/TypeErrors';
-import ValidationError from '../Error/ValidationError';
+import BadRequestError from '../Error/BadRequestError';
+import File from '../models/File';
 // import FileValidator from '../Validators/MealValidator';
 // import { notFound } from '../Error/TypeErrors';
 // import ProductService from './ProductService';
 
 class FileServices {
+  constructor() {
+    this.model = File;
+  }
+
   async verifyAndGetFile(id, userId) {
-    const file = await FileQuery.getFileById(id, userId);
-    if (!file) throw new ValidationError(badRequest('Image not found'));
+    const file = await this.model.getFileById(id, userId);
+    if (!file) throw new BadRequestError('Image not found');
     return file;
   }
 
   async create(data, userId) {
-    return FileQuery.create(data, userId);
+    return this.model.create(data, userId);
   }
 
   // async delete(id) {
