@@ -1,10 +1,11 @@
 import addYears from 'date-fns/addYears';
 import * as Yup from 'yup';
-import validateSchema from '.';
+import Validator from './Validator';
 
-class EventValidator {
-  async createValidator(payload) {
-    const validator = Yup.object().shape({
+class EventValidator extends Validator {
+  constructor() {
+    super();
+    this.createSchema = Yup.object().shape({
       name: Yup.string()
         .required()
         .trim(),
@@ -43,11 +44,7 @@ class EventValidator {
       ),
     });
 
-    return validateSchema(validator, payload);
-  }
-
-  async updateValidator(payload) {
-    const validator = Yup.object().shape({
+    this.updateSchema = Yup.object().shape({
       name: Yup.string().trim(),
       duration: Yup.number().min(0),
       startDate: Yup.date(),
@@ -77,7 +74,14 @@ class EventValidator {
         })
       ),
     });
-    return validateSchema(validator, payload);
+  }
+
+  async createValidator(payload) {
+    return this.validate(this.createSchema, payload);
+  }
+
+  async updateValidator(payload) {
+    return this.validate(this.updateSchema, payload);
   }
 }
 

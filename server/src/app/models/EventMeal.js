@@ -15,9 +15,11 @@ class EventMeal extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.Event, { foreignKey: 'event_id' });
+    this.belongsTo(models.Event, {
+      foreignKey: { foreignKey: 'event_id', name: 'eventId' },
+    });
     this.belongsTo(models.Meal, {
-      foreignKey: 'meal_id',
+      foreignKey: { foreignKey: 'meal_id', name: 'mealId' },
       as: 'meals',
     });
   }

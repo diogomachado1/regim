@@ -18,6 +18,27 @@ class Hash extends Model {
   static associate(models) {
     this.belongsTo(models.User, { foreignKey: 'user_id' });
   }
+
+  static async getHashByHash(hash) {
+    const DocHash = await this.findOne({ where: { hash } });
+
+    return DocHash && DocHash.get();
+  }
+
+  static async createHash(data, user_id) {
+    const DocHash = await this.create({
+      ...data,
+      user_id,
+    });
+
+    return DocHash && DocHash.get();
+  }
+
+  static async deleteHashById(id) {
+    return this.destroy({
+      where: { id },
+    });
+  }
 }
 
 export default Hash;

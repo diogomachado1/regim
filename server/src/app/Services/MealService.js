@@ -1,21 +1,24 @@
-import MealQuery from '../Queries/MealQuery';
-import ValidationError from '../Error/ValidationError';
-import { notFound } from '../Error/TypeErrors';
 import MealValidator from '../Validators/MealValidator';
 import ProductService from './ProductService';
+import NotFoundError from '../Error/NotFoundError';
+import Meal from '../models/Meal';
 
 class MealServices {
+  constructor() {
+    this.model = Meal;
+  }
+
   async getUserMeals(userId) {
-    return MealQuery.getUserMeals(userId);
+    return this.model.getUserMeals(userId);
   }
 
   async getUserMealsByIds(ids, userId) {
-    return MealQuery.getUserMealsByIds(ids, userId);
+    return this.model.getUserMealsByIds(ids, userId);
   }
 
   async verifyAndGetMeal(id, userId) {
-    const meal = await MealQuery.getMealById(id, userId);
-    if (!meal) throw new ValidationError(notFound('Meal'));
+    const meal = await this.model.getMealById(id, userId);
+    if (!meal) throw new NotFoundError('Meal');
     return meal;
   }
 
@@ -26,7 +29,7 @@ class MealServices {
       await this.verifyIngredients(userId, ValidatedMeal.ingredients);
     }
 
-    const meal = await MealQuery.createMeal(ValidatedMeal, userId);
+    const meal = await this.model.createMeal(ValidatedMeal, userId);
     return meal;
   }
 
@@ -39,12 +42,12 @@ class MealServices {
       await this.verifyIngredients(userId, ValidatedMeal.ingredients);
     }
 
-    return MealQuery.updateMealById(data, id, userId);
+    return this.model.updateMealById(data, id, userId);
   }
 
   async delete(id, userId) {
-    const deleteds = await MealQuery.deleteMealById(id, userId);
-    if (!deleteds === 0) throw new ValidationError(notFound('Meal'));
+    const deleteds = await this.model.deleteMealById(id, userId);
+    if (!deleteds === 0) throw new NotFoundError('Meal');
     return true;
   }
 
@@ -59,7 +62,7 @@ class MealServices {
       const filteredId = ingredientsProductsIds.filter(
         ingredientId => !productsIds.find(item => ingredientId === item)
       );
-      throw new ValidationError(notFound(`Products :${filteredId}`));
+      throw new NotFoundError(`Products: ${filteredId}`);
     }
     return true;
   }

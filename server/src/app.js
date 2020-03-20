@@ -32,14 +32,9 @@ class App {
   exceptionHandler() {
     this.server.use(async (err, req, res, next) => {
       if (err.name === 'RegimValidationError') {
-        const { type, message } = err;
-        const error = {
-          status: 'error',
-          message,
-        };
-        return res.status(type === 'notFound' ? 404 : 400).json(error);
+        return res.status(err.status).json(err.body);
       }
-      if (process.env.NODE_ENV !== 'development') {
+      if (process.env.NODE_ENV === 'development') {
         const errors = await new Youch(err, req).toJSON();
 
         return res.status(500).json(errors);

@@ -1,9 +1,10 @@
 import * as Yup from 'yup';
-import validateSchema from '.';
+import Validator from './Validator';
 
-class ProductValidator {
-  async createValidator(payload) {
-    const validator = Yup.object().shape({
+class ProductValidator extends Validator {
+  constructor() {
+    super();
+    this.createSchema = Yup.object().shape({
       name: Yup.string()
         .required()
         .trim(),
@@ -16,18 +17,20 @@ class ProductValidator {
         .required(),
     });
 
-    return validateSchema(validator, payload);
-  }
-
-  async updateValidator(payload) {
-    const validator = Yup.object().shape({
+    this.updateSchema = Yup.object().shape({
       name: Yup.string().trim(),
       amount: Yup.number().min(0),
       price: Yup.number().min(0),
       measure: Yup.mixed().oneOf(['g', 'ml', 'unity']),
     });
+  }
 
-    return validateSchema(validator, payload);
+  async createValidator(payload) {
+    return this.validate(this.createSchema, payload);
+  }
+
+  async updateValidator(payload) {
+    return this.validate(this.updateSchema, payload);
   }
 }
 

@@ -1,9 +1,10 @@
 import * as Yup from 'yup';
-import validateSchema from '.';
+import Validator from './Validator';
 
-class MealValidator {
-  async createValidator(payload) {
-    const validator = Yup.object().shape({
+class MealValidator extends Validator {
+  constructor() {
+    super();
+    this.createSchema = Yup.object().shape({
       name: Yup.string()
         .required()
         .trim(),
@@ -21,11 +22,7 @@ class MealValidator {
       ),
     });
 
-    return validateSchema(validator, payload);
-  }
-
-  async updateValidator(payload) {
-    const validator = Yup.object().shape({
+    this.updateSchema = Yup.object().shape({
       name: Yup.string().trim(),
       description: Yup.string().trim(),
       ingredients: Yup.array().of(
@@ -40,8 +37,14 @@ class MealValidator {
         })
       ),
     });
+  }
 
-    return validateSchema(validator, payload);
+  async createValidator(payload) {
+    return this.validate(this.createSchema, payload);
+  }
+
+  async updateValidator(payload) {
+    return this.validate(this.updateSchema, payload);
   }
 }
 

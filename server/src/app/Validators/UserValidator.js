@@ -1,9 +1,11 @@
 import * as Yup from 'yup';
-import validateSchema from '.';
+import Validator from './Validator';
 
-class UserValidator {
-  async createValidator(payload) {
-    const validator = Yup.object().shape({
+class UserValidator extends Validator {
+  constructor() {
+    super();
+
+    this.createSchema = Yup.object().shape({
       name: Yup.string().required(),
       email: Yup.string()
         .email()
@@ -13,11 +15,7 @@ class UserValidator {
         .min(6),
     });
 
-    return validateSchema(validator, payload);
-  }
-
-  async updateValidator(payload) {
-    const validator = Yup.object().shape({
+    this.updateSchema = Yup.object().shape({
       name: Yup.string(),
       oldPassword: Yup.string()
         .min(6)
@@ -30,11 +28,7 @@ class UserValidator {
       ),
     });
 
-    return validateSchema(validator, payload);
-  }
-
-  async updatePassword(payload) {
-    const validator = Yup.object().shape({
+    this.updatePasswordSchema = Yup.object().shape({
       password: Yup.string()
         .min(6)
         .required(),
@@ -42,8 +36,18 @@ class UserValidator {
         password ? field.required().oneOf([Yup.ref('password')]) : field
       ),
     });
+  }
 
-    return validateSchema(validator, payload);
+  async createValidator(payload) {
+    return this.validate(this.createSchema, payload);
+  }
+
+  async updateValidator(payload) {
+    return this.validate(this.updateSchema, payload);
+  }
+
+  async updatePassword(payload) {
+    return this.validate(this.updatePasswordSchema, payload);
   }
 }
 

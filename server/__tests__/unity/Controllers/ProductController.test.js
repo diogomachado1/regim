@@ -1,7 +1,7 @@
 import ProductController from '../../../src/app/controllers/ProductController';
 import factory from '../../factories';
 
-import ProductQuery from '../../../src/app/Queries/ProductQuery';
+import Product from '../../../src/app/models/Product';
 // import ProductService from '../../../src/app/Services/ProductService';
 
 const res = {
@@ -10,7 +10,7 @@ const res = {
     return this;
   }),
 };
-jest.mock('../../../src/app/Queries/ProductQuery.js');
+jest.mock('../../../src/app/models/Product');
 describe('ProductsValidator', () => {
   it('methods should exist', async () => {
     expect(ProductController.index).toBeTruthy();
@@ -20,7 +20,7 @@ describe('ProductsValidator', () => {
   });
   it('should return user products', async () => {
     const product = await factory.attrs('Product');
-    ProductQuery.getUserProducts.mockResolvedValue([product]);
+    Product.getUserProducts.mockResolvedValue([product]);
     const response = await ProductController.index({ userId: 1 }, res);
     expect(res.status).toHaveBeenCalledWith(200);
     expect(response).toEqual(response);

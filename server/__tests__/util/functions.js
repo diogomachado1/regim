@@ -43,12 +43,18 @@ async function createMeals() {
 
 async function createEvent() {
   const { token } = await createTokenAndUser();
+  const meal = await factory.attrs('Meal');
+
+  await request(app.server)
+    .post('/v1/pvt/meals')
+    .set('Authorization', `bearer ${token}`)
+    .send(meal);
   const event = await factory.attrs('Event');
   const response = await request(app.server)
     .post('/v1/pvt/events')
     .set('Authorization', `bearer ${token}`)
     .send(event);
-  return { event: response.body, token };
+  return { event: response.body, token, meal };
 }
 
 export {

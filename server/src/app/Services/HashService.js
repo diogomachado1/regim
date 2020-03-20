@@ -1,15 +1,18 @@
 import crypto from 'crypto';
-import HashQuery from '../Queries/HashQuery';
-import { badRequest } from '../Error/TypeErrors';
-import ValidationError from '../Error/ValidationError';
+import BadRequestError from '../Error/BadRequestError';
+import Hash from '../models/Hash';
 // import HashValidator from '../Validators/MealValidator';
 // import { notFound } from '../Error/TypeErrors';
 // import ProductService from './ProductService';
 
 class HashServices {
+  constructor() {
+    this.model = Hash;
+  }
+
   async verifyAndGetHash(hash) {
-    const hashDb = await HashQuery.getHashByHash(hash);
-    if (!hashDb) throw new ValidationError(badRequest('Invalid token'));
+    const hashDb = await this.model.getHashByHash(hash);
+    if (!hashDb) throw new BadRequestError('Invalid token');
     return hashDb;
   }
 
@@ -21,13 +24,13 @@ class HashServices {
       hash: crypto.randomBytes(40).toString('hex'),
     };
 
-    const hash = await HashQuery.createHash(payload, userId);
+    const hash = await this.model.createHash(payload, userId);
     return hash;
   }
 
   async delete(id) {
-    const deleteds = await HashQuery.deleteHashById(id);
-    if (!deleteds === 0) throw new ValidationError(badRequest('Invalid token'));
+    const deleteds = await this.model.deleteHashById(id);
+    if (!deleteds === 0) throw new BadRequestError('Invalid token');
     return true;
   }
 }

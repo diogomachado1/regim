@@ -28,6 +28,34 @@ class User extends Model {
   checkPassword(password) {
     return bcrypt.compare(password, this.password_hash);
   }
+
+  static async getUserById(id) {
+    const DocUser = await this.findOne({ where: { id } });
+
+    return DocUser && DocUser.get();
+  }
+
+  static async getUserByEmail(email) {
+    const DocUser = await this.findOne({ where: { email } });
+
+    return DocUser && DocUser.get();
+  }
+
+  static async create(data) {
+    const DocUser = await super.create({
+      ...data,
+      active: false,
+    });
+    return DocUser && DocUser.get();
+  }
+
+  static async update(data, id) {
+    const DocUser = await this.findOne({ where: { id } });
+    DocUser.set(data);
+    const user = await DocUser.save(data);
+
+    return user && user.get();
+  }
 }
 
 export default User;

@@ -1,16 +1,20 @@
+import User from '../models/User';
 import HashService from './HashService';
-import UserQuery from '../Queries/UserQuery';
 import UserValidator from '../Validators/UserValidator';
-import { notFound, badRequest } from '../Error/TypeErrors';
-import ValidationError from '../Error/ValidationError';
 import Queue from '../../lib/Queue';
 import ConfirmEmail from '../jobs/ConfirmEmail';
 import ForgetPassword from '../jobs/ForgetPassword';
+import NotFoundError from '../Error/NotFoundError';
+import BadRequestError from '../Error/BadRequestError';
 
 class UserServices {
+  constructor() {
+    this.model = User;
+  }
+
   async confirmEmail(hash) {
     const hashDb = await HashService.verifyAndGetHash(hash);
-    await UserQuery.update({ active: true }, hashDb.user_id);
+    await this.model.update({ active: true }, hashDb.user_id);
     await HashService.delete(hashDb.id);
   }
 
@@ -18,32 +22,32 @@ class UserServices {
     const { password } = await UserValidator.updatePassword(data);
     const hashDb = await HashService.verifyAndGetHash(hash);
 
-    await UserQuery.update({ password }, hashDb.user_id);
+    await this.model.update({ password }, hashDb.user_id);
     await HashService.delete(hashDb.id);
   }
 
   async verifyAndGetUserByEmail(email) {
-    const user = await UserQuery.getUserByEmail(email);
-    if (!user) throw new ValidationError(notFound('User'));
+    const user = await this.model.getUserByEmail(email);
+    if (!user) throw new NotFoundError('User');
     return user;
   }
 
   async verifyAndGetUserById(email) {
-    const user = await UserQuery.getUserById(email);
-    if (!user) throw new ValidationError(notFound('User'));
+    const user = await this.model.getUserById(email);
+    if (!user) throw new NotFoundError('User');
     return user;
   }
 
   async verifyIfUniqueEmail(email) {
-    const user = await UserQuery.getUserByEmail(email);
-    if (user) throw new ValidationError(badRequest('User already exists'));
+    const user = await this.model.getUserByEmail(email);
+    if (user) throw new BadRequestError('User already exists');
     return user;
   }
 
   async createForgetPasswordHash(email) {
-    if (!email) throw new ValidationError(badRequest('Email is required'));
+    if (!email) throw new BadRequestError('Email is required');
     const { id, name, active } = await this.verifyAndGetUserByEmail(email);
-    if (!active) throw new ValidationError(badRequest('Email need confirmed'));
+    if (!active) throw new BadRequestError('Email need confirmed');
 
     const { hash } = await HashService.create(id, 'CHANGE_PASSWORD');
     await Queue.add(ForgetPassword.key, { name, email, hash });
@@ -52,8 +56,7 @@ class UserServices {
   async createConfirmEmailHash(email, user) {
     const { id, name, active } =
       user || (await this.verifyAndGetUserByEmail(email));
-    if (active)
-      throw new ValidationError(badRequest('Email already confirmed'));
+    if (active) throw new BadRequestError('Email already confirmed');
     const { hash } = await HashService.create(id);
 
     await Queue.add(ConfirmEmail.key, { name, email, hash });
@@ -64,7 +67,7 @@ class UserServices {
 
     await this.verifyIfUniqueEmail(ValidatedUser.email);
 
-    const user = await UserQuery.create(ValidatedUser);
+    const user = await this.model.create(ValidatedUser);
 
     await this.createConfirmEmailHash(user.email, user);
 
@@ -79,10 +82,10 @@ class UserServices {
     const user = await this.verifyAndGetUserById(userId);
 
     if (oldPassword && !(await user.checkPassword(oldPassword))) {
-      throw new ValidationError(badRequest('Password does not match'));
+      throw new BadRequestError('Password does not match');
     }
 
-    const userSaved = await UserQuery.update(ValidatedUser, userId);
+    const userSaved = await this.model.update(ValidatedUser, userId);
 
     return userSaved;
   }

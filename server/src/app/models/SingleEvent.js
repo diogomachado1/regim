@@ -1,6 +1,6 @@
 import SingleEventSchema from '../schemas/SingleEvent';
 
-class EventQuery {
+class SingleEvent {
   async getSingleEventByDate(fromDate, toDate, userId) {
     const DocSingleEvents = await SingleEventSchema.find({
       eventStartDate: {
@@ -52,4 +52,4 @@ class EventQuery {
   }
 }
 
-export default new EventQuery();
+export default new SingleEvent();

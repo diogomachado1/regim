@@ -4,17 +4,19 @@ import EventMeal from '../models/EventMeal';
 import Meal from '../models/Meal';
 import Ingredient from '../models/Ingredient';
 import Product from '../models/Product';
-import SingleEventQuery from '../Queries/SingleEventQuery';
-import EventQuery from '../Queries/EventQuery';
-import ValidationError from '../Error/ValidationError';
-import { notFound } from '../Error/TypeErrors';
+import SingleEvent from '../models/SingleEvent';
 import EventValidator from '../Validators/EventValidator';
 import MealService from './MealService';
+import NotFoundError from '../Error/NotFoundError';
 
 class EventServices {
+  constructor() {
+    this.model = Event;
+  }
+
   async verifyAndGetEvent(id, userId) {
-    const event = await EventQuery.getEventById(id, userId);
-    if (!event) throw new ValidationError(notFound('Event'));
+    const event = await this.model.getEventById(id, userId);
+    if (!event) throw new NotFoundError('Event');
     return event;
   }
 
@@ -56,7 +58,7 @@ class EventServices {
   // to listService
   async getList(fromDate, toDate, userId) {
     const [singleEvents, events] = await Promise.all([
-      SingleEventQuery.getSingleEventGroupByEventId(fromDate, toDate, userId),
+      SingleEvent.getSingleEventGroupByEventId(fromDate, toDate, userId),
       this.getAllEventsByUserWithAll(userId),
     ]);
     const values = singleEvents.map(({ _id: id, count }) => ({
@@ -89,8 +91,8 @@ class EventServices {
 
   async getSingleEventsByDate(fromDate, toDate, userId) {
     const [singleEvents, events] = await Promise.all([
-      SingleEventQuery.getSingleEventByDate(fromDate, toDate, userId),
-      EventQuery.getUserEvents(userId),
+      SingleEvent.getSingleEventByDate(fromDate, toDate, userId),
+      this.model.getUserEvents(userId),
     ]);
 
     return singleEvents.map(item => ({
@@ -100,20 +102,13 @@ class EventServices {
   }
 
   async getUserEvents(userId) {
-    return EventQuery.getUserEvents(userId);
+    return this.model.getUserEvents(userId);
   }
 
   async getAllEventsByUserWithAll(userId) {
-    const events = await Event.findAll({
+    const events = await this.model.findAll({
       where: { user_id: userId },
-      attributes: [
-        'id',
-        'startDate',
-        'endDate',
-        'duration',
-        'repeatable',
-        'name',
-      ],
+      attributes: this.model.attributes,
       include: {
         model: EventMeal,
         as: 'eventMeals',
@@ -146,12 +141,12 @@ class EventServices {
       await this.verifyEventMeals(userId, ValidatedEvent.eventMeals);
     }
 
-    const event = await EventQuery.createEvent(ValidatedEvent, userId);
+    const event = await this.model.createEvent(ValidatedEvent, userId);
     const singleEvents = this.getSingleEvent(
       { ...ValidatedEvent, id: event.id },
       userId
     );
-    const saves = await SingleEventQuery.createMany(singleEvents);
+    const saves = await SingleEvent.createMany(singleEvents);
 
     return { ...event, events: saves.length };
   }
@@ -169,7 +164,7 @@ class EventServices {
       await this.verifyEventMeals(userId, ValidatedEvent.eventMeals);
     }
 
-    const eventSaved = await EventQuery.updateEventById(
+    const eventSaved = await this.model.updateEventById(
       ValidatedEvent,
       id,
       userId
@@ -179,27 +174,27 @@ class EventServices {
       { ...ValidatedEvent, id: eventSaved.id },
       userId
     );
-    const saves = await SingleEventQuery.updateMany(singleEvents);
+    const saves = await SingleEvent.updateMany(singleEvents);
 
     return { ...eventSaved, events: saves.length };
   }
 
   async delete(id, userId) {
-    const deleteds = await EventQuery.deleteEventById(id, userId);
-    if (!deleteds === 0) throw new ValidationError(notFound('Event'));
-    await SingleEventQuery.deleteMany(id);
+    const deleteds = await this.model.deleteEventById(id, userId);
+    if (!deleteds === 0) throw new NotFoundError('Event');
+    await SingleEvent.deleteMany(id);
     return true;
   }
 
   async verifyEventMeals(user_id, eventMeals) {
     const eventMealsIds = eventMeals.map(item => item.mealId);
-    const meals = await MealService.getUserMealsByIds(eventMeals, user_id);
+    const meals = await MealService.getUserMealsByIds(eventMealsIds, user_id);
     if (meals.length < eventMeals.length) {
       const mealsIds = meals.map(item => item.id);
       const filteredId = eventMealsIds.filter(
         ingredientId => !mealsIds.find(item => ingredientId === item)
       );
-      throw new ValidationError(notFound(`Meal(s) :${filteredId}`));
+      throw new NotFoundError(`Meal(s) :${filteredId}`);
     }
     return true;
   }

@@ -6,7 +6,11 @@ import app from '../../src/app';
 
 import factory from '../factories';
 import truncate from '../util/truncate';
-import { createTokenAndUser, createEvent } from '../util/functions';
+import {
+  createTokenAndUser,
+  createEvent,
+  createMeals,
+} from '../util/functions';
 import Event from '../../src/app/Services/Event';
 
 describe('Events Create', () => {
@@ -19,25 +23,33 @@ describe('Events Create', () => {
   });
 
   it('should be able to creat event ', async () => {
-    const { token } = await createTokenAndUser();
-    const event = await factory.attrs('Event');
+    const { token, meal } = await createMeals();
+    const event = await factory.attrs('Event', {
+      eventMeals: [{ mealId: meal.id, amount: 2 }],
+    });
 
     const response = await request(app.server)
       .post('/v1/pvt/events')
       .set('Authorization', `bearer ${token}`)
       .send(event);
 
-    const events = Event.getSingleEvent(
-      {
-        ...event,
-        startDate: parseISO(event.startDate),
-        endDate: parseISO(event.endDate),
-      },
-      1
-    ).length;
-
     expect(response.status).toBe(201);
-    expect(response.body).toMatchObject(event, { events });
+    expect(response.body).toHaveProperty('id');
+  });
+
+  it('should return not found error when pass invalid mealId', async () => {
+    const { token, meal } = await createMeals();
+    const event = await factory.attrs('Event', {
+      eventMeals: [{ mealId: meal.id + 1, amount: 2 }],
+    });
+
+    const response = await request(app.server)
+      .post('/v1/pvt/events')
+      .set('Authorization', `bearer ${token}`)
+      .send(event);
+
+    expect(response.status).toBe(404);
+    expect(response.body).toHaveProperty('message');
   });
 
   it('should return events', async () => {
