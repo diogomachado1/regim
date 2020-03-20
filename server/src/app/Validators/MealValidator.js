@@ -8,6 +8,9 @@ class MealValidator extends Validator {
       name: Yup.string()
         .required()
         .trim(),
+      imageId: Yup.number()
+        .integer()
+        .min(1),
       description: Yup.string().trim(),
       ingredients: Yup.array().of(
         Yup.object().shape({
@@ -24,6 +27,9 @@ class MealValidator extends Validator {
 
     this.updateSchema = Yup.object().shape({
       name: Yup.string().trim(),
+      imageId: Yup.number()
+        .integer()
+        .min(1),
       description: Yup.string().trim(),
       ingredients: Yup.array().of(
         Yup.object().shape({

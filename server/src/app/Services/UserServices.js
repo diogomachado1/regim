@@ -6,6 +6,7 @@ import ConfirmEmail from '../jobs/ConfirmEmail';
 import ForgetPassword from '../jobs/ForgetPassword';
 import NotFoundError from '../Error/NotFoundError';
 import BadRequestError from '../Error/BadRequestError';
+import FileService from './FileService';
 
 class UserServices {
   constructor() {
@@ -80,6 +81,8 @@ class UserServices {
     const { oldPassword } = ValidatedUser;
 
     const user = await this.verifyAndGetUserById(userId);
+    if (ValidatedUser.imageId)
+      await FileService.verifyAndGetFile(ValidatedUser.imageId, userId);
 
     if (oldPassword && !(await user.checkPassword(oldPassword))) {
       throw new BadRequestError('Password does not match');

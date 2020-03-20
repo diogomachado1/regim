@@ -2,6 +2,7 @@ import MealValidator from '../Validators/MealValidator';
 import ProductService from './ProductService';
 import NotFoundError from '../Error/NotFoundError';
 import Meal from '../models/Meal';
+import FileService from './FileService';
 
 class MealServices {
   constructor() {
@@ -25,6 +26,8 @@ class MealServices {
   async create(data, userId) {
     const ValidatedMeal = await MealValidator.createValidator(data);
 
+    if (ValidatedMeal.imageId)
+      await FileService.verifyAndGetFile(ValidatedMeal.imageId, userId);
     if (ValidatedMeal.ingredients) {
       await this.verifyIngredients(userId, ValidatedMeal.ingredients);
     }
@@ -38,6 +41,8 @@ class MealServices {
 
     await this.verifyAndGetMeal(id, userId);
 
+    if (ValidatedMeal.imageId)
+      await FileService.verifyAndGetFile(ValidatedMeal.imageId, userId);
     if (ValidatedMeal.ingredients) {
       await this.verifyIngredients(userId, ValidatedMeal.ingredients);
     }

@@ -8,6 +8,9 @@ class ProductValidator extends Validator {
       name: Yup.string()
         .required()
         .trim(),
+      imageId: Yup.number()
+        .integer()
+        .min(1),
       amount: Yup.number()
         .required()
         .min(0),
@@ -19,6 +22,9 @@ class ProductValidator extends Validator {
 
     this.updateSchema = Yup.object().shape({
       name: Yup.string().trim(),
+      imageId: Yup.number()
+        .integer()
+        .min(1),
       amount: Yup.number().min(0),
       price: Yup.number().min(0),
       measure: Yup.mixed().oneOf(['g', 'ml', 'unity']),

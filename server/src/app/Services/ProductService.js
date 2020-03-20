@@ -1,6 +1,7 @@
 import ProductValidator from '../Validators/ProductValidator';
 import NotFoundError from '../Error/NotFoundError';
 import Product from '../models/Product';
+import FileService from './FileService';
 
 class ProductServices {
   constructor() {
@@ -23,13 +24,16 @@ class ProductServices {
 
   async create(data, userId) {
     const ValidatedProduct = await ProductValidator.createValidator(data);
+    if (ValidatedProduct.imageId)
+      await FileService.verifyAndGetFile(ValidatedProduct.imageId, userId);
     const product = await this.model.createProduct(ValidatedProduct, userId);
     return product;
   }
 
   async update(data, id, userId) {
     const ValidatedProduct = await ProductValidator.updateValidator(data);
-
+    if (ValidatedProduct.imageId)
+      await FileService.verifyAndGetFile(ValidatedProduct.imageId, userId);
     await this.verifyAndGetProduct(id, userId);
     return this.model.updateProductById(ValidatedProduct, id, userId);
   }

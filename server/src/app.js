@@ -1,6 +1,7 @@
 import './bootstrap';
 
 import Youch from 'youch';
+import path from 'path';
 import express from 'express';
 import 'express-async-errors';
 import cors from 'cors';
@@ -23,6 +24,10 @@ class App {
   middlewares() {
     this.server.use(cors());
     this.server.use(express.json());
+    this.server.use(
+      '/files',
+      express.static(path.resolve(__dirname, '..', 'tmp', 'uploads'))
+    );
   }
 
   routes() {
@@ -33,6 +38,14 @@ class App {
     this.server.use(async (err, req, res, next) => {
       if (err.name === 'RegimValidationError') {
         return res.status(err.status).json(err.body);
+      }
+      if (err.name === 'MulterError') {
+        const { message } = err;
+        const error = {
+          status: 'error',
+          message,
+        };
+        return res.status(400).json(error);
       }
       if (process.env.NODE_ENV === 'development') {
         const errors = await new Youch(err, req).toJSON();
