@@ -21,7 +21,10 @@ describe('ProductsValidator', () => {
   it('should return user products', async () => {
     const product = await factory.attrs('Product');
     Product.getUserProducts.mockResolvedValue([product]);
-    const response = await ProductController.index({ userId: 1 }, res);
+    const response = await ProductController.index(
+      { userId: 1, query: {} },
+      res
+    );
     expect(res.status).toHaveBeenCalledWith(200);
     expect(response).toEqual(response);
   });

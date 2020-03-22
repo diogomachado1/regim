@@ -10,11 +10,13 @@ class ProductValidator extends Validator {
         .trim(),
       imageId: Yup.number()
         .integer()
+        .nullable()
         .min(1),
       amount: Yup.number()
         .required()
         .min(0),
       price: Yup.number().min(0),
+      public: Yup.boolean(),
       measure: Yup.mixed()
         .oneOf(['g', 'ml', 'unity'])
         .required(),
@@ -24,9 +26,11 @@ class ProductValidator extends Validator {
       name: Yup.string().trim(),
       imageId: Yup.number()
         .integer()
+        .nullable()
         .min(1),
       amount: Yup.number().min(0),
       price: Yup.number().min(0),
+      public: Yup.boolean(),
       measure: Yup.mixed().oneOf(['g', 'ml', 'unity']),
     });
   }

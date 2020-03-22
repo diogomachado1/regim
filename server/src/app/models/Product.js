@@ -8,6 +8,7 @@ class Product extends Model {
         measure: Sequelize.ENUM('g', 'ml', 'unity'),
         amount: Sequelize.DECIMAL(10, 2),
         price: Sequelize.DECIMAL(10, 2),
+        public: Sequelize.BOOLEAN,
       },
       {
         sequelize,
@@ -23,12 +24,30 @@ class Product extends Model {
       foreignKey: { field: 'file_id', name: 'imageId' },
       as: 'image',
     });
+    this.belongsTo(models.Product, {
+      foreignKey: { field: 'origin_id', name: 'originId' },
+      as: 'origin',
+    });
   }
 
-  static async getUserProducts(user_id) {
-    const DocProducts = await Product.findAll({ where: { user_id } });
+  static async getUserProducts(user_id, page) {
+    const DocProducts = await this.findAndCountAll({
+      where: { user_id },
+      limit: 10,
+      offset: (page - 1) * 10,
+    });
 
-    return DocProducts.map(product => product.get());
+    return DocProducts;
+  }
+
+  static async getPublicProducts(page) {
+    const DocProducts = await this.findAndCountAll({
+      where: { public: true },
+      limit: 10,
+      offset: (page - 1) * 10,
+    });
+
+    return DocProducts;
   }
 
   static async getUserProductsByIds(ingredientsProductsIds, user_id) {

@@ -3,8 +3,9 @@ import ProductService from '../Services/ProductService';
 class ProductController {
   async index(req, res) {
     const { userId } = req;
+    const { page } = req.query;
 
-    const products = await ProductService.getUserProducts(userId);
+    const products = await ProductService.getUserProducts(userId, page);
 
     return res.status(200).json(products);
   }

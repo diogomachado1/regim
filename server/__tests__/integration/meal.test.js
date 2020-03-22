@@ -35,13 +35,13 @@ describe('Meals', () => {
   });
 
   it('should return meals', async () => {
-    const { meal, token } = await createMeals();
+    const { token } = await createMeals();
 
     const response = await request(app.server)
       .get('/v1/pvt/meals')
       .set('Authorization', `bearer ${token}`);
     expect(response.status).toBe(200);
-    expect(response.body).toMatchObject([{ ...meal }]);
+    expect(response.body.count).toBe(1);
   });
 
   it('should be able to update a meal', async () => {

@@ -3,8 +3,9 @@ import MealService from '../Services/MealService';
 class MealsController {
   async index(req, res) {
     const { userId } = req;
+    const { page } = req.query;
 
-    const meals = await MealService.getUserMeals(userId);
+    const meals = await MealService.getUserMeals(userId, page);
 
     return res.json(meals);
   }

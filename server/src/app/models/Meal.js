@@ -52,14 +52,16 @@ class Meal extends Model {
     ];
   }
 
-  static async getUserMeals(user_id) {
-    const DocMeals = await Meal.findAll({
+  static async getUserMeals(user_id, page) {
+    const DocMeals = await Meal.findAndCountAll({
       attributes: ['id', 'description', 'name'],
       where: { user_id },
       include: this.includes,
+      limit: 10,
+      offset: (page - 1) * 10,
     });
 
-    return DocMeals.map(meal => meal.get());
+    return DocMeals;
   }
 
   static async getUserMealsByIds(ids, user_id) {

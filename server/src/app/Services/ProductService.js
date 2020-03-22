@@ -2,14 +2,25 @@ import ProductValidator from '../Validators/ProductValidator';
 import NotFoundError from '../Error/NotFoundError';
 import Product from '../models/Product';
 import FileService from './FileService';
+import PaginationValidator from '../Validators/PaginationValidator';
 
 class ProductServices {
   constructor() {
     this.model = Product;
   }
 
-  async getUserProducts(userId) {
-    return this.model.getUserProducts(userId);
+  async getPublicProducts(page) {
+    const pageValidated = await PaginationValidator.paginationValidate({
+      page,
+    });
+    return this.model.getPublicProducts(pageValidated.page);
+  }
+
+  async getUserProducts(userId, page) {
+    const pageValidated = await PaginationValidator.paginationValidate({
+      page,
+    });
+    return this.model.getUserProducts(userId, pageValidated.page);
   }
 
   async getUserProductsByIds(ids, userId) {
@@ -42,6 +53,19 @@ class ProductServices {
     const deleteds = await this.model.deleteProductById(id, userId);
     if (!deleteds === 0) throw new NotFoundError('Product');
     return true;
+  }
+
+  async duplicatedProducts(id, userId) {
+    const product = await this.verifyAndGetProduct(id);
+    console.log(product.user_id);
+    if (product.public === false && product.user_id !== userId)
+      throw new NotFoundError('Product');
+    const ValidatedProduct = await ProductValidator.createValidator(product);
+
+    return this.model.createProduct(
+      { ...ValidatedProduct, public: false, originId: product.id },
+      userId
+    );
   }
 }
 

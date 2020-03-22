@@ -38,13 +38,13 @@ describe('Products', () => {
   });
 
   it('should return products', async () => {
-    const { product, token } = await createProducts();
+    const { token } = await createProducts();
 
     const response = await request(app.server)
       .get('/v1/pvt/products')
       .set('Authorization', `bearer ${token}`);
 
-    expect(response.body).toMatchObject([{ ...product }]);
+    expect(response.body.count).toBe(1);
   });
 
   it('should be able to update a product', async () => {

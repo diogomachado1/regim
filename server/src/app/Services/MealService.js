@@ -3,14 +3,18 @@ import ProductService from './ProductService';
 import NotFoundError from '../Error/NotFoundError';
 import Meal from '../models/Meal';
 import FileService from './FileService';
+import PaginationValidator from '../Validators/PaginationValidator';
 
 class MealServices {
   constructor() {
     this.model = Meal;
   }
 
-  async getUserMeals(userId) {
-    return this.model.getUserMeals(userId);
+  async getUserMeals(userId, page) {
+    const pageValidated = await PaginationValidator.paginationValidate({
+      page,
+    });
+    return this.model.getUserMeals(userId, pageValidated.page);
   }
 
   async getUserMealsByIds(ids, userId) {
