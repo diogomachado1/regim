@@ -19,8 +19,8 @@ class Hash extends Model {
     this.belongsTo(models.User, { foreignKey: 'user_id' });
   }
 
-  static async getHashByHash(hash) {
-    const DocHash = await this.findOne({ where: { hash } });
+  static async getHashByHash(hash, type) {
+    const DocHash = await this.findOne({ where: { hash, type } });
 
     return DocHash && DocHash.get();
   }

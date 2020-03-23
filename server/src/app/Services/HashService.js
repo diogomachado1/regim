@@ -10,8 +10,8 @@ class HashServices {
     this.model = Hash;
   }
 
-  async verifyAndGetHash(hash) {
-    const hashDb = await this.model.getHashByHash(hash);
+  async verifyAndGetHash(hash, type) {
+    const hashDb = await this.model.getHashByHash(hash, type);
     if (!hashDb) throw new BadRequestError('Invalid token');
     return hashDb;
   }

@@ -11,7 +11,7 @@ class ForgetPassword {
     await Mail.sendMail({
       to: `${name} <${email}`,
       subject: 'Email de recuperação de senha',
-      template: 'confirmEmail',
+      template: 'changePassword',
       context: {
         userName: name,
         link: `${process.env.FORGET_PASSWORD_LINK}/${hash}`,

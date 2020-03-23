@@ -14,14 +14,14 @@ class UserServices {
   }
 
   async confirmEmail(hash) {
-    const hashDb = await HashService.verifyAndGetHash(hash);
+    const hashDb = await HashService.verifyAndGetHash(hash, 'CONFIRM_EMAIL');
     await this.model.update({ active: true }, hashDb.user_id);
     await HashService.delete(hashDb.id);
   }
 
   async forgetPassword(hash, data) {
     const { password } = await UserValidator.updatePassword(data);
-    const hashDb = await HashService.verifyAndGetHash(hash);
+    const hashDb = await HashService.verifyAndGetHash(hash, 'CHANGE_PASSWORD');
 
     await this.model.update({ password }, hashDb.user_id);
     await HashService.delete(hashDb.id);
