@@ -4,6 +4,7 @@ const INITIAL_STATE = {
   token: null,
   signed: false,
   loading: false,
+  needConfirmEmail: false,
 };
 
 export default function auth(state = INITIAL_STATE, action) {
@@ -21,6 +22,61 @@ export default function auth(state = INITIAL_STATE, action) {
       }
       case '@auth/SIGN_FAILURE': {
         draft.loading = false;
+        break;
+      }
+      case '@auth/FORGET_PASSWORD_REQUEST': {
+        draft.loading = true;
+        break;
+      }
+      case '@auth/FORGET_PASSWORD_SUCCESS': {
+        draft.loading = false;
+        break;
+      }
+      case '@auth/FORGET_PASSWORD_FAILURE': {
+        draft.loading = false;
+        draft.needConfirmEmail = true;
+        break;
+      }
+      case '@auth/FORGET_PASSWORD_PUT_REQUEST': {
+        draft.loading = true;
+        break;
+      }
+      case '@auth/FORGET_PASSWORD_PUT_SUCCESS': {
+        draft.loading = false;
+        break;
+      }
+      case '@auth/FORGET_PASSWORD_PUT_FAILURE': {
+        draft.loading = false;
+        break;
+      }
+      case '@auth/CONFIRM_EMAIL_REQUEST': {
+        draft.loading = true;
+        break;
+      }
+      case '@auth/CONFIRM_EMAIL_SUCCESS': {
+        draft.loading = false;
+        draft.needConfirmEmail = false;
+        break;
+      }
+      case '@auth/CONFIRM_EMAIL_FAILURE': {
+        draft.loading = false;
+        break;
+      }
+      case '@auth/CONFIRM_EMAIL_PUT_REQUEST': {
+        draft.loading = true;
+        break;
+      }
+      case '@auth/CONFIRM_EMAIL_PUT_SUCCESS': {
+        draft.loading = false;
+        break;
+      }
+      case '@auth/CONFIRM_EMAIL_PUT_FAILURE': {
+        draft.loading = false;
+        break;
+      }
+      case '@auth/CLEAN': {
+        draft.loading = false;
+        draft.needConfirmEmail = false;
         break;
       }
       case '@auth/SIGN_OUT': {
