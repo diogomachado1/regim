@@ -11,7 +11,7 @@ class UserController {
   }
 
   async update(req, res) {
-    const { id, name, email, imageId } = await UserServices.update(
+    const { id, name, email, imageId, image } = await UserServices.update(
       req.body,
       req.userId
     );
@@ -20,6 +20,7 @@ class UserController {
       name,
       email,
       imageId,
+      image,
     });
   }
 }
