@@ -3,12 +3,13 @@ import bcrypt from 'bcryptjs';
 import File from './File';
 
 class User extends Model {
-  constructor() {
-    super();
-    this.include = {
-      model: File,
-      as: 'image',
-    };
+  static get include() {
+    return [
+      {
+        model: File,
+        as: 'image',
+      },
+    ];
   }
 
   static init(sequelize) {
@@ -60,7 +61,7 @@ class User extends Model {
       include: this.include,
     });
 
-    return DocUser && DocUser.get();
+    return DocUser;
   }
 
   static async create(data) {

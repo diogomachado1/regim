@@ -41,6 +41,10 @@ class Meal extends Model {
   static get includes() {
     return [
       {
+        model: File,
+        as: 'image',
+      },
+      {
         model: Ingredient,
         as: 'ingredients',
         attributes: ['amount', ['product_id', 'productId']],
@@ -48,18 +52,18 @@ class Meal extends Model {
           model: Product,
           as: 'product',
           attributes: ['name', 'measure', 'amount', 'price'],
+          include: {
+            model: File,
+            as: 'image',
+          },
         },
-      },
-      {
-        model: File,
-        as: 'image',
       },
     ];
   }
 
   static async getUserMeals(user_id, page) {
     const DocMeals = await Meal.findAndCountAll({
-      attributes: ['id', 'description', 'name'],
+      attributes: ['id', 'description', 'name', 'imageId'],
       where: { user_id },
       include: this.includes,
       limit: 10,

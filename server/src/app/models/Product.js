@@ -2,12 +2,13 @@ import Sequelize, { Model, Op } from 'sequelize';
 import File from './File';
 
 class Product extends Model {
-  constructor() {
-    super();
-    this.include = {
-      model: File,
-      as: 'image',
-    };
+  static get include() {
+    return [
+      {
+        model: File,
+        as: 'image',
+      },
+    ];
   }
 
   static init(sequelize) {
