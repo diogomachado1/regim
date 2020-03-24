@@ -88,7 +88,9 @@ class UserServices {
       throw new BadRequestError('Password does not match');
     }
 
-    const userSaved = await this.model.update(ValidatedUser, userId);
+    await this.model.update(ValidatedUser, userId);
+
+    const userSaved = await this.verifyAndGetUserById(userId);
 
     return userSaved;
   }
