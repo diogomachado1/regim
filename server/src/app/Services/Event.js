@@ -174,7 +174,7 @@ class EventServices {
       { ...ValidatedEvent, id: eventSaved.id },
       userId
     );
-    const saves = await SingleEvent.updateMany(singleEvents);
+    const saves = await SingleEvent.updateMany(singleEvents, id);
 
     return { ...eventSaved, events: saves.length };
   }

@@ -57,7 +57,6 @@ class ProductServices {
 
   async duplicatedProducts(id, userId) {
     const product = await this.verifyAndGetProduct(id);
-    console.log(product.user_id);
     if (product.public === false && product.user_id !== userId)
       throw new NotFoundError('Product');
     const ValidatedProduct = await ProductValidator.createValidator(product);

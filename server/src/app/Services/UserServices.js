@@ -33,8 +33,8 @@ class UserServices {
     return user;
   }
 
-  async verifyAndGetUserById(email) {
-    const user = await this.model.getUserById(email);
+  async verifyAndGetUserById(id) {
+    const user = await this.model.getUserById(id);
     if (!user) throw new NotFoundError('User');
     return user;
   }

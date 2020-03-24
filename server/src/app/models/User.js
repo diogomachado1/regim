@@ -1,7 +1,16 @@
 import Sequelize, { Model } from 'sequelize';
 import bcrypt from 'bcryptjs';
+import File from './File';
 
 class User extends Model {
+  constructor() {
+    super();
+    this.include = {
+      model: File,
+      as: 'image',
+    };
+  }
+
   static init(sequelize) {
     super.init(
       {
@@ -37,13 +46,19 @@ class User extends Model {
   }
 
   static async getUserById(id) {
-    const DocUser = await this.findOne({ where: { id } });
+    const DocUser = await this.findOne({
+      where: { id },
+      include: this.include,
+    });
 
     return DocUser && DocUser.get();
   }
 
   static async getUserByEmail(email) {
-    const DocUser = await this.findOne({ where: { email } });
+    const DocUser = await this.findOne({
+      where: { email },
+      include: this.include,
+    });
 
     return DocUser && DocUser.get();
   }

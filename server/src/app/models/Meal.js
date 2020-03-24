@@ -1,6 +1,7 @@
 import Sequelize, { Model, Op } from 'sequelize';
 import Product from './Product';
 import Ingredient from './Ingredient';
+import File from './File';
 
 class Meal extends Model {
   static init(sequelize) {
@@ -48,6 +49,10 @@ class Meal extends Model {
           as: 'product',
           attributes: ['name', 'measure', 'amount', 'price'],
         },
+      },
+      {
+        model: File,
+        as: 'image',
       },
     ];
   }

@@ -1,6 +1,15 @@
 import Sequelize, { Model, Op } from 'sequelize';
+import File from './File';
 
 class Product extends Model {
+  constructor() {
+    super();
+    this.include = {
+      model: File,
+      as: 'image',
+    };
+  }
+
   static init(sequelize) {
     super.init(
       {
@@ -35,6 +44,7 @@ class Product extends Model {
       where: { user_id },
       limit: 10,
       offset: (page - 1) * 10,
+      include: this.include,
     });
 
     return DocProducts;
@@ -45,6 +55,7 @@ class Product extends Model {
       where: { public: true },
       limit: 10,
       offset: (page - 1) * 10,
+      include: this.include,
     });
 
     return DocProducts;
@@ -63,7 +74,10 @@ class Product extends Model {
   }
 
   static async getProductById(id, user_id) {
-    const DocProduct = await this.findByPk(id, { where: { user_id } });
+    const DocProduct = await this.findByPk(id, {
+      where: { user_id },
+      include: this.include,
+    });
 
     return DocProduct && DocProduct.get();
   }
