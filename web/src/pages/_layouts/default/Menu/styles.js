@@ -18,7 +18,7 @@ export const MenuContainer = styled.aside`
   flex-direction: column;
   overflow: hidden;
   z-index: 100;
-  box-shadow: 3px 0px 6px 0px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--regim-box);
   color: #fff;
   > ul {
     display: flex;

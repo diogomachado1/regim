@@ -35,7 +35,7 @@ export function* getProducts() {
   try {
     const response = yield call(api.get, `/products`);
 
-    yield put(getProductInSuccess(response.data));
+    yield put(getProductInSuccess(response.data.rows));
   } catch (err) {
     toast.error('Falha ao obter produtos!');
     yield put(getProductInFailure());

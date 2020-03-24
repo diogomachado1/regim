@@ -76,5 +76,7 @@ export default createGlobalStyle`
     --warning-lighter-color: ${darken(0.03, '#FFDDA1')};
     --warning-lightest-color: #FFDDA1;
     --warning-mostLightest-color: #FFF8EC;
+
+    --regim-box: 0 0px 20px rgba(3, 27, 78, 0.1);
   }
 `;

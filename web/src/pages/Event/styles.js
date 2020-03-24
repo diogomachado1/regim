@@ -39,7 +39,7 @@ export const EventsList = styled.ul`
 `;
 
 export const EventItem = styled.li`
-  box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--regim-box);
   border-radius: 5px;
   padding: 10px;
   opacity: ${({ lasted }) => (lasted ? '0.4' : '1')};

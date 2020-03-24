@@ -21,7 +21,7 @@ export const MealsList = styled.ul`
   margin-top: 20px;
 
   > li {
-    box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--regim-box);
     border-radius: 5px;
     padding: 10px;
 

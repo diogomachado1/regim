@@ -44,7 +44,7 @@ export function* getMeals() {
   try {
     const response = yield call(api.get, `/meals`);
 
-    yield put(getMealInSuccess(response.data));
+    yield put(getMealInSuccess(response.data.rows));
   } catch (err) {
     toast.error('Falha ao obter refeições!');
     yield put(getMealInFailure());
