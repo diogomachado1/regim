@@ -4,10 +4,10 @@ import EventMeal from '../models/EventMeal';
 import Meal from '../models/Meal';
 import Ingredient from '../models/Ingredient';
 import Product from '../models/Product';
-import SingleEvent from '../models/SingleEvent';
 import EventValidator from '../Validators/EventValidator';
 import MealService from './MealService';
 import NotFoundError from '../Error/NotFoundError';
+import SingleEventService from './SingleEventService';
 
 class EventServices {
   constructor() {
@@ -57,15 +57,13 @@ class EventServices {
 
   // to listService
   async getList(fromDate, toDate, userId) {
-    const [singleEvents, events] = await Promise.all([
-      SingleEvent.getSingleEventGroupByEventId(fromDate, toDate, userId),
-      this.getAllEventsByUserWithAll(userId),
-    ]);
-    const values = singleEvents.map(({ _id: id, count }) => ({
-      eventId: id,
-      count,
-      event: events.find(event => event.id === id),
-    }));
+    const events = await this.getAllEventsByUserWithAll(userId);
+    const values = SingleEventService.getEventSingleWithCount(
+      events,
+      userId,
+      fromDate,
+      toDate
+    );
     const ingredients = {};
     values.forEach(event => {
       event.event.eventMeals.forEach(meal => {
@@ -90,15 +88,15 @@ class EventServices {
   }
 
   async getSingleEventsByDate(fromDate, toDate, userId) {
-    const [singleEvents, events] = await Promise.all([
-      SingleEvent.getSingleEventByDate(fromDate, toDate, userId),
-      this.model.getUserEvents(userId),
-    ]);
+    const events = await this.model.getUserEvents(userId);
+    const singleEvents = SingleEventService.getEventSingleList(
+      events,
+      userId,
+      fromDate,
+      toDate
+    );
 
-    return singleEvents.map(item => ({
-      ...item,
-      event: events.find(event => event.id === item.eventId),
-    }));
+    return singleEvents;
   }
 
   async getUserEvents(userId) {
@@ -146,9 +144,8 @@ class EventServices {
       { ...ValidatedEvent, id: event.id },
       userId
     );
-    const saves = await SingleEvent.createMany(singleEvents);
 
-    return { ...event, events: saves.length };
+    return { ...event, events: singleEvents.length };
   }
 
   async update(data, id, userId) {
@@ -174,15 +171,13 @@ class EventServices {
       { ...ValidatedEvent, id: eventSaved.id },
       userId
     );
-    const saves = await SingleEvent.updateMany(singleEvents, id);
 
-    return { ...eventSaved, events: saves.length };
+    return { ...eventSaved, events: singleEvents.length };
   }
 
   async delete(id, userId) {
     const deleteds = await this.model.deleteEventById(id, userId);
     if (!deleteds === 0) throw new NotFoundError('Event');
-    await SingleEvent.deleteMany(id);
     return true;
   }
 
