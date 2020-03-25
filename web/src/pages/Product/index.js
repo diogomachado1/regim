@@ -1,10 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import {
-  MdAddCircleOutline,
-  MdArrowBack,
-  MdEdit,
-  MdContentCopy,
-} from 'react-icons/md';
+import { MdAddCircleOutline, MdEdit, MdContentCopy } from 'react-icons/md';
 import { FaRegTrashAlt, FaGlobeAmericas } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
@@ -21,7 +16,6 @@ import {
   duplicateProductRequest,
 } from '~/store/modules/product/actions';
 import Loading from '~/components/Loading';
-import { Img } from '~/components/Img';
 import getInitialLettes from '~/utils/getInitialLetters';
 
 export default function Product() {

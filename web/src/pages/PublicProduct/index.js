@@ -1,11 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
-import {
-  MdAddCircleOutline,
-  MdArrowBack,
-  MdEdit,
-  MdContentCopy,
-} from 'react-icons/md';
-import { FaRegTrashAlt, FaGlobeAmericas } from 'react-icons/fa';
+import { MdAddCircleOutline, MdContentCopy } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -37,14 +31,6 @@ export default function PublicProduct() {
     loadProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadProducts]);
-
-  async function handleRemoveProduct(id) {
-    dispatch(deleteProductRequest({ id }));
-  }
-
-  async function handleChangePublic(product) {
-    dispatch(saveProductRequest({ id: product.id, public: !product.public }));
-  }
 
   async function handleDuplicateProduct(id) {
     dispatch(duplicateProductRequest(id));

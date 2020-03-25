@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Link, NavLink } from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 
-import { MenuContainer, Profile, Img } from './styles';
+import { MenuContainer, Profile } from './styles';
 
 export default function Menu({ showMenu }) {
   const profile = useSelector(state => state.user.profile);

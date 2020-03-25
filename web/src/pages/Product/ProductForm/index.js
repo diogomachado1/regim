@@ -1,6 +1,5 @@
 import { useParams } from 'react-router-dom';
-import React, { useEffect, useCallback, useState, useMemo } from 'react';
-import PerfectScrollbar from 'react-perfect-scrollbar';
+import React, { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 

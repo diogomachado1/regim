@@ -4,11 +4,7 @@ import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { Link, useParams } from 'react-router-dom';
 
-import {
-  forgetPasswordRequest,
-  confirmEmailRequest,
-  forgetPasswordPutRequest,
-} from '~/store/modules/auth/actions';
+import { forgetPasswordPutRequest } from '~/store/modules/auth/actions';
 import InputCustom from '~/components/Input';
 import { Button, ButtonQuartiary } from '~/components/Button';
 

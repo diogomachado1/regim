@@ -17,7 +17,7 @@ import { getListRequest } from '~/store/modules/list/actions';
 export default function List() {
   const dispatch = useDispatch();
   const list = useSelector(state => state.list.list);
-  const loading = useSelector(state => state.list.loading);
+  // const loading = useSelector(state => state.list.loading);
 
   const loadEvents = useCallback(async () => {
     console.log(addMonths(new Date(), 1));
