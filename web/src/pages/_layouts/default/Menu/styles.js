@@ -45,6 +45,11 @@ export const Profile = styled.div`
   text-align: center;
   min-width: 250px;
   padding: 20px 30px;
+  > :first-child {
+    width: 75px;
+    height: 75px;
+    margin: 10px;
+  }
   > span {
     font-weight: bold;
     font-size: 20px;
@@ -59,4 +64,16 @@ export const Profile = styled.div`
       opacity: 1;
     }
   }
+`;
+
+export const Img = styled.picture`
+  background-image: url(${({ src }) => src || ''});
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: var(--regim-box);
+  margin: 10px;
 `;

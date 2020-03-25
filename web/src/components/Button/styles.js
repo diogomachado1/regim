@@ -104,3 +104,13 @@ export const PagButton = styled(ButtonTerciaryCustom).attrs(_ => ({
   width: 30px;
   box-shadow: 0 0px 4px 0px #ccc;
 `;
+
+export const CircleButton = styled(ButtonTerciaryCustom).attrs(_ => ({
+  type: 'button',
+}))`
+  border-radius: 50%;
+  padding: 5px;
+  height: 35px;
+  width: 35px;
+  box-shadow: 0 0px 4px 0px #ccc;
+`;

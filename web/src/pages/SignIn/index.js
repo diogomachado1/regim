@@ -19,7 +19,7 @@ const schema = Yup.object().shape({
 
 export default function Main() {
   const dispatch = useDispatch();
-  const { register, handleSubmit, errors, reset } = useForm({
+  const { register, handleSubmit, errors } = useForm({
     validationSchema: schema,
   });
   const loading = useSelector(state => state.auth.loading);

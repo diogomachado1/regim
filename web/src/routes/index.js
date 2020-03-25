@@ -8,12 +8,15 @@ import ForgetPasswordRequest from '~/pages/ForgetPasswordRequest';
 import ConfirmEmail from '~/pages/ConfirmEmail';
 
 import Profile from '~/pages/Profile';
-import MealForm from '~/pages/Meal/MealForm';
 import Meal from '../pages/Meal';
+import MealForm from '~/pages/Meal/MealForm';
+import Product from '../pages/Product';
+import PublicProduct from '../pages/PublicProduct';
 import Event from '~/pages/Event';
 import EventForm from '~/pages/Event/EventForm';
 import List from '~/pages/List';
 import ForgetPasswordForm from '~/pages/ForgetPassword';
+import ProductForm from '~/pages/Product/ProductForm';
 
 export default function Routes() {
   return (
@@ -27,6 +30,15 @@ export default function Routes() {
       <Route exact path="/meals" component={Meal} isPrivate />
       <Route path="/meals/create" component={MealForm} isPrivate />
       <Route path="/meals/:id" component={MealForm} isPrivate />
+      <Route exact path="/products" component={Product} isPrivate />
+      <Route path="/products/create" component={ProductForm} isPrivate />
+      <Route path="/products/:id" component={ProductForm} isPrivate />
+      <Route
+        exact
+        path="/public_products"
+        component={PublicProduct}
+        isPrivate
+      />
       <Route exact path="/events" component={Event} isPrivate />
       <Route path="/events/create" component={EventForm} isPrivate />
       <Route path="/events/:id" component={EventForm} isPrivate />

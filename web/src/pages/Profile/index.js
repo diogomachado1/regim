@@ -19,8 +19,6 @@ export default function Profile() {
   });
 
   function onSubmit(data) {
-    console.log(profile);
-    console.log(data);
     dispatch(updateProfileRequest(data));
   }
 

@@ -1,9 +1,9 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Form } from '@rocketseat/unform';
 import * as Yup from 'yup';
 
+import { useForm } from 'react-hook-form';
 import { signUpRequest } from '~/store/modules/auth/actions';
 import InputCustom from '~/components/Input';
 import { Button, ButtonQuartiary } from '~/components/Button';
@@ -22,7 +22,13 @@ const schema = Yup.object().shape({
 export default function SignUp() {
   const dispatch = useDispatch();
 
-  function handleSubmit({ name, email, password }) {
+  const loading = useSelector(state => state.auth.loading);
+
+  const { register, handleSubmit, errors } = useForm({
+    validationSchema: schema,
+  });
+
+  function onSubmit({ name, email, password }) {
     dispatch(signUpRequest(name, email, password));
   }
 
@@ -30,20 +36,35 @@ export default function SignUp() {
     <>
       <img src={Logo} alt="Regim Logo" />
 
-      <Form schema={schema} onSubmit={handleSubmit}>
-        <InputCustom name="name" placeholder="Nome completo" />
-        <InputCustom name="email" type="email" placeholder="Seu e-mail" />
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <InputCustom
+          name="name"
+          placeholder="Nome completo"
+          register={register}
+          error={errors.name}
+        />
+        <InputCustom
+          name="email"
+          type="email"
+          placeholder="Seu e-mail"
+          register={register}
+          error={errors.email}
+        />
         <InputCustom
           name="password"
           type="password"
           placeholder="Sua senha secreta"
+          register={register}
+          error={errors.password}
         />
 
-        <Button type="submit">Criar conta</Button>
+        <Button type="submit">
+          {loading ? 'Carregando...' : 'Criar conta'}
+        </Button>
         <Link to="/">
           <ButtonQuartiary color="danger">Já tenho login!</ButtonQuartiary>
         </Link>
-      </Form>
+      </form>
     </>
   );
 }

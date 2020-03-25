@@ -3,7 +3,8 @@ import styled from 'styled-components';
 export const Container = styled.div`
   align-self: center;
   width: 100%;
-  margin-top: 30px;
+  height: 100%;
+  margin-top: 10px;
   margin-bottom: 10px;
   max-height: 300px;
   &:hover {
@@ -11,6 +12,8 @@ export const Container = styled.div`
   }
   label {
     cursor: pointer;
+    height: 100%;
+
     width: 100%;
     display: flex;
     img {
@@ -25,15 +28,14 @@ export const Container = styled.div`
 
 export const DefaulImg = styled.div`
   background-color: rgba(0, 0, 0, 0.3);
-  height: 300px;
   width: 100%;
   border-radius: 5px;
+  display: flex;
 `;
 
 export const DefaulImgContent = styled.div`
   display: flex;
   flex-direction: column;
-  height: 300px;
   align-items: center;
   width: 100%;
   justify-content: center;

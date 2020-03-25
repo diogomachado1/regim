@@ -53,6 +53,14 @@ export default createGlobalStyle`
     --primary-lightest-color: #CAD6FC;
     --primary-mostLightest-color: #E1E7FD;
 
+    --gray-normal-color: #9e9e9e;
+    --gray-dark-color: #757575;
+    --gray-darker-color: #424242;
+    --gray-light-color: #bdbdbd;
+    --gray-lighter-color: #e0e0e0;
+    --gray-lightest-color: #eeeeee;
+    --gray-mostLightest-color: #f5f5f5;
+
     --success-normal-color: #12DB89;
     --success-dark-color: #10B26C;
     --success-darker-color: #0E995D;
