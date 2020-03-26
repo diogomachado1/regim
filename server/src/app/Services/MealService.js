@@ -10,11 +10,11 @@ class MealServices {
     this.model = Meal;
   }
 
-  async getUserMeals(userId, page) {
+  async getUserMeals(userId, page, search) {
     const pageValidated = await PaginationValidator.paginationValidate({
       page,
     });
-    return this.model.getUserMeals(userId, pageValidated.page);
+    return this.model.getUserMeals(userId, pageValidated.page, search);
   }
 
   async getUserMealsByIds(ids, userId) {
