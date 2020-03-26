@@ -109,14 +109,18 @@ class SingleEventServices {
       this.getSingleEventWithTime(event, userId, fromDate, toDate)
     );
     const oneSinglesEventsArray = singlesEvents.reduce(
-      (finalArray, currentArray) =>
-        finalArray.concat([
-          {
-            eventId: currentArray[0].event.id,
-            count: currentArray.length,
-            event: currentArray[0].event,
-          },
-        ]),
+      (finalArray, currentArray) => {
+        if (currentArray.length > 0) {
+          return finalArray.concat([
+            {
+              eventId: currentArray[0].event.id,
+              count: currentArray.length,
+              event: currentArray[0].event,
+            },
+          ]);
+        }
+        return finalArray;
+      },
       []
     );
 
