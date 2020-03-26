@@ -61,9 +61,9 @@ class Meal extends Model {
     ];
   }
 
-  static async getUserMeals(user_id, page, search) {
+  static async getUserMeals(user_id, page, search = '') {
     const DocMeals = await Meal.findAndCountAll({
-      attributes: ['id', 'description', 'name', 'imageId'],
+      attributes: ['id', 'description', 'name', 'imageId', 'createdAt'],
       where: { user_id, name: { [Op.iLike]: `%${search}%` } },
       include: this.includes,
       limit: 10,

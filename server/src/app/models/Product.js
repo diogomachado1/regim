@@ -41,7 +41,7 @@ class Product extends Model {
     });
   }
 
-  static async getUserProducts(user_id, page, search) {
+  static async getUserProducts(user_id, page, search = '') {
     const DocProducts = await this.findAndCountAll({
       where: { user_id, name: { [Op.iLike]: `%${search}%` } },
       limit: 10,
@@ -53,7 +53,7 @@ class Product extends Model {
     return DocProducts;
   }
 
-  static async getPublicProducts(page, search) {
+  static async getPublicProducts(page, search = '') {
     const DocProducts = await this.findAndCountAll({
       where: { public: true, name: { [Op.iLike]: `%${search}%` } },
       limit: 10,
