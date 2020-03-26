@@ -2,6 +2,7 @@ import produce from 'immer';
 
 const INITIAL_STATE = {
   profile: null,
+  menu: true,
 };
 
 export default function user(state = INITIAL_STATE, action) {
@@ -13,6 +14,10 @@ export default function user(state = INITIAL_STATE, action) {
       }
       case '@user/UPDATE_PROFILE_SUCCESS': {
         draft.profile = action.payload.profile;
+        break;
+      }
+      case '@user/CHANGE_MENU': {
+        draft.menu = !state.menu;
         break;
       }
       case '@auth/SIGN_OUT': {

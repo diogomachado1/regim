@@ -9,18 +9,18 @@ class ProductServices {
     this.model = Product;
   }
 
-  async getPublicProducts(page) {
+  async getPublicProducts(page, search) {
     const pageValidated = await PaginationValidator.paginationValidate({
       page,
     });
-    return this.model.getPublicProducts(pageValidated.page);
+    return this.model.getPublicProducts(pageValidated.page, search);
   }
 
-  async getUserProducts(userId, page) {
+  async getUserProducts(userId, page, search) {
     const pageValidated = await PaginationValidator.paginationValidate({
       page,
     });
-    return this.model.getUserProducts(userId, pageValidated.page);
+    return this.model.getUserProducts(userId, pageValidated.page, search);
   }
 
   async getUserProductsByIds(ids, userId) {

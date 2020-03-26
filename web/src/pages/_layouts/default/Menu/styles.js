@@ -3,6 +3,14 @@ import styled from 'styled-components';
 export const MenuContainer = styled.aside`
   width: ${({ showMenu }) => (showMenu ? '250' : '0')}px;
   transition: width 0.5s ease-in-out;
+  @media screen and (max-width: 900px) {
+    position: absolute;
+    top: 60px;
+    height: calc(100% - 60px);
+    z-index: 300;
+  }
+  height: 100%;
+
   @keyframes menuAnimation {
     from {
       width: 0;
@@ -13,7 +21,6 @@ export const MenuContainer = styled.aside`
   }
   grid-area: menu;
   background: var(--regim-primary);
-  height: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -21,11 +28,14 @@ export const MenuContainer = styled.aside`
   box-shadow: var(--regim-box);
   color: #fff;
   > ul {
+    flex-shrink: 1;
     display: flex;
     flex-direction: column;
     list-style: none;
+    min-width: 250px;
     > a {
       color: #fff;
+      flex-shrink: 0;
       text-decoration: none;
       font-size: 18px;
       padding: 5px;

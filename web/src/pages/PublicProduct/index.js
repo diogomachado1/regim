@@ -1,31 +1,32 @@
-import React, { useCallback, useEffect } from 'react';
-import { MdAddCircleOutline, MdContentCopy } from 'react-icons/md';
-import { Link } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Pagination as PaginationMd } from '@material-ui/lab';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { Avatar, Tooltip } from '@material-ui/core';
-import { Container, ProductsList, Buttons, Infos } from './styles';
-import { Button } from '~/components/Button';
-import { CircleButton } from '~/components/Button/styles';
+import { TextField } from '@material-ui/core';
+import { DebounceInput } from 'react-debounce-input';
+import { Container, ProductsList } from './styles';
+import Avatar from '~/components/Avatar';
 
 import {
-  deleteProductRequest,
-  saveProductRequest,
   duplicateProductRequest,
   getPublicProductRequest,
 } from '~/store/modules/product/actions';
 import Loading from '~/components/Loading';
-import getInitialLettes from '~/utils/getInitialLetters';
+import { Pagination } from '../Event/styles';
+import Card from '~/components/Card';
 
 export default function PublicProduct() {
   const dispatch = useDispatch();
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
 
   const products = useSelector(state => state.product.publicProducts);
   const loading = useSelector(state => state.product.loading);
+  const countPublic = useSelector(state => state.product.countPublic);
 
   const loadProducts = useCallback(async () => {
-    dispatch(getPublicProductRequest());
-  }, [dispatch]);
+    dispatch(getPublicProductRequest(page, search));
+  }, [dispatch, page, search]);
 
   useEffect(() => {
     loadProducts();
@@ -39,45 +40,34 @@ export default function PublicProduct() {
   return (
     <>
       <Container>
-        <Link to="/products/create">
-          <Button color="success" onClick={() => {}}>
-            <MdAddCircleOutline size="24" />
-            Add
-          </Button>
-        </Link>
+        <Pagination justify="space-between">
+          <DebounceInput
+            element={TextField}
+            minLength={3}
+            placeholder="Buscar...(Minimo 3 letras)"
+            debounceTimeout={300}
+            onChange={event => setSearch(event.target.value)}
+          />
+          <PaginationMd
+            color="primary"
+            count={Math.ceil(countPublic / 10)}
+            page={page}
+            onChange={(_, value) => setPage(value)}
+          />
+        </Pagination>
         <ProductsList>
           {products.map(product => (
-            <li key={product.id}>
-              <div>
-                {product.image ? (
-                  <Avatar src={product.image.url} alt={product.name} />
-                ) : (
-                  <Avatar>{getInitialLettes(product.name)}</Avatar>
-                )}
-                <Infos>
-                  <span>{product.name}</span>
-                  <div>
-                    <span>{`${parseFloat(product.amount).toFixed(0)}${
-                      product.measure
-                    } por R$${product.price.replace('.', ',')} `}</span>
-                  </div>
-                </Infos>
-                <Buttons>
-                  <Tooltip
-                    title="Duplicar"
-                    aria-label="Duplicar"
-                    placement="top"
-                  >
-                    <CircleButton
-                      onClick={() => handleDuplicateProduct(product.id)}
-                      color="success"
-                    >
-                      <MdContentCopy size="18" />
-                    </CircleButton>
-                  </Tooltip>
-                </Buttons>
-              </div>
-            </li>
+            <Card
+              key={product.id}
+              Image={() => <Avatar image={product.image} name={product.name} />}
+              title={product.name}
+              InfosProps={() => (
+                <span>{`${parseFloat(product.amount).toFixed(0)}${
+                  product.measure
+                } por R$${product.price.replace('.', ',')} `}</span>
+              )}
+              duplicateAction={() => handleDuplicateProduct(product.id)}
+            />
           ))}
         </ProductsList>
       </Container>

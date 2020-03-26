@@ -1,12 +1,12 @@
-import React, { useCallback, useEffect } from 'react';
-import { MdAddCircleOutline, MdEdit, MdContentCopy } from 'react-icons/md';
-import { FaRegTrashAlt, FaGlobeAmericas } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
+import { MdAdd } from 'react-icons/md';
+import { Link, useHistory } from 'react-router-dom';
+import { Pagination as PaginationMd } from '@material-ui/lab';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { Avatar, Tooltip } from '@material-ui/core';
-import { Container, ProductsList, Buttons, Infos } from './styles';
-import { Button } from '~/components/Button';
+import { Tooltip, TextField } from '@material-ui/core';
+import { DebounceInput } from 'react-debounce-input';
+import { Container, ProductsList } from './styles';
 import { CircleButton } from '~/components/Button/styles';
 
 import {
@@ -16,17 +16,23 @@ import {
   duplicateProductRequest,
 } from '~/store/modules/product/actions';
 import Loading from '~/components/Loading';
-import getInitialLettes from '~/utils/getInitialLetters';
+import { Pagination } from '../Event/styles';
+import Card from '~/components/Card';
+import Avatar from '~/components/Avatar';
 
 export default function Product() {
   const dispatch = useDispatch();
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const history = useHistory();
 
   const products = useSelector(state => state.product.products);
+  const count = useSelector(state => state.product.count);
   const loading = useSelector(state => state.product.loading);
 
   const loadProducts = useCallback(async () => {
-    dispatch(getProductRequest());
-  }, [dispatch]);
+    dispatch(getProductRequest(page, search));
+  }, [dispatch, page, search]);
 
   useEffect(() => {
     loadProducts();
@@ -34,86 +40,70 @@ export default function Product() {
   }, [loadProducts]);
 
   async function handleRemoveProduct(id) {
-    dispatch(deleteProductRequest({ id }));
+    dispatch(deleteProductRequest({ id }, page, search));
   }
 
+  // async function handleRemoveProduct(id) {
+  //   dispatch(deleteProductRequest({ id }));
+  // }
+
   async function handleChangePublic(product) {
-    dispatch(saveProductRequest({ id: product.id, public: !product.public }));
+    dispatch(
+      saveProductRequest(
+        { id: product.id, public: !product.public },
+        false,
+        page,
+        search
+      )
+    );
   }
 
   async function handleDuplicateProduct(id) {
-    dispatch(duplicateProductRequest(id));
+    dispatch(duplicateProductRequest(id, page, search));
   }
 
   return (
     <>
       <Container>
-        <Link to="/products/create">
-          <Button color="success" onClick={() => {}}>
-            <MdAddCircleOutline size="24" />
-            Add
-          </Button>
-        </Link>
+        <Pagination justify="space-between">
+          <DebounceInput
+            element={TextField}
+            minLength={3}
+            placeholder="Buscar...(Minimo 3 letras)"
+            debounceTimeout={300}
+            onChange={event => setSearch(event.target.value)}
+          />
+          <PaginationMd
+            color="primary"
+            count={Math.ceil(count / 10)}
+            page={page}
+            onChange={(_, value) => setPage(value)}
+          />
+          <Tooltip title="Criar" aria-label="Criar" placement="top">
+            <Link to="/products/create">
+              <CircleButton color="success">
+                <MdAdd size="18" />
+              </CircleButton>
+            </Link>
+          </Tooltip>
+        </Pagination>
         <ProductsList>
           {products.map(product => (
-            <li key={product.id}>
-              <div>
-                {product.image ? (
-                  <Avatar src={product.image.url} alt={product.name} />
-                ) : (
-                  <Avatar>{getInitialLettes(product.name)}</Avatar>
-                )}
-                <Infos>
-                  <span>{product.name}</span>
-                  <div>
-                    <span>{`${parseFloat(product.amount).toFixed(0)}${
-                      product.measure
-                    } por R$${product.price.replace('.', ',')} `}</span>
-                  </div>
-                </Infos>
-                <Buttons>
-                  <Tooltip title="Editar" aria-label="Editar" placement="top">
-                    <Link to={`/products/${product.id}`}>
-                      <CircleButton color="warning" onClick={() => {}}>
-                        <MdEdit size="18" />
-                      </CircleButton>
-                    </Link>
-                  </Tooltip>
-                  <Tooltip title="Remover" aria-label="Remover" placement="top">
-                    <CircleButton
-                      onClick={() => handleRemoveProduct(product.id)}
-                      color="danger"
-                    >
-                      <FaRegTrashAlt size="18" />
-                    </CircleButton>
-                  </Tooltip>
-                  <Tooltip
-                    title="Duplicar"
-                    aria-label="Duplicar"
-                    placement="top"
-                  >
-                    <CircleButton
-                      onClick={() => handleDuplicateProduct(product.id)}
-                      color="success"
-                    >
-                      <MdContentCopy size="18" />
-                    </CircleButton>
-                  </Tooltip>
-                  <Tooltip
-                    title="Tornar Público"
-                    aria-label="Tornar Público"
-                    placement="top"
-                  >
-                    <CircleButton
-                      onClick={() => handleChangePublic(product)}
-                      color={product.public ? 'primary' : 'gray'}
-                    >
-                      <FaGlobeAmericas size="18" />
-                    </CircleButton>
-                  </Tooltip>
-                </Buttons>
-              </div>
-            </li>
+            <Card
+              key={product.id}
+              title={product.name}
+              Image={() => <Avatar image={product.image} name={product.name} />}
+              InfosProps={() => (
+                <span>{`${parseFloat(product.amount).toFixed(0)}${
+                  product.measure
+                } por R$${product.price.replace('.', ',')} `}</span>
+              )}
+              editAction={() => history.push(`/products/${product.id}`)}
+              duplicateAction={() => handleDuplicateProduct(product.id)}
+              removeAction={() => handleRemoveProduct(product.id)}
+              publicAction={() => handleChangePublic(product)}
+              isPublic={product.public}
+            />
           ))}
         </ProductsList>
       </Container>

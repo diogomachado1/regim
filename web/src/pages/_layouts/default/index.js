@@ -1,21 +1,23 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
+import { useDispatch } from 'react-redux';
 import { Wrapper, Content } from './styles';
 import Header from './Header';
 import Menu from './Menu';
+import { changeMenu } from '~/store/modules/user/actions';
 
 export default function AuthLayout({ children }) {
-  const [showMenu, setMenu] = useState(true);
+  const dispatch = useDispatch();
 
   function handleChangeMenu() {
-    setMenu(!showMenu);
+    dispatch(changeMenu());
   }
   return (
     <Wrapper>
       <Header handleChangeMenu={handleChangeMenu} />
-      <Menu showMenu={showMenu} />
+      <Menu />
       <PerfectScrollbar>
         <Content>{children}</Content>
       </PerfectScrollbar>

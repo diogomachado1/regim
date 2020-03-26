@@ -5,15 +5,16 @@ import Avatar from '@material-ui/core/Avatar';
 
 import { MenuContainer, Profile } from './styles';
 
-export default function Menu({ showMenu }) {
+export default function Menu() {
   const profile = useSelector(state => state.user.profile);
+  const menu = useSelector(state => state.user.menu);
   const initials = useMemo(() => {
     const [first, last] = profile.name.split(' ');
     const lastInitial = last && last[0];
     return [first[0], lastInitial];
   }, [profile]);
   return (
-    <MenuContainer showMenu={showMenu}>
+    <MenuContainer showMenu={menu}>
       <Profile>
         {profile.image ? (
           <Avatar src={profile.image.url} alt={profile.name} />

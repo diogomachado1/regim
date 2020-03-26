@@ -80,7 +80,7 @@ export const Pagination = styled.div`
   margin-left: -20px;
   padding: 10px 20px;
   display: flex;
-  justify-content: center;
+  justify-content: ${({ justify }) => justify || 'center'};
   align-items: center;
   background-color: #fff;
   z-index: 200;

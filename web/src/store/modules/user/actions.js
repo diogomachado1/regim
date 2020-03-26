@@ -17,3 +17,9 @@ export function updateProfileFailure() {
     type: '@user/UPDATE_PROFILE_FAILURE',
   };
 }
+
+export function changeMenu() {
+  return {
+    type: '@user/CHANGE_MENU',
+  };
+}

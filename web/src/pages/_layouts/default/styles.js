@@ -15,7 +15,7 @@ export const Wrapper = styled.div`
   > div {
     grid-area: content;
     width: 100%;
-    background: #fff;
+    background: #f7f7f7;
     padding: 20px;
     display: flex;
     flex-direction: column;

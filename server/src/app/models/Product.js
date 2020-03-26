@@ -1,5 +1,6 @@
 import Sequelize, { Model, Op } from 'sequelize';
 import File from './File';
+import User from './User';
 
 class Product extends Model {
   static get include() {
@@ -29,7 +30,7 @@ class Product extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.User, { foreignKey: 'user_id' });
+    this.belongsTo(models.User, { foreignKey: 'user_id', as: 'user' });
     this.belongsTo(models.File, {
       foreignKey: { field: 'file_id', name: 'imageId' },
       as: 'image',
@@ -40,23 +41,36 @@ class Product extends Model {
     });
   }
 
-  static async getUserProducts(user_id, page) {
+  static async getUserProducts(user_id, page, search) {
     const DocProducts = await this.findAndCountAll({
-      where: { user_id },
+      where: { user_id, name: { [Op.iLike]: `%${search}%` } },
       limit: 10,
       offset: (page - 1) * 10,
       include: this.include,
+      order: [['createdAt', 'DESC']],
     });
 
     return DocProducts;
   }
 
-  static async getPublicProducts(page) {
+  static async getPublicProducts(page, search) {
     const DocProducts = await this.findAndCountAll({
-      where: { public: true },
+      where: { public: true, name: { [Op.iLike]: `%${search}%` } },
       limit: 10,
       offset: (page - 1) * 10,
-      include: this.include,
+      include: [
+        ...this.include,
+        {
+          model: User,
+          as: 'user',
+          attributes: ['name', 'id', 'imageId'],
+          include: {
+            model: File,
+            as: 'image',
+          },
+        },
+      ],
+      order: [['createdAt', 'DESC']],
     });
 
     return DocProducts;

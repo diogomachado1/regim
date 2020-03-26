@@ -23,6 +23,8 @@ import {
 export function* saveProduct({ payload }) {
   try {
     const { product, navigate } = payload;
+    const { page = 1, search = '' } = payload;
+
     if (!product.id) {
       yield call(api.post, '/products/', product);
     } else {
@@ -34,7 +36,7 @@ export function* saveProduct({ payload }) {
     if (navigate) {
       history.push('/products');
     } else {
-      yield put(getProductRequest());
+      yield put(getProductRequest(page, search));
     }
   } catch (err) {
     toast.error('Falha ao salvar produto, verifique seus dados!');
@@ -42,22 +44,34 @@ export function* saveProduct({ payload }) {
   }
 }
 
-export function* getProducts() {
+export function* getProducts({ payload }) {
   try {
-    const response = yield call(api.get, `/products`);
+    const { page = 1, search = '' } = payload;
+    const response = yield call(api.get, `/products`, {
+      params: {
+        page,
+        search,
+      },
+    });
 
-    yield put(getProductInSuccess(response.data.rows));
+    yield put(getProductInSuccess(response.data));
   } catch (err) {
     toast.error('Falha ao obter produtos!');
     yield put(getProductInFailure());
   }
 }
 
-export function* getPublicProducts() {
+export function* getPublicProducts({ payload }) {
   try {
-    const response = yield call(api.get, `/public_products`);
+    const { page = 1, search = '' } = payload;
+    const response = yield call(api.get, `/public_products`, {
+      params: {
+        page,
+        search,
+      },
+    });
 
-    yield put(getPublicProductInSuccess(response.data.rows));
+    yield put(getPublicProductInSuccess(response.data));
   } catch (err) {
     toast.error('Falha ao obter produtos!');
     yield put(getPublicProductInFailure());
@@ -79,13 +93,14 @@ export function* getProduct({ payload }) {
 
 export function* duplicateProduct({ payload }) {
   const { id } = payload;
+  const { page = 1, search = '' } = payload;
 
   try {
     const response = yield call(api.post, `/duplicate_product/${id}`);
 
     yield put(duplicateProductInSuccess(response.data));
     toast.success('Produto duplicado');
-    yield put(getProductRequest());
+    yield put(getProductRequest(page, search));
   } catch (err) {
     toast.error('Falha ao duplicar o produto!');
     yield put(duplicateProductInFailure());
@@ -95,11 +110,12 @@ export function* duplicateProduct({ payload }) {
 export function* deleteProduct({ payload }) {
   try {
     const { product } = payload;
+    const { page = 1, search = '' } = payload;
 
     yield call(api.delete, `/products/${product.id}`);
 
     yield put(deleteProductInSuccess());
-    yield put(getProductRequest());
+    yield put(getProductRequest(page, search));
     toast.success('Produto excluído');
   } catch (err) {
     toast.error('Falha ao excluir produto, verifique seus dados!');

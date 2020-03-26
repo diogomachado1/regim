@@ -6,6 +6,8 @@ const INITIAL_STATE = {
   editProduct: {},
   products: [],
   publicProducts: [],
+  count: 0,
+  countPublic: 0,
 };
 
 export default function product(state = INITIAL_STATE, action) {
@@ -18,12 +20,14 @@ export default function product(state = INITIAL_STATE, action) {
       }
       case '@product/GET_IN_SUCCESS': {
         draft.loading = false;
-        draft.products = action.payload.products;
+        draft.products = action.payload.data.rows;
+        draft.count = action.payload.data.count;
         break;
       }
       case '@product/GET_PUBLIC_IN_SUCCESS': {
         draft.loading = false;
-        draft.publicProducts = action.payload.products;
+        draft.publicProducts = action.payload.data.rows;
+        draft.countPublic = action.payload.data.count;
         break;
       }
       case '@product/GETONE_IN_SUCCESS': {

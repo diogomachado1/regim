@@ -4,6 +4,7 @@ const INITIAL_STATE = {
   loading: false,
   editMeal: {},
   meals: [],
+  count: 0,
 };
 
 export default function meal(state = INITIAL_STATE, action) {
@@ -28,7 +29,8 @@ export default function meal(state = INITIAL_STATE, action) {
       }
       case '@meal/GET_IN_SUCCESS': {
         draft.loading = false;
-        draft.meals = action.payload.meals;
+        draft.meals = action.payload.data.rows;
+        draft.count = action.payload.data.count;
         break;
       }
       case '@meal/GET_IN_FAILURE': {

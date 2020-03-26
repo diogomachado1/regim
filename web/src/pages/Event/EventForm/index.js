@@ -24,7 +24,7 @@ import SelectCustom from '~/components/Select';
 export default function EventForm({ history }) {
   const { register, handleSubmit, errors, reset, watch, setValue } = useForm({
     validationSchema: EventSchema,
-    defaultValues: { repeatable: ' ' },
+    defaultValues: { repeatable: 'not' },
   });
 
   const dispatch = useDispatch();
@@ -117,7 +117,7 @@ export default function EventForm({ history }) {
                 register={register}
                 error={errors.measure}
                 options={[
-                  { id: ' ', title: 'Sem repetir' },
+                  { id: 'not', title: 'Sem repetir' },
                   { id: 'daily', title: 'Diario' },
                   { id: 'weekly', title: 'Semanal' },
                 ]}

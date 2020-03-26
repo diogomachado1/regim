@@ -1,7 +1,7 @@
-export function saveProductRequest(product, navigate) {
+export function saveProductRequest(product, navigate, page, search) {
   return {
     type: '@product/SAVE_IN_RESQUEST',
-    payload: { product, navigate },
+    payload: { product, navigate, page, search },
   };
 }
 
@@ -33,17 +33,17 @@ export function closeProductForm() {
   };
 }
 
-export function getProductRequest() {
+export function getProductRequest(page, search) {
   return {
     type: '@product/GET_IN_RESQUEST',
-    payload: {},
+    payload: { page, search },
   };
 }
 
-export function getProductInSuccess(products) {
+export function getProductInSuccess(data) {
   return {
     type: '@product/GET_IN_SUCCESS',
-    payload: { products },
+    payload: { data },
   };
 }
 
@@ -54,17 +54,17 @@ export function getProductInFailure() {
   };
 }
 
-export function getPublicProductRequest() {
+export function getPublicProductRequest(page, search) {
   return {
     type: '@product/GET_PUBLIC_IN_RESQUEST',
-    payload: {},
+    payload: { page, search },
   };
 }
 
-export function getPublicProductInSuccess(products) {
+export function getPublicProductInSuccess(data) {
   return {
     type: '@product/GET_PUBLIC_IN_SUCCESS',
-    payload: { products },
+    payload: { data },
   };
 }
 
@@ -96,10 +96,10 @@ export function getOneProductInFailure() {
   };
 }
 
-export function duplicateProductRequest(id) {
+export function duplicateProductRequest(id, page, search) {
   return {
     type: '@product/DUPLICATE_IN_RESQUEST',
-    payload: { id },
+    payload: { id, page, search },
   };
 }
 
@@ -117,10 +117,10 @@ export function duplicateProductInFailure() {
   };
 }
 
-export function deleteProductRequest(product) {
+export function deleteProductRequest(product, page, search) {
   return {
     type: '@product/DELETE_IN_RESQUEST',
-    payload: { product },
+    payload: { product, page, search },
   };
 }
 

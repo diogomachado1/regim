@@ -42,7 +42,7 @@ class SingleEventServices {
     let currentDate = startDate;
     const finishDate = addMinutes(endDate, duration);
     const finishSearchDate = addMinutes(toDate, duration);
-    if (!event.repeatable) {
+    if (event.repeatable === 'not') {
       if (
         isAfter(currentDate, fromDate) &&
         isBefore(startDate, finishSearchDate)

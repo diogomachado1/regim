@@ -21,7 +21,7 @@ export const EventSchema = Yup.object().shape({
     .min(15)
     .required(),
   repeatable: Yup.mixed()
-    .oneOf(['daily', 'weekly', ' '])
+    .oneOf(['daily', 'weekly', 'not'])
     .required(),
   eventMeals: Yup.array().of(
     Yup.object()

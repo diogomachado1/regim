@@ -19,17 +19,17 @@ export function saveMealInFailure() {
   };
 }
 
-export function getMealRequest() {
+export function getMealRequest(page, search) {
   return {
     type: '@meal/GET_IN_RESQUEST',
-    payload: {},
+    payload: { page, search },
   };
 }
 
-export function getMealInSuccess(meals) {
+export function getMealInSuccess(data) {
   return {
     type: '@meal/GET_IN_SUCCESS',
-    payload: { meals },
+    payload: { data },
   };
 }
 
@@ -61,10 +61,10 @@ export function getOneMealInFailure() {
   };
 }
 
-export function deleteMealRequest(meal) {
+export function deleteMealRequest(meal, page, search) {
   return {
     type: '@meal/DELETE_IN_RESQUEST',
-    payload: { meal },
+    payload: { meal, page, search },
   };
 }
 

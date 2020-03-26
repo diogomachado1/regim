@@ -18,13 +18,12 @@ export const ProductsList = styled.ul`
   width: 100%;
   display: flex;
   flex-direction: column;
-  margin-top: 20px;
-
+  margin: 20px 0;
   > li {
     box-shadow: var(--regim-box);
     border-radius: 5px;
     padding: 10px;
-
+    background-color: #fff;
     > div {
       display: flex;
       align-items: center;
@@ -64,29 +63,5 @@ export const ProductsList = styled.ul`
   }
   > li + li {
     margin-top: 15px;
-  }
-`;
-
-export const Buttons = styled.div`
-  display: flex;
-  align-items: stretch;
-
-  > * {
-    margin: 5px;
-  }
-`;
-
-export const Infos = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: stretch;
-  > span {
-    font-size: 20px;
-  }
-  > div > span {
-    font-size: 14px;
-    font-weight: 100;
-    opacity: 0.7;
   }
 `;

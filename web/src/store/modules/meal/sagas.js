@@ -40,11 +40,18 @@ export function* saveMeal({ payload }) {
   }
 }
 
-export function* getMeals() {
+export function* getMeals({ payload }) {
   try {
-    const response = yield call(api.get, `/meals`);
+    const { page = 1, search = '' } = payload;
 
-    yield put(getMealInSuccess(response.data.rows));
+    const response = yield call(api.get, `/meals`, {
+      params: {
+        page,
+        search,
+      },
+    });
+
+    yield put(getMealInSuccess(response.data));
   } catch (err) {
     toast.error('Falha ao obter refeições!');
     yield put(getMealInFailure());
@@ -67,11 +74,12 @@ export function* getMeal({ payload }) {
 export function* deleteMeal({ payload }) {
   try {
     const { meal } = payload;
+    const { page = 1, search = '' } = payload;
 
     yield call(api.delete, `/meals/${meal.id}`);
 
     yield put(deleteMealInSuccess());
-    yield put(getMealRequest());
+    yield put(getMealRequest(page, search));
     toast.success('Refeição excluída');
   } catch (err) {
     toast.error('Falha ao excluir refeição, verifique seus dados!');
