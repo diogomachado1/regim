@@ -8,8 +8,8 @@ tracer.use('express', {
   analytics: true,
 });
 
-tracer.use('postgress', {
-  analytics: true,
+tracer.use('pg', {
+  service: 'pg-cluster',
 });
 
 export default tracer;
