@@ -6,15 +6,17 @@ import express from 'express';
 import 'express-async-errors';
 import cors from 'cors';
 
+import * as Sentry from '@sentry/node';
 import routesV1 from './app/routes';
-
-// Uncomment this line to enable database access
-// --------
 import db from './database';
+import sentryConfig from './config/sentry';
+import './tracer';
 
 class App {
   constructor() {
     this.server = express();
+
+    Sentry.init(sentryConfig);
 
     this.middlewares();
     this.routes();
@@ -32,6 +34,7 @@ class App {
 
   routes() {
     this.server.use(routesV1);
+    this.server.use(Sentry.Handlers.errorHandler());
   }
 
   exceptionHandler() {
