@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import React, { useEffect, useCallback, useState, useMemo } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
@@ -8,13 +8,7 @@ import InputCustom from '~/components/Input';
 import { ButtonTerciary } from '~/components/Button';
 import { StyledForm, Buttons } from './styles';
 import ListIngredients from './ListIngredients';
-import ListProducts from './ListProducts';
-import ProductModalForm from './ProductModalForm';
-import {
-  openProductForm,
-  closeProductForm,
-  getProductRequest,
-} from '~/store/modules/product/actions';
+import { getProductRequest } from '~/store/modules/product/actions';
 import {
   saveMealRequest,
   getOneMealRequest,
@@ -22,6 +16,7 @@ import {
 } from '~/store/modules/meal/actions';
 import Loading from '~/components/Loading';
 import { MealSchema } from '~/validators/mealValidator';
+import AutoCompleteDebounce from '~/components/AutoCompleteDebounce';
 
 export default function MealForm({ history }) {
   const dispatch = useDispatch();
@@ -30,22 +25,9 @@ export default function MealForm({ history }) {
     validationSchema: MealSchema,
   });
 
-  const products = useSelector(state => state.product.products);
   const meal = useSelector(state => state.meal.editMeal);
-  const loadingMeal = useSelector(state => state.meal.loading);
-  const loadingProduct = useSelector(state => state.product.loading);
-  const loading = useMemo(() => loadingMeal || loadingProduct, [
-    loadingMeal,
-    loadingProduct,
-  ]);
-
-  const showProductModal = useSelector(state => state.product.openForm);
-  const [editProduct, setEditProduct] = useState({});
+  const loading = useSelector(state => state.meal.loading);
   const [ingredients, setIngredients] = useState([]);
-
-  const loadProducts = useCallback(async () => {
-    dispatch(getProductRequest());
-  }, [dispatch]);
 
   const loadMeal = useCallback(() => {
     if (id) {
@@ -56,49 +38,15 @@ export default function MealForm({ history }) {
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (id && meal.ingredients) {
-      setIngredients(meal.ingredients);
-    }
-    reset(meal);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [meal, id]);
-
-  useEffect(() => {
-    loadProducts();
-  }, [loadProducts]);
-
-  useEffect(() => {
     loadMeal();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function addIngredient(product) {
-    setIngredients([...ingredients, { productId: product.id, amount: 0 }]);
-  }
-
   function removeIngredient(product) {
-    setIngredients([
-      ...ingredients.filter(item => product.id !== item.productId),
-    ]);
-  }
-
-  function openProductModal(product) {
-    dispatch(openProductForm());
-    setEditProduct(product);
-  }
-
-  function closeProductModal() {
-    dispatch(closeProductForm());
-    setEditProduct({});
-    loadProducts();
-  }
-
-  function addOrRemoveIngredient(product) {
-    if (ingredients.find(item => product.id === item.productId)) {
-      removeIngredient(product);
-    } else {
-      addIngredient(product);
-    }
+    const newIngredient = ingredients.filter(
+      ingredient => ingredient.productId !== product.id
+    );
+    setIngredients(newIngredient);
   }
 
   function onSumit(value) {
@@ -129,17 +77,24 @@ export default function MealForm({ history }) {
             />
             <ListIngredients
               ingredients={ingredients}
-              removeIngredient={addOrRemoveIngredient}
+              removeIngredient={removeIngredient}
               register={register}
               errors={errors}
             />
+            <AutoCompleteDebounce
+              entity="product"
+              list="products"
+              request={getProductRequest}
+              onSelect={e => {
+                if (e) {
+                  setIngredients([
+                    ...ingredients,
+                    { productId: e.id, amount: 0, product: e },
+                  ]);
+                }
+              }}
+            />
           </PerfectScrollbar>
-          <ListProducts
-            products={products}
-            ingredients={ingredients}
-            addOrRemoveIngredient={addOrRemoveIngredient}
-            openProductModal={openProductModal}
-          />
         </div>
         <Buttons>
           <ButtonTerciary
@@ -157,12 +112,6 @@ export default function MealForm({ history }) {
         </Buttons>
       </StyledForm>
 
-      {showProductModal && (
-        <ProductModalForm
-          product={editProduct}
-          closeProductModal={closeProductModal}
-        />
-      )}
       {loading && <Loading />}
     </>
   );
