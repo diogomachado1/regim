@@ -1,4 +1,5 @@
 import './bootstrap';
+import './tracer';
 
 import Youch from 'youch';
 import path from 'path';
@@ -11,7 +12,6 @@ import * as Sentry from '@sentry/node';
 import routesV1 from './app/routes';
 import db from './database';
 import sentryConfig from './config/sentry';
-import './tracer';
 
 class App {
   constructor() {
