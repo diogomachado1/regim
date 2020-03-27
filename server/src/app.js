@@ -3,6 +3,7 @@ import './bootstrap';
 import Youch from 'youch';
 import path from 'path';
 import express from 'express';
+import connect_datadog from 'connect-datadog';
 import 'express-async-errors';
 import cors from 'cors';
 
@@ -26,6 +27,8 @@ class App {
   middlewares() {
     this.server.use(cors());
     this.server.use(express.json());
+    if (process.env.NODE_ENV === 'production')
+      this.server.use(connect_datadog({ response_code: true }));
     this.server.use(
       '/files',
       express.static(path.resolve(__dirname, '..', 'tmp', 'uploads'))
