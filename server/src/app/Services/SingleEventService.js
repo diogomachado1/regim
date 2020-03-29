@@ -1,41 +1,6 @@
 import { addMinutes, isBefore, addDays, addWeeks, isAfter } from 'date-fns';
 
 class SingleEventServices {
-  getSingleEvent(event, userId) {
-    const singleEvents = [];
-    const { startDate, endDate, duration, repeatable, id } = event;
-    if (!event.repeatable) {
-      singleEvents.push({
-        eventStartDate: startDate,
-        eventId: id,
-        userId,
-      });
-    } else if (repeatable === 'daily') {
-      let currentDate = startDate;
-      const finishDate = addMinutes(endDate, duration);
-      while (isBefore(currentDate, finishDate)) {
-        singleEvents.push({
-          eventStartDate: currentDate,
-          eventId: id,
-          userId,
-        });
-        currentDate = addDays(currentDate, 1);
-      }
-    } else if (repeatable === 'weekly') {
-      let currentDate = startDate;
-      const finishDate = addMinutes(endDate, duration);
-      while (isBefore(currentDate, finishDate)) {
-        singleEvents.push({
-          eventStartDate: currentDate,
-          eventId: id,
-          userId,
-        });
-        currentDate = addWeeks(currentDate, 1);
-      }
-    }
-    return singleEvents;
-  }
-
   getSingleEventWithTime(event, userId, fromDate, toDate) {
     const singleEvents = [];
     const { startDate, endDate, duration, repeatable, id } = event;

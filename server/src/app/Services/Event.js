@@ -1,4 +1,3 @@
-import { addMinutes, isBefore, addDays, addWeeks } from 'date-fns';
 import Event from '../models/Event';
 import EventMeal from '../models/EventMeal';
 import Meal from '../models/Meal';
@@ -18,41 +17,6 @@ class EventServices {
     const event = await this.model.getEventById(id, userId);
     if (!event) throw new NotFoundError('Event');
     return event;
-  }
-
-  getSingleEvent(event, userId) {
-    const singleEvents = [];
-    const { startDate, endDate, duration, repeatable, id } = event;
-    if (!event.repeatable) {
-      singleEvents.push({
-        eventStartDate: startDate,
-        eventId: id,
-        userId,
-      });
-    } else if (repeatable === 'daily') {
-      let currentDate = startDate;
-      const finishDate = addMinutes(endDate, duration);
-      while (isBefore(currentDate, finishDate)) {
-        singleEvents.push({
-          eventStartDate: currentDate,
-          eventId: id,
-          userId,
-        });
-        currentDate = addDays(currentDate, 1);
-      }
-    } else if (repeatable === 'weekly') {
-      let currentDate = startDate;
-      const finishDate = addMinutes(endDate, duration);
-      while (isBefore(currentDate, finishDate)) {
-        singleEvents.push({
-          eventStartDate: currentDate,
-          eventId: id,
-          userId,
-        });
-        currentDate = addWeeks(currentDate, 1);
-      }
-    }
-    return singleEvents;
   }
 
   // to listService
@@ -113,7 +77,7 @@ class EventServices {
         attributes: ['amount', ['meal_id', 'mealId']],
         include: {
           model: Meal,
-          as: 'meals',
+          as: 'meal',
           attributes: ['id', 'description', 'name'],
           include: {
             model: Ingredient,
@@ -140,12 +104,8 @@ class EventServices {
     }
 
     const event = await this.model.createEvent(ValidatedEvent, userId);
-    const singleEvents = this.getSingleEvent(
-      { ...ValidatedEvent, id: event.id },
-      userId
-    );
 
-    return { ...event, events: singleEvents.length };
+    return { ...event };
   }
 
   async update(data, id, userId) {
@@ -167,12 +127,7 @@ class EventServices {
       userId
     );
 
-    const singleEvents = this.getSingleEvent(
-      { ...ValidatedEvent, id: eventSaved.id },
-      userId
-    );
-
-    return { ...eventSaved, events: singleEvents.length };
+    return { ...eventSaved };
   }
 
   async delete(id, userId) {
