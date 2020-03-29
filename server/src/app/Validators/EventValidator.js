@@ -15,10 +15,12 @@ class EventValidator extends Validator {
       repeatable: Yup.mixed()
         .oneOf(['daily', 'weekly', 'not'])
         .default('not'),
-      endDate: Yup.date().when(
-        'startDate',
-        (startDate, schema) => startDate && schema.min(startDate)
-      ),
+      endDate: Yup.date()
+        .nullable()
+        .when(
+          'startDate',
+          (startDate, schema) => startDate && schema.min(startDate)
+        ),
       eventMeals: Yup.array().of(
         Yup.object().shape({
           mealId: Yup.number()
@@ -37,10 +39,12 @@ class EventValidator extends Validator {
       duration: Yup.number().min(0),
       startDate: Yup.date(),
       repeatable: Yup.mixed().oneOf(['daily', 'weekly', 'not']),
-      endDate: Yup.date().when(
-        'startDate',
-        (startDate, schema) => startDate && schema.min(startDate)
-      ),
+      endDate: Yup.date()
+        .nullable()
+        .when(
+          'startDate',
+          (startDate, schema) => startDate && schema.min(startDate)
+        ),
       eventMeals: Yup.array().of(
         Yup.object().shape({
           mealId: Yup.number()
