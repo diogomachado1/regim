@@ -40,7 +40,7 @@ class SingleEventServices {
     const singleEvents = [];
     const { startDate, endDate, duration, repeatable, id } = event;
     let currentDate = startDate;
-    const finishDate = addMinutes(endDate, duration);
+    const finishDate = endDate && addMinutes(endDate, duration);
     const finishSearchDate = addMinutes(toDate, duration);
     if (event.repeatable === 'not') {
       if (
@@ -55,10 +55,7 @@ class SingleEventServices {
         });
       }
     } else if (repeatable === 'daily') {
-      while (
-        isBefore(currentDate, finishDate) &&
-        isBefore(currentDate, finishSearchDate)
-      ) {
+      while (this.verifyBefore(currentDate, finishDate, finishSearchDate)) {
         if (isAfter(currentDate, fromDate)) {
           singleEvents.push({
             eventStartDate: currentDate,
@@ -70,10 +67,7 @@ class SingleEventServices {
         currentDate = addDays(currentDate, 1);
       }
     } else if (repeatable === 'weekly') {
-      while (
-        isBefore(currentDate, finishDate) &&
-        isBefore(currentDate, finishSearchDate)
-      ) {
+      while (this.verifyBefore(currentDate, finishDate, finishSearchDate)) {
         if (isAfter(currentDate, fromDate)) {
           singleEvents.push({
             eventStartDate: currentDate,
@@ -86,6 +80,16 @@ class SingleEventServices {
       }
     }
     return singleEvents;
+  }
+
+  verifyBefore(currentDate, finishDate, finishSearchDate) {
+    if (finishDate) {
+      return (
+        isBefore(currentDate, finishDate) &&
+        isBefore(currentDate, finishSearchDate)
+      );
+    }
+    return isBefore(currentDate, finishSearchDate);
   }
 
   getEventSingleList(events, userId, fromDate, toDate) {

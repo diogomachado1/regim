@@ -1,4 +1,3 @@
-import addYears from 'date-fns/addYears';
 import * as Yup from 'yup';
 import Validator from './Validator';
 
@@ -16,21 +15,10 @@ class EventValidator extends Validator {
       repeatable: Yup.mixed()
         .oneOf(['daily', 'weekly', 'not'])
         .default('not'),
-      endDate: Yup.date()
-        .required()
-        .when(
-          'startDate',
-          (startDate, schema) => startDate && schema.min(startDate)
-        )
-        .when(
-          'startDate',
-          (startDate, schema) =>
-            startDate && schema.max(addYears(startDate, 1)).required()
-        )
-        .when('repeatable', (repeatable, schema) => {
-          if (repeatable !== 'not') return schema.required();
-          return schema;
-        }),
+      endDate: Yup.date().when(
+        'startDate',
+        (startDate, schema) => startDate && schema.min(startDate)
+      ),
       eventMeals: Yup.array().of(
         Yup.object().shape({
           mealId: Yup.number()
@@ -49,19 +37,10 @@ class EventValidator extends Validator {
       duration: Yup.number().min(0),
       startDate: Yup.date(),
       repeatable: Yup.mixed().oneOf(['daily', 'weekly', 'not']),
-      endDate: Yup.date()
-        .when(
-          'startDate',
-          (startDate, schema) => startDate && schema.min(startDate)
-        )
-        .when(
-          'startDate',
-          (startDate, schema) => startDate && schema.max(addYears(startDate, 1))
-        )
-        .when('repeatable', (repeatable, schema) => {
-          if (repeatable !== 'not') return schema.required();
-          return schema;
-        }),
+      endDate: Yup.date().when(
+        'startDate',
+        (startDate, schema) => startDate && schema.min(startDate)
+      ),
       eventMeals: Yup.array().of(
         Yup.object().shape({
           mealId: Yup.number()

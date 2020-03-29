@@ -17,7 +17,7 @@ class App {
   constructor() {
     this.server = express();
 
-    Sentry.init(sentryConfig);
+    if (process.env.NODE_ENV === 'production') Sentry.init(sentryConfig);
 
     this.middlewares();
     this.routes();

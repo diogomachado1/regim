@@ -1,15 +1,17 @@
 import tracer from 'dd-trace';
 
-tracer.init({
-  analytics: true,
-});
+if (process.env.NODE_ENV === 'production') {
+  tracer.init({
+    analytics: true,
+  });
 
-tracer.use('express', {
-  analytics: true,
-});
+  tracer.use('express', {
+    analytics: true,
+  });
 
-tracer.use('pg', {
-  service: 'pg-cluster',
-});
+  tracer.use('pg', {
+    service: 'pg-cluster',
+  });
+}
 
-export default tracer;
+export default process.env.NODE_ENV === 'production' && tracer;
