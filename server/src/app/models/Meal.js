@@ -90,7 +90,7 @@ class Meal extends Model {
 
   static async getMealById(id, user_id) {
     const DocMeal = await Meal.findOne({
-      attributes: ['id', 'description', 'name'],
+      attributes: ['id', 'description', 'name', 'imageId'],
       where: { user_id, id },
       include: this.includes,
     });

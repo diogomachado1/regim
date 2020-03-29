@@ -1,6 +1,7 @@
 import Sequelize, { Model } from 'sequelize';
 import EventMeal from './EventMeal';
 import Meal from './Meal';
+import File from './File';
 
 class Event extends Model {
   static init(sequelize) {
@@ -46,8 +47,12 @@ class Event extends Model {
       attributes: [['meal_id', 'mealId'], ['event_id', 'eventId'], 'amount'],
       include: {
         model: Meal,
-        as: 'meals',
-        attributes: ['id', 'description', 'name'],
+        as: 'meal',
+        attributes: ['id', 'description', 'name', 'imageId'],
+        include: {
+          model: File,
+          as: 'image',
+        },
       },
     };
   }

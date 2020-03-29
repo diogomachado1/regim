@@ -20,7 +20,7 @@ class EventMeal extends Model {
     });
     this.belongsTo(models.Meal, {
       foreignKey: { foreignKey: 'meal_id', name: 'mealId' },
-      as: 'meals',
+      as: 'meal',
     });
   }
 }
