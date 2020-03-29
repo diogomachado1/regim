@@ -30,15 +30,15 @@ class EventServices {
     );
     const ingredients = {};
     values.forEach(event => {
-      event.event.eventMeals.forEach(meal => {
-        meal.meals.ingredients.forEach(ingredient => {
+      event.event.eventMeals.forEach(eventMeal => {
+        eventMeal.meal.ingredients.forEach(ingredient => {
           if (ingredients[ingredient.product.name]) {
             ingredients[ingredient.product.name].amountTotal +=
-              ingredient.amount * meal.amount * event.count;
+              ingredient.amount * eventMeal.amount * event.count;
           } else {
             ingredients[ingredient.product.name] = {
               product: ingredient.product,
-              amountTotal: ingredient.amount * meal.amount * event.count,
+              amountTotal: ingredient.amount * eventMeal.amount * event.count,
             };
           }
         });
