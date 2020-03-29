@@ -3,11 +3,13 @@ import { MdEdit, MdContentCopy } from 'react-icons/md';
 import { FaRegTrashAlt, FaGlobeAmericas } from 'react-icons/fa';
 import { CardContainer, Infos, Buttons } from './styles';
 import TooltipButton from '../TooltipButton';
+import Avatar from '../Avatar';
 
 // import { Container } from './styles';
 
 export default function Card({
-  Image,
+  image,
+  imageName,
   editAction,
   removeAction,
   duplicateAction,
@@ -15,11 +17,14 @@ export default function Card({
   isPublic,
   title,
   InfosProps,
+  disabled,
 }) {
   return (
-    <CardContainer>
+    <CardContainer disabled={disabled}>
       <div>
-        {Image && <Image />}
+        {imageName && (
+          <Avatar className="regim-avatar" image={image} name={imageName} />
+        )}
         <Infos>
           <span>{title}</span>
           <div>{InfosProps && <InfosProps />}</div>

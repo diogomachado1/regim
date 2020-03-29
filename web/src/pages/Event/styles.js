@@ -38,39 +38,6 @@ export const EventsList = styled.ul`
   }
 `;
 
-export const EventItem = styled.li`
-  box-shadow: var(--regim-box);
-  border-radius: 5px;
-  padding: 10px;
-  opacity: ${({ lasted }) => (lasted ? '0.4' : '1')};
-  > div {
-    display: flex;
-    align-items: center;
-    > span {
-      margin-right: auto;
-      font-size: 20px;
-    }
-
-    > button {
-      margin-left: 10px;
-    }
-  }
-  > span {
-    margin-top: 10px;
-    display: flex;
-  }
-  > ul {
-    list-style: none;
-    width: 100%;
-    display: flex;
-    margin-top: 10px;
-    flex-wrap: wrap;
-    > li {
-      margin-right: 5px;
-    }
-  }
-`;
-
 export const Pagination = styled.div`
   box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.1);
   position: sticky;
@@ -84,8 +51,14 @@ export const Pagination = styled.div`
   align-items: center;
   background-color: #fff;
   z-index: 200;
-  > span {
-    color: #666;
-    margin: 0 10px;
+  > div.regim-date-page-group {
+    display: flex;
+    flex: 1;
+    justify-content: ${({ justify }) => justify || 'center'};
+    align-items: center;
+    > span {
+      color: #666;
+      margin: 0 10px;
+    }
   }
 `;

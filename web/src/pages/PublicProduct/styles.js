@@ -12,6 +12,18 @@ export const Container = styled.div`
   > a {
     margin-left: auto;
   }
+  .regim-public-product {
+    > span:last-child {
+      display: flex;
+      align-items: center;
+      margin-top: 5px;
+      > div {
+        width: 30px;
+        height: 30px;
+        margin-right: 5px;
+      }
+    }
+  }
 `;
 export const ProductsList = styled.ul`
   list-style: none;

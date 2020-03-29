@@ -7,8 +7,14 @@ export const MealSchema = Yup.object().shape({
     Yup.object().shape({
       productId: Yup.number().required(),
       amount: Yup.number()
-        .transform(value => (isNaN(value) ? undefined : value))
-        .required('Quantidade é obrigatória'),
+        .transform((value, originalValue) =>
+          Number(originalValue.replace(',', '.'))
+        )
+        .transform(
+          (value, originalValue) => value || originalValue || undefined
+        )
+        .required('Obrigatória')
+        .typeError('Valor invalido'),
     })
   ),
 });

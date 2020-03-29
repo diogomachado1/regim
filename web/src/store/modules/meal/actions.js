@@ -19,7 +19,13 @@ export function saveMealInFailure() {
   };
 }
 
-export function getMealRequest(page, search) {
+export function getMealRequest(page, search, debounce) {
+  if (debounce) {
+    return {
+      type: '@meal/GET_IN_RESQUEST_DEBOUNCE',
+      payload: { page, search },
+    };
+  }
   return {
     type: '@meal/GET_IN_RESQUEST',
     payload: { page, search },

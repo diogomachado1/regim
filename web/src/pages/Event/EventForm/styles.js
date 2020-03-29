@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-
 export const StyledForm = styled.form`
   min-height: 100%;
   height: 100%;
@@ -26,6 +25,17 @@ export const StyledForm = styled.form`
       max-height: 100%;
       > * {
         margin-bottom: 10px;
+        margin-top: 5px !important;
+      }
+      > .regim-date-group {
+        display: flex;
+        > * {
+          :first-child {
+            margin-right: 10px;
+          }
+          margin: 0;
+          flex: 1;
+        }
       }
     }
   }

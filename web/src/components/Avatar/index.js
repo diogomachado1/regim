@@ -4,13 +4,13 @@ import getInitialLettes from '~/utils/getInitialLetters';
 
 // import { Container } from './styles';
 
-export default function Avatar({ image, name }) {
+export default function Avatar({ image, name, ...rest }) {
   return (
     <>
-      {image ? (
-        <AvatarMd src={image.url} alt={name} />
+      {image?.url ? (
+        <AvatarMd {...rest} src={image.url} alt={name} />
       ) : (
-        <AvatarMd>{getInitialLettes(name)}</AvatarMd>
+        <AvatarMd {...rest}>{getInitialLettes(name)}</AvatarMd>
       )}
     </>
   );

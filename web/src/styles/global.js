@@ -7,6 +7,20 @@ import { darken } from 'polished';
 export default createGlobalStyle`
   @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700&display=swap');
 
+  .regim-options{
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ccc7;
+    width: 100%;
+    padding-bottom: 5px;
+    >:first-child{
+        margin-right: 10px;
+    }
+    >span {
+        font-size: 20px;
+    }
+  }
+
   * {
     margin: 0;
     padding: 0;

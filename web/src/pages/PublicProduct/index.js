@@ -5,8 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { TextField } from '@material-ui/core';
 import { DebounceInput } from 'react-debounce-input';
 import { Container, ProductsList } from './styles';
-import Avatar from '~/components/Avatar';
-
 import {
   duplicateProductRequest,
   getPublicProductRequest,
@@ -14,6 +12,7 @@ import {
 import Loading from '~/components/Loading';
 import { Pagination } from '../Event/styles';
 import Card from '~/components/Card';
+import Avatar from '~/components/Avatar';
 
 export default function PublicProduct() {
   const dispatch = useDispatch();
@@ -59,12 +58,22 @@ export default function PublicProduct() {
           {products.map(product => (
             <Card
               key={product.id}
-              Image={() => <Avatar image={product.image} name={product.name} />}
+              image={product.image}
+              imageName={product.name}
               title={product.name}
               InfosProps={() => (
-                <span>{`${parseFloat(product.amount).toFixed(0)}${
-                  product.measure
-                } por R$${product.price.replace('.', ',')} `}</span>
+                <div className="regim-public-product">
+                  <span>{`${parseFloat(product.amount).toFixed(0)}${
+                    product.measure
+                  } por R$${product.price.replace('.', ',')} `}</span>
+                  <span>
+                    <Avatar
+                      image={product.user.image}
+                      name={product.user.name}
+                    />
+                    <span>{product.user.name}</span>
+                  </span>
+                </div>
               )}
               duplicateAction={() => handleDuplicateProduct(product.id)}
             />

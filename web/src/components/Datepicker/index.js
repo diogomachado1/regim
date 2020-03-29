@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import DateFnsUtils from '@date-io/date-fns';
+import ptBr from 'date-fns/locale/pt-BR';
+
 import { MuiPickersUtilsProvider, DateTimePicker } from '@material-ui/pickers';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -7,7 +9,6 @@ export default function DatePicker({
   name,
   error,
   register,
-  defaultValue,
   watch,
   setValue,
   ...rest
@@ -19,13 +20,15 @@ export default function DatePicker({
   }, [test]);
 
   const handleDateChange = date => {
-    setValue(name, date, false);
+    setValue(name, date || null, false);
   };
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+    <MuiPickersUtilsProvider utils={DateFnsUtils} locale={ptBr}>
       <DateTimePicker
         inputVariant="outlined"
         margin="normal"
+        ampm={false}
+        format="dd/MM/yy HH:mm"
         helperText={error ? error.message : undefined}
         label={rest.placeholder}
         clearable

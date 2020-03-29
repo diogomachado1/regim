@@ -2,10 +2,8 @@ import styled from 'styled-components';
 import { ButtonTerciaryCustom } from '~/components/Button/styles';
 
 export const Container = styled.div`
-  flex: 1;
-  border: 2px solid #c4c4c4;
-  border-radius: 5px;
-  padding: 5px 10px;
+  padding: 5px;
+  align-self: flex-start;
 `;
 
 export const UlIngredients = styled.ul`
@@ -13,24 +11,25 @@ export const UlIngredients = styled.ul`
   list-style: none;
   flex-direction: column;
   > li {
-    background-color: #fafafa;
+    align-self: flex-start;
+    background-color: #9a9df7;
+    color: #fff;
     box-shadow: 0 0px 7px 0px #bbb;
     padding: 10px 20px;
-    border-radius: 25px;
+    border-radius: 50px;
     display: flex;
     margin: 5px 0;
-    justify-content: flex-end;
     align-items: center;
-    > :first-child {
-      margin-right: auto;
+    > span.regim-ingredient-name {
+      min-width: 70px;
+      margin: 0 10px;
     }
-    > div {
+    > div.regim-input-amount {
       display: flex;
       flex-direction: column;
-      > input {
-        height: 35px;
-        padding: 5px;
-        font-size: 14px;
+      width: 150px;
+      > div {
+        margin-top: 0 !important;
       }
     }
   }

@@ -1,38 +1,37 @@
 import * as Yup from 'yup';
-import { addYears } from 'date-fns';
 
 export const EventSchema = Yup.object().shape({
   name: Yup.string().required(),
-  startDate: Yup.date().required(),
+  startDate: Yup.date()
+    .typeError('Valor invalido')
+    .required('Obrigatória'),
   endDate: Yup.date()
-    .required()
+    .typeError('Valor invalido')
+    .nullable()
     .when(
       'startDate',
       (startDate, schema) => startDate && schema.min(startDate)
-    )
-    .when(
-      'startDate',
-      (startDate, schema) =>
-        startDate &&
-        schema.max(addYears(startDate, 2), 'Periodo maximo de 2 anos')
     ),
   duration: Yup.number()
+    .transform((value, originalValue) => value || originalValue || undefined)
     .default(30)
     .min(15)
-    .required(),
+    .nullable(),
   repeatable: Yup.mixed()
     .oneOf(['daily', 'weekly', 'not'])
     .required(),
   eventMeals: Yup.array().of(
-    Yup.object()
-      .shape({
-        mealId: Yup.number().required(),
-        amount: Yup.number()
-          .default(0)
-          .min(0)
-          .transform(value => (isNaN(value) ? undefined : value))
-          .required('Quantidade é obrigatória'),
-      })
-      .from('mealId', 'MealId', true)
+    Yup.object().shape({
+      mealId: Yup.number().required(),
+      amount: Yup.number()
+        .transform((value, originalValue) =>
+          Number(originalValue.replace(',', '.'))
+        )
+        .transform(
+          (value, originalValue) => value || originalValue || undefined
+        )
+        .required('Obrigatória')
+        .typeError('Valor invalido'),
+    })
   ),
 });

@@ -1,10 +1,6 @@
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import {
-  MdAddCircleOutline,
-  MdArrowBack,
-  MdArrowForward,
-} from 'react-icons/md';
-import { Link } from 'react-router-dom';
+import { MdArrowBack, MdArrowForward, MdAdd } from 'react-icons/md';
+import { useHistory } from 'react-router-dom';
 import { ptBR } from 'date-fns/locale';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,8 +13,7 @@ import {
   isPast,
 } from 'date-fns';
 import { addMinutes } from 'date-fns/esm';
-import { Container, EventsList, EventItem, Pagination } from './styles';
-import { Button } from '~/components/Button';
+import { Container, EventsList, Pagination } from './styles';
 import { PagButton } from '~/components/Button/styles';
 
 import Loading from '~/components/Loading';
@@ -26,10 +21,13 @@ import {
   getEventRequest,
   deleteEventRequest,
 } from '~/store/modules/event/actions';
+import Card from '~/components/Card';
+import TooltipButton from '~/components/TooltipButton';
 
 export default function Event() {
   const dispatch = useDispatch();
   const [weekShow, setWeekShow] = useState(0);
+  const history = useHistory();
 
   const events = useSelector(state => state.event.events);
   const loading = useSelector(state => state.event.loading);
@@ -94,22 +92,25 @@ export default function Event() {
     <>
       <Container>
         <Pagination>
-          <PagButton onClick={() => lastWeek()}>
-            <MdArrowBack size="14" />
-          </PagButton>
-          <span>
-            {`${format(startWeek, 'dd/MM')}-${format(endWeek, 'dd/MM')}`}
-          </span>
-          <PagButton onClick={() => nextWeek()}>
-            <MdArrowForward size="14" />
-          </PagButton>
+          <div className="regim-date-page-group">
+            <PagButton onClick={() => lastWeek()}>
+              <MdArrowBack size="14" />
+            </PagButton>
+            <span>
+              {`${format(startWeek, 'dd/MM')}-${format(endWeek, 'dd/MM')}`}
+            </span>
+            <PagButton onClick={() => nextWeek()}>
+              <MdArrowForward size="14" />
+            </PagButton>
+          </div>
+
+          <TooltipButton
+            text="Criar"
+            color="success"
+            Icon={MdAdd}
+            action={() => history.push('/events/create')}
+          />
         </Pagination>
-        <Link to="/events/create">
-          <Button color="success" onClick={() => {}}>
-            <MdAddCircleOutline size="24" />
-            Add
-          </Button>
-        </Link>
         <EventsList>
           {FormatedEvent.map(day => (
             <div key={day[0].eventStartDate}>
@@ -119,36 +120,22 @@ export default function Event() {
                 }).toUpperCase()}
               </span>
               {day.map(event => (
-                <EventItem
-                  lasted={isPast(parseISO(event.eventStartDate))}
-                  key={event.eventStartDate}
-                >
-                  <div>
-                    <span>
-                      {`${event.event.name} (${format(
-                        parseISO(event.eventStartDate),
-                        'HH:mm',
-                        {
-                          locale: ptBR,
-                        }
-                      )}-${getFinishDate(
-                        event.eventStartDate,
-                        event.event.duration
-                      )})`}
-                    </span>
-                    <Link to={`/events/${event.event.id}`}>
-                      <Button color="warning" onClick={() => {}}>
-                        Editar
-                      </Button>
-                    </Link>
-                    <Button
-                      onClick={() => handleRemoveEvent(event.event.id)}
-                      color="danger"
-                    >
-                      remover
-                    </Button>
-                  </div>
-                </EventItem>
+                <Card
+                  key={event.eventStartDate + event.id}
+                  title={`${event.event.name} (${format(
+                    parseISO(event.eventStartDate),
+                    'HH:mm',
+                    {
+                      locale: ptBR,
+                    }
+                  )}-${getFinishDate(
+                    event.eventStartDate,
+                    event.event.duration
+                  )})`}
+                  disabled={isPast(parseISO(event.eventStartDate))}
+                  editAction={() => history.push(`/events/${event.event.id}`)}
+                  removeAction={() => handleRemoveEvent(event.event.id)}
+                />
               ))}
             </div>
           ))}

@@ -37,6 +37,7 @@ export default function product(state = INITIAL_STATE, action) {
       }
       case '@product/SAVE_IN_RESQUEST':
       case '@product/GET_IN_RESQUEST':
+      case '@product/GET_IN_RESQUEST_DEBOUNCE':
       case '@product/GET_PUBLIC_IN_RESQUEST':
       case '@product/GETONE_IN_RESQUEST':
       case '@product/DUPLICATE_IN_RESQUEST':

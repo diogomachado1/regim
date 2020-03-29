@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Autocomplete } from '@material-ui/lab';
-import { DebounceInput } from 'react-debounce-input';
 import { TextField, CircularProgress } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
+import Avatar from '../Avatar';
 
 // import { Container } from './styles';
 
@@ -12,42 +12,53 @@ export default function AutoCompleteDebounce({
   list,
   onSelect,
   loadingName = 'loading',
+  placeholder,
 }) {
   const dispatch = useDispatch();
 
   const [search, setSearch] = useState('');
 
-  const itens = useSelector(state => state[entity][list]);
+  const items = useSelector(state => state[entity][list]);
   const loading = useSelector(state => state[entity][loadingName]);
 
-  const loadItens = useCallback(async () => {
-    dispatch(request(1, search));
+  const loaditems = useCallback(async () => {
+    dispatch(request(1, search, true));
   }, [dispatch, request, search]);
 
   useEffect(() => {
-    loadItens();
-  }, [loadItens]);
+    loaditems();
+  }, [loaditems]);
   useEffect(() => {
-    loadItens();
-    console.log(entity);
+    loaditems();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  function onChange(option, value) {
+    onSelect(value);
+    setSearch('');
+  }
+
   return (
     <Autocomplete
-      options={itens}
+      options={items}
       getOptionSelected={(option, value) => option.name === value.name}
-      onChange={(option, value) => onSelect(value)}
+      onChange={onChange}
       getOptionLabel={option => option.name}
+      inputValue={search}
+      value={null}
+      onInputChange={(even, value) => setSearch(value)}
+      renderOption={({ image, name }) => (
+        <div className="regim-options">
+          <Avatar image={image} name={name} />
+          <span>{name}</span>
+        </div>
+      )}
       renderInput={params => (
-        <DebounceInput
-          placeholder="Escolher Produto..."
-          debounceTimeout={400}
+        <TextField
+          placeholder={placeholder}
           element={TextField}
           {...params}
-          label="Produto"
           variant="outlined"
-          onChange={event => setSearch(event.target.value)}
           InputProps={{
             ...params.InputProps,
             endAdornment: (

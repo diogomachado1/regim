@@ -5,10 +5,11 @@ export const CardContainer = styled.li`
   border-radius: 5px;
   padding: 10px;
   background-color: #fff;
+  opacity: ${({ disabled }) => (disabled ? '0.4' : '1')};
   > div {
     display: flex;
     align-items: center;
-    > div:first-child {
+    > div.regim-avatar {
       height: 75px;
       width: 75px;
       margin-right: 10px;

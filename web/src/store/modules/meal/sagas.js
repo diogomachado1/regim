@@ -1,4 +1,4 @@
-import { takeLatest, call, put, all } from 'redux-saga/effects';
+import { takeLatest, call, put, all, debounce } from 'redux-saga/effects';
 import { toast } from 'react-toastify';
 
 import api from '~/services/api';
@@ -88,6 +88,7 @@ export function* deleteMeal({ payload }) {
 }
 
 export default all([
+  debounce(600, '@meal/GET_IN_RESQUEST_DEBOUNCE', getMeals),
   takeLatest('@meal/SAVE_IN_RESQUEST', saveMeal),
   takeLatest('@meal/GET_IN_RESQUEST', getMeals),
   takeLatest('@meal/GETONE_IN_RESQUEST', getMeal),

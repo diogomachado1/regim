@@ -14,7 +14,6 @@ import {
 } from '~/store/modules/meal/actions';
 import Loading from '~/components/Loading';
 import Card from '~/components/Card';
-import Avatar from '~/components/Avatar';
 import { Pagination } from '../Event/styles';
 import { CircleButton } from '~/components/Button/styles';
 
@@ -72,7 +71,8 @@ export default function Meal() {
             <Card
               key={meal.id}
               title={meal.name}
-              Image={() => <Avatar image={meal.image} name={meal.name} />}
+              image={meal.image}
+              imageName={meal.name}
               editAction={() => history.push(`/meals/${meal.id}`)}
               removeAction={() => handleRemoveMeal(meal.id)}
             />

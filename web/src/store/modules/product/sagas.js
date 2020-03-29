@@ -1,4 +1,4 @@
-import { takeLatest, call, put, all } from 'redux-saga/effects';
+import { takeLatest, call, put, all, debounce } from 'redux-saga/effects';
 import { toast } from 'react-toastify';
 
 import api from '~/services/api';
@@ -125,6 +125,7 @@ export function* deleteProduct({ payload }) {
 
 export default all([
   takeLatest('@product/SAVE_IN_RESQUEST', saveProduct),
+  debounce(600, '@product/GET_IN_RESQUEST_DEBOUNCE', getProducts),
   takeLatest('@product/GET_IN_RESQUEST', getProducts),
   takeLatest('@product/GET_PUBLIC_IN_RESQUEST', getPublicProducts),
   takeLatest('@product/GETONE_IN_RESQUEST', getProduct),

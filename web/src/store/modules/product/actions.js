@@ -33,7 +33,13 @@ export function closeProductForm() {
   };
 }
 
-export function getProductRequest(page, search) {
+export function getProductRequest(page, search, debounce) {
+  if (debounce) {
+    return {
+      type: '@product/GET_IN_RESQUEST_DEBOUNCE',
+      payload: { page, search },
+    };
+  }
   return {
     type: '@product/GET_IN_RESQUEST',
     payload: { page, search },

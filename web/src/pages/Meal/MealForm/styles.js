@@ -17,6 +17,10 @@ export const StyledForm = styled.form`
     > * {
       margin-bottom: 10px;
     }
+    > div > div:first-child {
+      max-width: 400px;
+      height: 300px;
+    }
     > div.scrollbar-container {
       flex: 1;
       display: flex;

@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import React, { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
@@ -17,7 +17,8 @@ import SelectCustom from '~/components/Select';
 import { ProductSchema } from '~/validators/productValidator';
 import ImagePicker from '~/components/imagePicker';
 
-export default function ProductForm({ history }) {
+export default function ProductForm() {
+  const history = useHistory();
   const dispatch = useDispatch();
   const { id } = useParams();
   const { register, handleSubmit, errors, reset, setValue } = useForm({
@@ -98,7 +99,7 @@ export default function ProductForm({ history }) {
               type="button"
               color="danger"
               onClick={() => {
-                history.goBack();
+                history.push(`/products`);
               }}
             >
               Cancelar

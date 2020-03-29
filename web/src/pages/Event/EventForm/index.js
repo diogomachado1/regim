@@ -1,14 +1,12 @@
-import { useParams } from 'react-router-dom';
-import React, { useEffect, useCallback, useState, useMemo } from 'react';
+import { useParams, useHistory } from 'react-router-dom';
+import React, { useEffect, useCallback } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { useDispatch, useSelector } from 'react-redux';
-import { useForm } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import InputCustom from '~/components/Input';
 import { ButtonTerciary } from '~/components/Button';
 
 import { StyledForm, Buttons } from './styles';
-import ListEventMeals from './ListEventMeals';
-import ListMeals from './ListMeals';
 import { getMealRequest } from '~/store/modules/meal/actions';
 import {
   saveEventRequest,
@@ -20,26 +18,38 @@ import Loading from '~/components/Loading';
 import { EventSchema } from '~/validators/eventValidator';
 import DatePicker from '~/components/Datepicker';
 import SelectCustom from '~/components/Select';
+import List from '~/components/List';
+import AutoCompleteDebounce from '~/components/AutoCompleteDebounce';
 
-export default function EventForm({ history }) {
-  const { register, handleSubmit, errors, reset, watch, setValue } = useForm({
+export default function EventForm() {
+  const history = useHistory();
+
+  const {
+    register,
+    handleSubmit,
+    errors,
+    reset,
+    watch,
+    setValue,
+    control,
+    getValues,
+  } = useForm({
     validationSchema: EventSchema,
     defaultValues: { repeatable: 'not' },
+  });
+  useEffect(() => {
+    console.tron.log(errors);
+  }, [errors]);
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: 'eventMeals',
   });
 
   const dispatch = useDispatch();
   const { id } = useParams();
 
-  const meals = useSelector(state => state.meal.meals);
-  const loadingMeal = useSelector(state => state.meal.loading);
   const event = useSelector(state => state.event.editEvent);
-  const loadingEvent = useSelector(state => state.event.loading);
-  const loading = useMemo(() => loadingEvent || loadingMeal, [
-    loadingEvent,
-    loadingMeal,
-  ]);
-
-  const [eventMeals, setEventMeals] = useState([]);
+  const loading = useSelector(state => state.event.loading);
 
   const loadMeals = useCallback(async () => {
     dispatch(getMealRequest());
@@ -50,43 +60,29 @@ export default function EventForm({ history }) {
     }
   }, [dispatch, id]);
 
-  const repeatableWatch = watch('repeatable');
-
-  useEffect(() => console.log(repeatableWatch), [repeatableWatch]);
-
   useEffect(() => {
     if (id && event.eventMeals) {
-      setEventMeals(event.eventMeals);
-      const { name, startDate, endDate, duration, repeatable } = event;
-      reset({
-        name,
-        startDate,
-        endDate,
-        duration,
-        repeatable,
-        eventMeals: event.eventMeals,
-      });
+      reset(event);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [event]);
+  }, [event, id, reset]);
 
   useEffect(() => {
     loadMeals();
   }, [loadMeals]);
-
-  function addEventMeal(meal) {
-    setEventMeals([...eventMeals, { mealId: meal.id, amount: 0 }]);
+  function removeMeal(index) {
+    remove(index);
   }
 
-  function removeEventMeal(meal) {
-    setEventMeals([...eventMeals.filter(item => meal.id !== item.mealId)]);
+  function verifyMeal(meal) {
+    return getValues({ nest: true }).eventMeals?.find(item => {
+      return Number(item.mealId) === meal.id;
+    });
   }
 
-  function addOrRemoveEventMeal(meal) {
-    if (eventMeals.find(item => meal.id === item.mealId)) {
-      removeEventMeal(meal);
-    } else {
-      addEventMeal(meal);
+  function addMeal(meal) {
+    if (meal && !verifyMeal(meal)) {
+      console.tron.log({ mealId: meal.id, meal });
+      append({ mealId: meal.id, meal });
     }
   }
 
@@ -122,15 +118,15 @@ export default function EventForm({ history }) {
                   { id: 'weekly', title: 'Semanal' },
                 ]}
               />
-              <DatePicker
-                name="startDate"
-                placeholder="Início"
-                register={register}
-                error={errors.startDate}
-                watch={watch}
-                setValue={setValue}
-              />
-              {repeatableWatch !== ' ' && (
+              <div className="regim-date-group">
+                <DatePicker
+                  name="startDate"
+                  placeholder="Início"
+                  register={register}
+                  error={errors.startDate}
+                  watch={watch}
+                  setValue={setValue}
+                />
                 <DatePicker
                   name="endDate"
                   placeholder="Fim"
@@ -139,25 +135,29 @@ export default function EventForm({ history }) {
                   watch={watch}
                   setValue={setValue}
                 />
-              )}
+              </div>
               <InputCustom
                 name="duration"
                 placeholder="Duração"
                 register={register}
                 error={errors.duration}
               />
-              <ListEventMeals
-                eventMeals={eventMeals}
-                removeEventMeal={addOrRemoveEventMeal}
+              <AutoCompleteDebounce
+                entity="meal"
+                list="meals"
+                placeholder="Adicionar Refeição"
+                request={getMealRequest}
+                onSelect={e => addMeal(e)}
+              />
+              <List
+                entity="eventMeals"
+                entityChild="meal"
+                items={fields}
+                removeItem={removeMeal}
                 register={register}
                 errors={errors}
               />
             </PerfectScrollbar>
-            <ListMeals
-              meals={meals}
-              eventMeals={eventMeals}
-              addOrRemoveEventMeal={addOrRemoveEventMeal}
-            />
           </div>
           <Buttons>
             <ButtonTerciary

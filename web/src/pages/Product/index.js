@@ -18,7 +18,7 @@ import {
 import Loading from '~/components/Loading';
 import { Pagination } from '../Event/styles';
 import Card from '~/components/Card';
-import Avatar from '~/components/Avatar';
+import { measureLower } from '~/utils/getMeasure';
 
 export default function Product() {
   const dispatch = useDispatch();
@@ -92,10 +92,11 @@ export default function Product() {
             <Card
               key={product.id}
               title={product.name}
-              Image={() => <Avatar image={product.image} name={product.name} />}
+              image={product.image}
+              imageName={product.name}
               InfosProps={() => (
-                <span>{`${parseFloat(product.amount).toFixed(0)}${
-                  product.measure
+                <span>{`${parseFloat(product.amount).toFixed(0)} ${
+                  measureLower[product.measure]
                 } por R$${product.price.replace('.', ',')} `}</span>
               )}
               editAction={() => history.push(`/products/${product.id}`)}

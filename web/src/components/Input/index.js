@@ -7,6 +7,7 @@ export default function InputCustom({
   error,
   register,
   defaultValue,
+  variant = 'outlined',
   ...rest
 }) {
   const props = {
@@ -24,7 +25,7 @@ export default function InputCustom({
   return (
     <>
       {/* eslint-disable-next-line jsx-a11y/label-has-for */}
-      <InputboxUnform error={!!error} variant="outlined" {...props} />
+      <InputboxUnform error={!!error} variant={variant} {...props} />
     </>
   );
 }
