@@ -1,16 +1,18 @@
 import MealService from '../Services/MealService';
 
 class MealsController {
-  async index(req, res) {
+  async index(req, res, next) {
     const { userId } = req;
     const { page, search } = req.query;
 
     const meals = await MealService.getUserMeals(userId, page, search);
 
-    return res.json(meals);
+    req.response = meals;
+    res.json(meals);
+    return next();
   }
 
-  async show(req, res) {
+  async show(req, res, next) {
     const {
       userId,
       params: { id },
@@ -18,18 +20,21 @@ class MealsController {
 
     const meal = await MealService.verifyAndGetMeal(id, userId);
 
-    return res.json(meal);
+    req.response = meal;
+    res.json(meal);
+    return next();
   }
 
-  async store(req, res) {
+  async store(req, res, next) {
     const { userId } = req;
 
     const meal = await MealService.create(req.body, userId);
 
-    return res.status(201).json(meal);
+    res.status(201).json(meal);
+    return next();
   }
 
-  async update(req, res) {
+  async update(req, res, next) {
     const {
       userId,
       params: { id },
@@ -37,10 +42,11 @@ class MealsController {
 
     const meal = await MealService.update(req.body, id, userId);
 
-    return res.status(200).json(meal);
+    res.status(200).json(meal);
+    return next();
   }
 
-  async delete(req, res) {
+  async delete(req, res, next) {
     const {
       userId,
       params: { id },
@@ -48,7 +54,8 @@ class MealsController {
 
     await MealService.delete(id, userId);
 
-    return res.status(204).json();
+    res.status(204).json();
+    return next();
   }
 }
 

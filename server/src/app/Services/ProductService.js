@@ -45,14 +45,23 @@ class ProductServices {
     const ValidatedProduct = await ProductValidator.updateValidator(data);
     if (ValidatedProduct.imageId)
       await FileService.verifyAndGetFile(ValidatedProduct.imageId, userId);
-    await this.verifyAndGetProduct(id, userId);
-    return this.model.updateProductById(ValidatedProduct, id, userId);
+    const getProduct = await this.verifyAndGetProduct(id, userId);
+    const updatedProduct = await this.model.updateProductById(
+      ValidatedProduct,
+      id,
+      userId
+    );
+
+    return {
+      product: updatedProduct,
+      changePublic: updatedProduct.public || getProduct.public,
+    };
   }
 
   async delete(id, userId) {
-    const deleteds = await this.model.deleteProductById(id, userId);
-    if (!deleteds === 0) throw new NotFoundError('Product');
-    return true;
+    const product = await this.verifyAndGetProduct(id);
+    await this.model.deleteProductById(id, userId);
+    return product;
   }
 
   async duplicatedProducts(id, userId) {

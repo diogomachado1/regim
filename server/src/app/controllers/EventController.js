@@ -2,7 +2,7 @@ import { parseISO, addMonths } from 'date-fns';
 import EventServices from '../Services/Event';
 
 class EventController {
-  async index(req, res) {
+  async index(req, res, next) {
     const { userId } = req;
     const { fromDate, toDate } = req.query;
     const fromDateQuery = fromDate ? parseISO(fromDate) : new Date();
@@ -15,10 +15,12 @@ class EventController {
       userId
     );
 
-    return res.json(events);
+    req.response = events;
+    res.json(events);
+    return next();
   }
 
-  async show(req, res) {
+  async show(req, res, next) {
     const {
       userId,
       params: { id },
@@ -26,18 +28,21 @@ class EventController {
 
     const event = await EventServices.verifyAndGetEvent(id, userId);
 
-    return res.json(event);
+    req.response = event;
+    res.json(event);
+    return next();
   }
 
-  async store(req, res) {
+  async store(req, res, next) {
     const { userId } = req;
 
     const event = await EventServices.create(req.body, userId);
 
-    return res.status(201).json(event);
+    res.status(201).json(event);
+    return next();
   }
 
-  async update(req, res) {
+  async update(req, res, next) {
     const {
       userId,
       params: { id },
@@ -45,17 +50,19 @@ class EventController {
 
     const event = await EventServices.update(req.body, id, userId);
 
-    return res.status(200).json(event);
+    res.status(200).json(event);
+    return next();
   }
 
-  async delete(req, res) {
+  async delete(req, res, next) {
     const {
       userId: user_id,
       params: { id },
     } = req;
 
     await EventServices.delete(id, user_id);
-    return res.status(204).json();
+    res.status(204).json();
+    return next();
   }
 }
 

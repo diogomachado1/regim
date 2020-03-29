@@ -10,18 +10,19 @@ class UserController {
     });
   }
 
-  async update(req, res) {
+  async update(req, res, next) {
     const { id, name, email, imageId, image } = await UserServices.update(
       req.body,
       req.userId
     );
-    return res.json({
+    res.json({
       id,
       name,
       email,
       imageId,
       image,
     });
+    return next();
   }
 }
 
