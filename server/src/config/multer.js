@@ -39,9 +39,12 @@ export default {
   limits: { fileSize: 3 * 1000 * 1000 },
   storage,
   fileFilter: (req, file, cb) => {
-    const isAccepted = ['image/png', 'image/jpg', 'image/jpeg'].find(
-      format => format === file.mimetype
-    );
+    const isAccepted = [
+      'image/png',
+      'image/jpg',
+      'image/jpeg',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    ].find(format => format === file.mimetype);
     if (!isAccepted) cb(new BadRequestError('Format invalid'));
 
     return cb(null, true);

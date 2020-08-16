@@ -16,6 +16,7 @@ class ProductValidator extends Validator {
         .required()
         .min(0),
       price: Yup.number().min(0),
+      public: Yup.boolean(),
       measure: Yup.mixed()
         .oneOf(['g', 'ml', 'unity'])
         .required(),
