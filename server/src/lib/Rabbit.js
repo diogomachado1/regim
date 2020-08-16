@@ -1,8 +1,8 @@
-featconst amqp = require('amqplib');
+import { connect } from 'amqplib';
 
 class Rabbit {
   static getConnection() {
-    return amqp.connect({
+    return connect({
       protocol: process.env.AMQP_PROTOCOL,
       hostname: process.env.AMQP_HOST,
       port: process.env.AMQP_PORT,
@@ -13,7 +13,7 @@ class Rabbit {
 
   static async getChannel() {
     // Setup queue config
-    const connection = await amqp.connect({
+    const connection = await connect({
       hostname: process.env.AMQP_HOST,
       port: process.env.AMQP_PORT,
       username: process.env.AMQP_USER,
@@ -56,4 +56,4 @@ class Rabbit {
   }
 }
 
-module.exports = Rabbit;
+export default Rabbit;
