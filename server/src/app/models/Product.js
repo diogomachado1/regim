@@ -27,14 +27,16 @@ class Product extends Model {
     );
 
     this.addHook('afterFind', async products => {
-      if (products.length) {
-        products.forEach(product => {
-          product.amount = Number.parseFloat(product.amount);
-          product.price = Number.parseFloat(product.price);
-        });
-      } else {
-        products.amount = Number.parseFloat(products.amount);
-        products.price = Number.parseFloat(products.price);
+      if (products) {
+        if (products.length) {
+          products.forEach(product => {
+            product.amount = Number.parseFloat(product.amount);
+            product.price = Number.parseFloat(product.price);
+          });
+        } else {
+          products.amount = Number.parseFloat(products.amount);
+          products.price = Number.parseFloat(products.price);
+        }
       }
     });
 

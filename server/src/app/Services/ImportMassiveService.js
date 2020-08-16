@@ -18,14 +18,18 @@ class ImportMassiveService {
       { raw: true }
     );
 
+    const rabbit = new Rabbit();
+
+    await rabbit.getChannel();
     await Promise.all(
       objects.map(async item =>
-        Rabbit.sendMessage('import-product', {
+        rabbit.sendMessage('import-product', {
           payload: item,
           userId,
         })
       )
     );
+    await rabbit.closeConnection();
   }
 }
 
