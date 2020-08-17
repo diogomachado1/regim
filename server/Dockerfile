@@ -1,5 +1,5 @@
 
-FROM node:alpine
+FROM node
 
 LABEL version="0.1.0"
 
